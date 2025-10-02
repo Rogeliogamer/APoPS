@@ -1,0 +1,32 @@
+.signature-wrapper{
+  border: 2px dashed #999;
+  border-radius: 6px;
+  width: 100%;
+  height: 200px;
+  touch-action: none; /* importante para touch/pointer events */
+  background: #fff;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.signature-svg{
+  width: 100%;
+  height: 100%;
+  display: block;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.signature-label{
+    font-weight:600;
+    margin-bottom:6px;
+}
+
+.signature-controls{
+    margin-top:8px;
+}
+
+.signature-controls button{
+    margin-right:8px;
+    padding:6px 10px;
+}

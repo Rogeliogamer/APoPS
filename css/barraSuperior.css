@@ -1,0 +1,88 @@
+.menu-barra-superior {
+    width:100%;
+    position: fixed; /* fijo en top */
+    top: 0;
+    z-index: 1000;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 15px 30px;
+    color: white;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    overflow: hidden;
+    min-height: 20px; /* Altura mínima */
+}
+
+/* Gradiente de fondo */
+.menu-barra-superior div.gradiente {
+    position:absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    z-index: 0;
+}
+
+/* Burbujas animadas */
+.menu-barra-superior div.burbujas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns=&quot;http://www.w3.org/2000/svg&quot; viewBox=&quot;0 0 100 100&quot;><circle cx=&quot;20&quot; cy=&quot;20&quot; r=&quot;2&quot; fill=&quot;rgba(255,255,255,0.1)&quot;/><circle cx=&quot;80&quot; cy=&quot;80&quot; r=&quot;3&quot; fill=&quot;rgba(255,255,255,0.1)&quot;/><circle cx=&quot;40&quot; cy=&quot;70&quot; r=&quot;1&quot; fill=&quot;rgba(255,255,255,0.1)&quot;/><circle cx=&quot;90&quot; cy=&quot;30&quot; r=&quot;2&quot; fill=&quot;rgba(255,255,255,0.1)&quot;/></svg>');
+    z-index: 1;
+    background-repeat: repeat;
+    animation: moverBurbujas 20s linear infinite;
+}
+
+/* Animación de movimiento de burbujas */
+@keyframes moverBurbujas {
+    0% { background-position: 0 0; }
+    100% { background-position: 200px 200px; }
+}
+
+/* Contenido visible encima del fondo */
+.menu-barra-superior div.contenido {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    gap: 30px;
+    align-items: center;
+}
+
+/* Responsivo para pantallas pequeñas */
+@media (max-width: 768px) {
+    .menu-barra-superior {
+        padding: 10px 20px;
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 480px) {
+    .menu-barra-superior {
+        padding: 8px 15px;
+        font-size: 12px;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+.boton-salir {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 10px;
+    background-color: rgba(255,255,255,0.2);
+    color: white;
+    font-weight: 600;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: background 0.3s ease;
+}
+
+.boton-salir:hover {
+    background-color: rgba(255,255,255,0.4);
+}
