@@ -1,24 +1,47 @@
+<!--- 
+ * Página `registrarUsuarios.cfm` para la gestión de usuarios.
+ *
+ * Funcionalidad:
+ * - Permite registrar nuevos usuarios en el sistema.
+ * - El acceso está restringido exclusivamente a administradores.
+ * - Si el usuario no tiene rol de administrador, el acceso es denegado.
+ *
+ * Uso:
+ * - Página reservada para tareas de administración y control de cuentas.
+--->
 <!DOCTYPE html>
 <html lang="es">
     <head>
+        <!-- Metadatos y enlaces a estilos -->
         <meta charset="UTF-8">
+        <!-- Vista adaptable para dispositivos móviles -->
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Registrar Usuarios</title>
+        <!-- Título de la página -->
+        <title>Registrar Usuario</title>
+        <!-- Enlace a fuentes y hojas de estilo -->
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="css/globalForm.css">
+        <link rel="stylesheet" href="css/registrarUsuarios.css">
     </head>
     <body>
+        <!-- Verificar si el usuario esta logeado -->
+        <cfif NOT structKeyExists(session, "rol") OR session.rol NEQ "admin">
+            <!-- Redirigir al menú si es administrador -->
+            <cflocation url="menu.cfm" addtoken="no">
+        </cfif>
+
         <!-- Contenedor principal -->
         <div class="container">
             <!-- Contenedor del formulario -->
             <div class="header">
-                <!-- Encabezado del formulario -->
+                <!-- Nombre del usuario y rol que esta conectado -->
                 <div class="logo">
-                    Registro de Usuarios
+                    <cfset usuarioRol = createObject("component", "componentes/usuarioConectadoS").render()>
+                    <cfoutput>#usuarioRol#</cfoutput>
                 </div>
 
                 <!-- Nombre del formulario -->
-                <h1>Formulario de Registro</h1>
+                <h1>Registro de Usuario</h1>
             </div>
 
             <!-- Formulario de Registro -->
@@ -28,7 +51,7 @@
                     <!-- Verificar el tipo de mensaje para aplicar el estilo adecuado -->
                     <cfif structKeyExists(session, "tipoMensaje") AND session.tipoMensaje EQ "error">
                         <!-- Estilo para mensajes de error -->
-                        <div style="padding: 15px; background-color: #fde2e2; color: #b00020; border-radius: 6px; margin-bottom: 20px;">
+                        <div class="mensaje-error">
                             <!-- Mostrar el mensaje de error -->
                             <cfoutput>
                                 #session.mensajeRegistro#
@@ -38,7 +61,7 @@
                     <!-- Estilo para mensajes de éxito -->
                     <cfelse>
                         <!-- Mostrar el mensaje de éxito -->
-                        <div style="padding: 15px; background-color: #e0f7e9; color: #2d6a4f; border-radius: 6px; margin-bottom: 20px;">
+                        <div class="mensaje-exito">
                             <!-- Mostrar el mensaje de éxito -->
                             <cfoutput>
                                 #session.mensajeRegistro#
@@ -66,25 +89,51 @@
                             <!-- Campo para Nombre -->
                             <div class="form-field">
                                 <!-- Etiqueta para el campo Nombre -->
-                                <label class="form-label" for="nombre">Nombre</label>
+                                <label class="form-label" for="nombre">
+                                    Nombre
+                                </label>
                                 <!-- Input de texto para el Nombre -->
-                                <input type="text" id="nombre" name="nombre" class="form-input" pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+" title="Solo se permiten letras y espacios" oninput="soloLetras(this)" required>
+                                <input type="text"
+                                    id="nombre"
+                                    name="nombre"
+                                    class="form-input" 
+                                    pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+"
+                                    title="Solo se permiten letras y espacios"
+                                    oninput="soloLetras(this)"
+                                    required>
                             </div>
 
                             <!-- Campo para Apellido Paterno -->
                             <div class="form-field">
                                 <!-- Etiqueta para el campo Apellido Paterno -->
-                                <label class="form-label" for="apellido_paterno">Apellido Paterno</label>
+                                <label class="form-label" for="apellido_paterno">
+                                    Apellido Paterno
+                                </label>
                                 <!-- Input de texto para el Apellido Paterno -->
-                                <input type="text" id="apellido_paterno" name="apellido_paterno" class="form-input" required pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+" title="Solo se permiten letras y espacios" oninput="soloLetras(this)" required>
+                                <input type="text"
+                                    id="apellido_paterno"
+                                    name="apellido_paterno"
+                                    class="form-input"
+                                    pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+"
+                                    title="Solo se permiten letras y espacios"
+                                    oninput="soloLetras(this)"
+                                    required>
                             </div>
 
                             <!-- Campo para Apellido Materno -->
                             <div class="form-field">
                                 <!-- Etiqueta para el campo Apellido Materno -->
-                                <label class="form-label" for="apellido_materno">Apellido Materno</label>
+                                <label class="form-label" for="apellido_materno">
+                                    Apellido Materno
+                                </label>
                                 <!-- Input de texto para el Apellido Materno -->
-                                <input type="text" id="apellido_materno" name="apellido_materno" class="form-input" required pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+" title="Solo se permiten letras y espacios" oninput="soloLetras(this)" required>
+                                <input type="text"
+                                id="apellido_materno"
+                                name="apellido_materno"
+                                class="form-input"
+                                pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+"
+                                title="Solo se permiten letras y espacios"
+                                oninput="soloLetras(this)" required>
                             </div>
                         </div>
 
@@ -136,7 +185,13 @@
                                 </label>
 
                                 <!-- Input de texto para el Usuario -->
-                                <input type="text" id="usuario" name="usuario" class="form-input" oninput="sanitizarUsuario(this)" oninput="this.value = this.value.replace(/<|>|'|&quot;|;|--/g, '')" required>
+                                <input type="text"
+                                    id="usuario"
+                                    name="usuario"
+                                    class="form-input"
+                                    oninput="sanitizarUsuario(this)"
+                                    oninput="this.value = this.value.replace(/<|>|'|&quot;|;|--/g, '')"
+                                    required>
                             </div>
 
                             <!-- Campo para Rol -->
@@ -183,8 +238,16 @@
                                     Contraseña
                                     </label>
                                 <!-- Input de tipo password para la Contraseña -->
-                                <input type="password" id="contrasena" name="contrasena" class="form-input"  minlength="8" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[°|¬!@#$%&/()=?'\\¡¿¨´*+~]}`[{^;,:._&lt;&gt;/\-\+.&quot;]).{8,}$" title="La contraseña debe tener al menos 8 caracteres, incluyendo mayúsculas, minúsculas, números y un carácter especial." placeholder="Contraseña" required>
-                                <span id="passwordMsg" style="color:red; font-size:12px;"></span>
+                                <input type="password"
+                                    id="contrasena"
+                                    name="contrasena"
+                                    class="form-input"
+                                    minlength="8"
+                                    pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[°|¬!@#$%&/()=?'\\¡¿¨´*+~]}`[{^;,:._&lt;&gt;/\-\+.&quot;]).{8,}$"
+                                    title="La contraseña debe tener al menos 8 caracteres, incluyendo mayúsculas, minúsculas, números y un carácter especial."
+                                    placeholder="Contraseña"
+                                    required>
+                                <span id="passwordMsg" class="mensaje-contraseña"></span>
                             </div>
                         </div>
                     </div>
@@ -197,65 +260,15 @@
 
                     <div class="submit-section">
                         <!-- Enlace para regresar al menú principal -->
-                        <a href="menu.cfm" class="submit-btn" style="text-decoration: none">Menu</a>
+                        <a href="menu.cfm" class="submit-btn-menu">Menu</a>
+                        <a href="cerrarSesion.cfm" class="submit-btn-cerrarSesion">
+                            Cerrar Sesion
+                        </a>
                     </div>
                 </form>
             </div>        
         </div>
-
-        <script>
-            // Función para permitir solo letras y espacios en los campos de texto
-            function soloLetras(input) {
-                input.value = input.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g,'');
-            }
-        </script>
-
-        <script>
-            /* Sanitización del usuario: elimina etiquetas HTML y espacios extra */
-            function sanitizarUsuario(input) {
-                // Remueve etiquetas < > y espacios al inicio/fin
-                input.value = input.value.replace(/<[^>]*>?/gm, '').trim();
-            }
-        </script>
-
-        <script>
-            const contrasenaInput = document.getElementById('contrasena');
-            const submitBtn = document.querySelector('button[type="submit"]');
-            const passwordMsg = document.getElementById('passwordMsg');
-
-            contrasenaInput.addEventListener('input', function() {
-                const valor = this.value;
-
-                // Regex para validar contraseña
-                //const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!¡@#$%^&*(),.?":{}|<>~`_\-+=;/;]).{8,}$/;
-                //const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|[\]\\<>~`_\-+=;\/])).{8,}$/;
-                //const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>~`_\-+=;\/&quot;&apos;])).{8,}$/;
-                //const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[°\|¬!@#$%&\/()\=?'\\¡¿¨´*+~\]\}`\[\{\^;,:._<>\/*\-+\.])).{8,}$/;
-
-                const regex = new RegExp(
-    "^" +                         // Inicio de la cadena
-    "(?=.*[a-z])" +               // Al menos una letra minúscula
-    "(?=.*[A-Z])" +               // Al menos una letra mayúscula
-    "(?=.*\\d)" +                 // Al menos un número
-    "(?=.*[" +                     // Al menos un carácter especial de la lista
-        "°\\|¬!@#$%&/()=?'\\\\¡¿¨´*+~\\]\\}`\\[\\{\\^;,:._<>/*\\-+\\." +
-    "])" +
-    ".{8,}" +                     // Al menos 8 caracteres en total
-    "$"                            // Fin de la cadena
-);
-
-                if (!regex.test(valor)) {
-                    // Mostrar mensaje en el span
-                    passwordMsg.textContent = "La contraseña debe tener al menos 8 caracteres, incluyendo mayúsculas, minúsculas, número y un carácter especial.";
-                    // Deshabilitar botón
-                    submitBtn.disabled = true;
-                } else {
-                    // Limpiar mensaje
-                    passwordMsg.textContent = "";
-                    // Habilitar botón
-                    submitBtn.disabled = false;
-                }
-            });
-        </script>
+        
+        <script src="js/validacionRegistrarUsuarios.js"></script>
     </body>
 </html>

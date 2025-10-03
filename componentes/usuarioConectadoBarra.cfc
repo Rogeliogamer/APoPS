@@ -15,7 +15,7 @@
                 </div>
                 <div>
                     <a href="cerrarSesion.cfm" class="boton-salir">
-                        Salir <img src="elements/salir.svg" alt="Salir" width="16" height="16">
+                        Cerrar Sesion <img src="elements/salir.svg" alt="Salir" width="16" height="16">
                     </a>
                 </div>
             </div>

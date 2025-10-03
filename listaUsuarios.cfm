@@ -1,10 +1,33 @@
+<!---
+ * Componente `listaUsuarios.cfc` para la visualización y gestión de usuarios.
+ *
+ * Acceso:
+ * - Permitido únicamente a usuarios con rol: `admin`, `expediente`, `RecursosHumanos` y `jefe`.
+ * - Rol `usuario` no tiene acceso a esta página.
+ *
+ * Funcionalidad:
+ * - Muestra la lista de usuarios filtrada según los privilegios del rol autenticado.
+ * - La búsqueda de usuarios también respeta las restricciones de acceso por rol.
+ * - Garantiza un nivel de seguridad al limitar la visibilidad de la información sensible.
+ *
+ * Permisos especiales:
+ * - Solo los usuarios con rol `admin` tienen habilitados los botones de **Editar** y **Eliminar**.
+ * - Cada acción redirige a la página correspondiente con la información del usuario seleccionado.
+--->
+
 <!DOCTYPE html>
 <html lang="es">
     <head>
+        <!-- Metadatos y enlaces a estilos -->
+        <meta charset="UTF-8">
+        <!-- Vista adaptable para dispositivos móviles -->
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- Título de la página -->
         <title>Lista de usuarios</title>
+        <!-- Enlace a fuentes y hojas de estilo -->
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="css/globalForm.css">
+        <link rel="stylesheet" href="css/listaUsuarios.css"
     </head>
     <body>
         <!-- Verificación de sesión y rol -->
@@ -78,7 +101,8 @@
             <div class="header">
                 <!-- Título y logo -->
                 <div class="logo">
-                    Gestión de Usuarios
+                    <cfset usuarioRol = createObject("component", "componentes/usuarioConectadoS").render()>
+                    <cfoutput>#usuarioRol#</cfoutput>
                 </div>
                 <h1>
                     Listado de Usuarios
@@ -147,15 +171,16 @@
                                 <td>#area#</td>
 
                                 <cfif structKeyExists(session, "usuario") AND session.rol EQ "admin">
+                                    <!-- Botón Editar -->
                                     <td>
-                                        <a href="editarUsuario.cfm?id=#id_usuario#" class="submit-btn" style="padding: 3px 20px; text-decoration:none">
+                                        <a href="editarUsuario.cfm?id=#id_usuario#" class="submit-btn-editar">
                                             Editar
                                         </a>
                                     </td>
 
                                     <!-- Botón Eliminar -->
                                     <td>
-                                        <a href="eliminarUsuario.cfm?id=#id_usuario#" class="submit-btn" style="background:##dc2626; padding: 3px 20px; text-decoration:none" onclick="return confirm('¿Estás seguro de eliminar este usuario?');">
+                                        <a href="eliminarUsuario.cfm?id=#id_usuario#" class="submit-btn-eliminar" onclick="return confirm('¿Estás seguro de eliminar este usuario?');">
                                             Eliminar
                                         </a>
                                     </td>
@@ -190,6 +215,9 @@
                     <div class="submit-section">
                         <!-- Enlace para regresar al menú principal -->
                         <a href="menu.cfm" class="submit-btn" style="text-decoration: none">Menu</a>
+                        <a href="cerrarSesion.cfm" class="submit-btn-cerrarSesion">
+                            Cerrar Sesion
+                        </a>
                     </div>
                 </div>
             </div>

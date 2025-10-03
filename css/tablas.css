@@ -1,0 +1,19 @@
+.titulos-tabla {
+    background:#667eea;
+    color:white;
+}
+
+.titulo-general {
+    padding:10px;
+    text-align:left;
+}
+
+.titulo-general-centrado {
+    padding:10px;
+    text-align:center;
+}
+
+.tabla {
+    width:100%;
+    border-collapse: collapse;
+}

@@ -1,17 +1,25 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <!-- Metadatos y enlaces a estilos -->
     <meta charset="UTF-8">
+    <!-- Vista adaptable para dispositivos móviles -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Título de la página -->
     <title>Firmar Solicitud</title>
+    <!-- Enlace a fuentes y hojas de estilo -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/globalForm.css">
     <link rel="stylesheet" href="css/svgFirmaRol.css">
+    <link rel="stylesheet" href="css/firmarSolicitud.css">
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <div class="logo">SEFIRC</div>
+            <div class="logo">
+                <cfset usuarioRol = createObject("component", "componentes/usuarioConectadoS").render()>
+                <cfoutput>#usuarioRol#</cfoutput>
+            </div>
             <h1>AUTORIZACIÓN DE PERMISO O PASE DE SALIDA</h1>
         </div>
 
@@ -37,13 +45,19 @@
                         <div class="form-field">
                             <label class="form-label">Nombre:</label>
                             <cfoutput>
-                                <input type="text" value="#qSolicitud.nombre# #qSolicitud.apellido_paterno# #qSolicitud.apellido_materno#" readonly>
+                                <input type="text"
+                                    value="#qSolicitud.nombre# #qSolicitud.apellido_paterno# #qSolicitud.apellido_materno#"
+                                    class="form-input"
+                                    readonly>
                             </cfoutput>
                         </div>
                         <div class="form-field">
                             <label class="form-label">Área de Adscripción:</label>
                             <cfoutput>
-                                <input type="text" value="#qSolicitud.area_nombre#" readonly>
+                                <input type="text"
+                                    value="#qSolicitud.area_nombre#"
+                                    class="form-input"
+                                    readonly>
                             </cfoutput>
                         </div>
                     </div>
@@ -56,37 +70,55 @@
                         <div class="form-field">
                             <label class="form-label">Motivo:</label>
                             <cfoutput>
-                                <input type="text" value="#qSolicitud.motivo#" readonly>
+                                <input type="text"
+                                    value="#qSolicitud.motivo#"
+                                    class="form-input"
+                                    readonly>
                             </cfoutput>
                         </div>
                         <div class="form-field">
                             <label class="form-label">Tipo de permiso:</label>
                             <cfoutput>
-                                <input type="text" value="#qSolicitud.tipo_permiso#" readonly>
+                                <input type="text"
+                                    value="#qSolicitud.tipo_permiso#"
+                                    class="form-input"
+                                    readonly>
                             </cfoutput>
                         </div>
                         <div class="form-field">
                             <label class="form-label">Fecha:</label>
                             <cfoutput>
-                                <input type="date" value="#DateFormat(qSolicitud.fecha,'yyyy-mm-dd')#" readonly>
+                                <input type="date"
+                                    value="#DateFormat(qSolicitud.fecha,'yyyy-mm-dd')#"
+                                    class="form-input"
+                                    readonly>
                             </cfoutput>
                         </div>
                         <div class="form-field">
                             <label class="form-label">Tiempo Solicitado:</label>
                             <cfoutput>
-                                <input type="text" value="#qSolicitud.tiempo_solicitado#" readonly>
+                                <input type="text"
+                                    value="#qSolicitud.tiempo_solicitado#"
+                                    class="form-input"
+                                    readonly>
                             </cfoutput>
                         </div>
                         <div class="form-field">
                             <label class="form-label">Hora de Salida:</label>
                             <cfoutput>
-                                <input type="time" value="#TimeFormat(qSolicitud.hora_salida,'HH:mm')#" readonly>
+                                <input type="time"
+                                    value="#TimeFormat(qSolicitud.hora_salida,'HH:mm')#"
+                                    class="form-input"
+                                    readonly>
                             </cfoutput>
                         </div>
                         <div class="form-field">
                             <label class="form-label">Hora de Llegada:</label>
                             <cfoutput>
-                                <input type="time" value="#TimeFormat(qSolicitud.hora_llegada,'HH:mm')#" readonly>
+                                <input type="time"
+                                    value="#TimeFormat(qSolicitud.hora_llegada,'HH:mm')#"
+                                    class="form-input"
+                                    readonly>
                             </cfoutput>
                         </div>
                     </div>
@@ -119,7 +151,7 @@
                                  preserveAspectRatio="xMidYMid meet"></svg>
                         </div>
                         <div class="signature-controls">
-                            <button id="clearBtn-superior" type="button">Limpiar</button>
+                            <button id="clearBtn-superior" type="button" class="submit-btn-limpiar">Limpiar</button>
                         </div>
                         <input type="hidden" name="firma_superior_svg" id="firma_superior_svg">
                     </div>
@@ -133,11 +165,14 @@
 
                 <!-- Botones de acción -->
                 <div class="submit-section">
-                    <button type="submit" name="submit" value="Aprobado" class="submit-btn">Aceptar</button>
+                    <button type="submit" name="submit" value="Aprobado" class="submit-btn-aceptar">Aceptar</button>
                     <button type="submit" name="submit" value="Rechazado" class="submit-btn">Rechazar</button>
                 </div>
                 <div class="submit-section">
-                    <a href="menu.cfm" class="submit-btn" style="text-decoration: none">Menú</a>
+                    <button class="submit-btn-menu"><a href="menu.cfm" class="submit-btn-menu2">Menú</a></button>
+                    <button class="submit-btn-cerrarSesion"><a href="cerrarSesion.cfm" class="submit-btn-cerrarSesion2">
+                            Cerrar Sesion
+                    </a></button>
                 </div>
             </form>
         </div>

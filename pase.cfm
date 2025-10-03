@@ -32,6 +32,10 @@
         
         <div class="container">
             <div class="header">
+                <div class="logo">
+                    <cfset usuarioRol = createObject("component", "componentes/usuarioConectadoS").render()>
+                    <cfoutput>#usuarioRol#</cfoutput>
+                </div>
                 <h1>AUTORIZACIÓN DE PERMISO O PASE DE SALIDA</h1>
             </div>
 
@@ -109,9 +113,11 @@
                         </div>
                         
                         <div class="form-field">
+                            <!-- Seleccion del tipo de motivo -->
                             <label class="form-label">
                                 Motivo:
                             </label>
+
                             <div class="checkbox-group">
                                 <div class="checkbox-item">
                                     <input type="checkbox" 
@@ -121,6 +127,7 @@
                                         class="checkbox-input">
                                     <label for="motivo_personal" class="checkbox-label">Personal</label>
                                 </div>
+
                                 <div class="checkbox-item">
                                     <input type="checkbox" 
                                         name="motivo" 
@@ -134,7 +141,11 @@
 
                         <div class="field-group">
                             <div class="form-field">
-                                <label class="form-label">Tipo de permiso:</label>
+                                <!-- Selecion del tipo de permiso -->
+                                <label class="form-label">
+                                    Tipo de permiso:
+                                </label>
+
                                 <div class="checkbox-group">
                                     <div class="checkbox-item">
                                         <input type="checkbox" 
@@ -144,6 +155,7 @@
                                             class="checkbox-input">
                                         <label for="pase_salida" class="checkbox-label">Pase de Salida</label>
                                     </div>
+
                                     <div class="checkbox-item">
                                         <input type="checkbox" 
                                             name="tipo_permiso" 
@@ -152,6 +164,7 @@
                                             class="checkbox-input">
                                         <label for="llegar_tarde" class="checkbox-label">Llegar Tarde</label>
                                     </div>
+
                                     <div class="checkbox-item">
                                         <input type="checkbox" 
                                             name="tipo_permiso" 
@@ -160,6 +173,7 @@
                                             class="checkbox-input">
                                         <label for="dia_completo" class="checkbox-label">Por día completo</label>
                                     </div>
+
                                     <div class="checkbox-item">
                                         <input type="checkbox" 
                                             name="tipo_permiso" 
@@ -170,8 +184,13 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <!-- Fecha que se esta solicitando -->
                             <div class="form-field">
-                                <label for="fecha" class="form-label">Fecha:</label>
+                                <label for="fecha" class="form-label">
+                                    Fecha:
+                                </label>
+
                                 <input type="date"
                                     name="fecha" 
                                     id="fecha" 
@@ -181,6 +200,7 @@
                             </div>
                         </div>
 
+                        <!-- Tiempo que se esta solicitando -->
                         <div class="field-group triple">
                             <div class="form-field">
                                 <label for="tiempo_solicitado" class="form-label">Tiempo Solicitado:</label>
@@ -193,6 +213,8 @@
                                     placeholder="ej: 2 horas"
                                     required="yes">
                             </div>
+
+                            <!-- Hora que se solicita para salir -->
                             <div class="form-field">
                                 <label for="hora_salida" class="form-label">Hora de Salida:</label>
                                 <input type="time"
@@ -201,6 +223,8 @@
                                     class="form-input"
                                     required="yes">
                             </div>
+
+                            <!-- Hora que se solicita para regresar a labores -->
                             <div class="form-field">
                                 <label for="hora_llegada" class="form-label">Hora de llegada:</label>
                                 <input type="time"
@@ -236,48 +260,58 @@
                                 <!-- CAMPO OCULTO: debe estar dentro del form para que ColdFusion lo reciba -->
                                 <input type="hidden" name="firma_svg" id="firma_svg">
                             </div>
+
+                            <!-- Firmara la solicitud el jefe de area -->
                             <div class="signature-field">
                                 <div class="signature-label">Firma del Jefe Inmediato</div>
                                 <!-- Área de firma -->
                                 <div id="signature-wrapper" class="signature-wrapper" role="application" aria-label="Área de firma">
                                     <svg id="signature-svg" class="signature-svg" xmlns="http://www.w3.org/2000/svg" width="100%" height="200" viewBox="0 0 1000 200" preserveAspectRatio="xMidYMid meet"></svg>
                                 </div>
+                                <!-- Borra la firma -->
                                 <div class="signature-controls">
                                     <button id="clearBtn" type="button" disabled>Limpiar</button>
                                 </div>
                             </div>
+
+                            <!-- Firmara la solicitud los de Recusos Humanos -->
                             <div class="signature-field">
                                 <div class="signature-label">Firma Dirección de Recursos Humanos</div>
                                 <!-- Área de firma -->
                                 <div id="signature-wrapper" class="signature-wrapper" role="application" aria-label="Área de firma">
                                     <svg id="signature-svg" class="signature-svg" xmlns="http://www.w3.org/2000/svg" width="100%" height="200" viewBox="0 0 1000 200" preserveAspectRatio="xMidYMid meet"></svg>
                                 </div>
+                                <!-- Borra la firma -->
                                 <div class="signature-controls">
                                     <button id="clearBtn" type="button" disabled>Limpiar</button>
                                 </div>
                             </div>
+
+                            <!-- Firmara la solicitud para los de autorizacion -->
                             <div class="signature-field">
                                 <div class="signature-label">Firma de Autorización</div>
                                 <!-- Área de firma -->
                                 <div id="signature-wrapper" class="signature-wrapper" role="application" aria-label="Área de firma">
                                     <svg id="signature-svg" class="signature-svg" xmlns="http://www.w3.org/2000/svg" width="100%" height="200" viewBox="0 0 1000 200" preserveAspectRatio="xMidYMid meet"></svg>
                                 </div>
+                                <!-- Borra la firma -->
                                 <div class="signature-controls">
                                     <button id="clearBtn" type="button" disabled>Limpiar</button>
                                 </div>
                             </div>
+
+                            <!-- Firmara la solicitud para los de expediente -->
                             <div class="signature-field">
                                 <div class="signature-label">Para Expediente y Control de Asistencia</div>
                                 <!-- Área de firma -->
                                 <div id="signature-wrapper" class="signature-wrapper" role="application" aria-label="Área de firma">
                                     <svg id="signature-svg" class="signature-svg" xmlns="http://www.w3.org/2000/svg" width="100%" height="200" viewBox="0 0 1000 200" preserveAspectRatio="xMidYMid meet"></svg>
                                 </div>
+                                <!-- Borra la firma -->
                                 <div class="signature-controls">
                                     <button id="clearBtn" type="button" disabled>Limpiar</button>
                                 </div>
                             </div>
-                            
-                            
                         </div>
                     </div>
 
@@ -298,45 +332,7 @@
             </div>
         </div>
 
-        <script>
-            // Validación de checkboxes mutuamente excluyentes para motivo
-            document.querySelectorAll('input[name="motivo"]').forEach(checkbox => {
-                checkbox.addEventListener('change', function() {
-                    if (this.checked) {
-                        document.querySelectorAll('input[name="motivo"]').forEach(other => {
-                            if (other !== this) other.checked = false;
-                        });
-                    }
-                });
-            });
-
-            // Validación de formulario
-            document.addEventListener('DOMContentLoaded', function() {
-                const form = document.forms['permisoForm'];
-                
-                form.addEventListener('submit', function(e) {
-                    const motivoChecked = document.querySelectorAll('input[name="motivo"]:checked').length > 0;
-                    const tipoPermisoChecked = document.querySelectorAll('input[name="tipo_permiso"]:checked').length > 0;
-                    
-                    if (!motivoChecked) {
-                        alert('Por favor seleccione un motivo para la solicitud.');
-                        e.preventDefault();
-                        return false;
-                    }
-                    
-                    if (!tipoPermisoChecked) {
-                        alert('Por favor seleccione al menos un tipo de permiso.');
-                        e.preventDefault();
-                        return false;
-                    }
-                });
-            });
-        
-            // Evitar entrada de caracteres no numéricos en tiempo solicitado
-            document.getElementById("tiempo_solicitado").addEventListener("input", function () {
-                this.value = this.value.replace(/[eE\+\-]/g, "");
-            });
-        </script>
+        <script src="js/validacionForm.js"></script>
 
         <script src="js/svgFirma.js"></script>
     </body>

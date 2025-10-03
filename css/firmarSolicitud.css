@@ -1,0 +1,129 @@
+.submit-btn-aceptar {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 15px 40px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+/* Hover con un poco de énfasis */
+.submit-btn-aceptar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+/* Activo: da la sensación de presionar */
+.submit-btn-aceptar:active {
+    transform: translateY(0);
+}
+
+.submit-btn-rechazar {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 15px 40px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+/* Hover con un poco de énfasis */
+.submit-btn-rechazar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+/* Activo: da la sensación de presionar */
+.submit-btn-rechazar:active {
+    transform: translateY(0);
+}
+
+.submit-btn-limpiar {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ff4757 100%); /* Tonos rojos de advertencia/borrado */
+    color: #fff;
+    padding: 12px 32px;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(255, 71, 87, 0.3);
+    text-decoration: none;
+}
+
+/* Hover con un poco de énfasis */
+.submit-btn-limpiar:hover {
+    background: linear-gradient(135deg, #ff4757 0%, #e84118 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(255, 71, 87, 0.4);
+}
+
+/* Activo: da la sensación de presionar */
+.submit-btn-limpiar:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 8px rgba(255, 71, 87, 0.3);
+}
+
+.submit-btn-cerrarSesion {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 15px 40px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.submit-btn-cerrarSesion2 {
+    color: white;
+    text-decoration: none;
+}
+
+.submit-btn-cerrarSesion:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+.submit-btn-cerrarSesion:active {
+    transform: translateY(0);
+}
+
+.submit-btn-menu {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 15px 40px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.submit-btn-menu2 {
+    color: white;
+    text-decoration: none;
+}
+
+.submit-btn-menu:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+.submit-btn-menu:active {
+    transform: translateY(0);
+}
+

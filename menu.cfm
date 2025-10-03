@@ -9,6 +9,26 @@
  * Uso:
  * - Incluir esta página como interfaz de navegación principal para usuarios logueados.
 --->
+<cfscript>
+    function tieneAcceso(pagina) {
+        var rol = session.rol;
+        var accesos = {
+            "Solicitante": ["pase.cfm", "firmados.cfm", "listaSolicitudes.cfm"],
+            "Jefe": ["pase.cfm", "listaUsuarios.cfm", "pendientes_firmar.cfm", "firmados.cfm", "listaSolicitudes.cfm"],
+            "RecursosHumanos": ["pase.cfm", "listaUsuarios.cfm", "pendientes_firmar.cfm", "firmados.cfm", "listaSolicitudes.cfm"],
+            "Autorizacion": ["pase.cfm", "pendientes_firmar.cfm", "firmados.cfm", "listaSolicitudes.cfm"],
+            "Expediente": ["pase.cfm", "listaUsuarios.cfm", "pendientes_firmar.cfm", "firmados.cfm", "listaSolicitudes.cfm"],
+            "Admin": ["registrarUsuarios.cfm", "listaUsuarios.cfm"]
+        };
+
+        // Validar si el rol existe en el struct
+        if (structKeyExists(accesos, rol)) {
+            return arrayFind(accesos[rol], pagina) > 0;
+        } else {
+            return false;
+        }
+    }
+</cfscript>
 
 <!DOCTYPE html>
 <html lang="es">
@@ -26,7 +46,7 @@
     </head>
     <body>
         <!--- barra superior --->
-        <cfset barra = createObject("component", "componentes/usuarioConectado").render()>
+        <cfset barra = createObject("component", "componentes/usuarioConectadoBarra").render()>
         <cfoutput>#barra#</cfoutput>
         
         <div class="menu-container">
@@ -68,7 +88,7 @@
                 <h2>Solicitudes pendientes de firma</h2>
                 <p>Revisar y firmar solicitudes pendientes</p>
                 <cfif tieneAcceso("pendientes_firmar.cfm")>
-                    <a href="pendientes_firmar.cfm">Revisar</a>
+                    <a href="pendientesFirmar.cfm">Revisar</a>
                 <cfelse>
                     <a href="##" class="disabled">Revisar</a>
                 </cfif>
@@ -99,24 +119,3 @@
         </div>
     </body>
 </html>
-
-<cfscript>
-    function tieneAcceso(pagina) {
-        var rol = session.rol;
-        var accesos = {
-            "Solicitante": ["pase.cfm", "firmados.cfm", "listaSolicitudes.cfm"],
-            "Jefe": ["pase.cfm", "listaUsuarios.cfm", "pendientes_firmar.cfm", "firmados.cfm", "listaSolicitudes.cfm"],
-            "RecursosHumanos": ["pase.cfm", "listaUsuarios.cfm", "pendientes_firmar.cfm", "firmados.cfm", "listaSolicitudes.cfm"],
-            "Autorizacion": ["pase.cfm", "pendientes_firmar.cfm", "firmados.cfm", "listaSolicitudes.cfm"],
-            "Expediente": ["pase.cfm", "listaUsuarios.cfm", "pendientes_firmar.cfm", "firmados.cfm", "listaSolicitudes.cfm"],
-            "Admin": ["registrarUsuarios.cfm", "listaUsuarios.cfm"]
-        };
-
-        // Validar si el rol existe en el struct
-        if (structKeyExists(accesos, rol)) {
-            return arrayFind(accesos[rol], pagina) > 0;
-        } else {
-            return false;
-        }
-    }
-</cfscript>

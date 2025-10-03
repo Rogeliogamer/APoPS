@@ -1,0 +1,48 @@
+.mensaje-error {
+    padding: 15px;
+    background-color: #fde2e2;
+    color: #b00020;
+    border-radius: 6px;
+    margin-bottom: 20px;
+}
+
+.mensaje-exito {
+    padding: 15px;
+    background-color: #e0f7e9;
+    color: #2d6a4f;
+    border-radius: 6px;
+    margin-bottom: 20px;
+}
+
+.mensaje-contraseña {
+    color:red;
+    font-size:12px;
+}
+
+.submit-btn-menu {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 15px 40px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    text-decoration: none;
+}
+
+.submit-btn-cerrarSesion {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 15px 40px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    text-decoration: none;
+}

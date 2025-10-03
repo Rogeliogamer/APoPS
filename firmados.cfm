@@ -27,6 +27,8 @@
     <meta charset="UTF-8">
     <title>Solicitudes Firmadas</title>
     <link rel="stylesheet" href="css/globalForm.css">
+    <link rel="stylesheet" href="css/firmados.css">
+    <link rel="stylesheet" href="css/tablas.css">
 </head>
 <body>
     <!--- Verificación de sesión y rol --->
@@ -46,18 +48,18 @@
             <div class="section">
                 <h2 class="section-title">Listado de solicitudes con firma</h2>
 
-                <table style="width:100%; border-collapse: collapse;">
+                <table class="tabla">
                     <thead>
-                        <tr style="background:#667eea; color:white;">
-                            <th style="padding:10px; text-align:left;">ID Solicitud</th>
-                            <th style="padding:10px; text-align:left;">Solicitante</th>
-                            <th style="padding:10px; text-align:left;">Motivo</th>
-                            <th style="padding:10px; text-align:left;">Tipo Permiso</th>
-                            <th style="padding:10px; text-align:left;">Fecha Solicitud</th>
-                            <th style="padding:10px; text-align:left;">Rol</th>
-                            <th style="padding:10px; text-align:left;">Estado</th>
-                            <th style="padding:10px; text-align:left;">Fecha Firma</th>
-                            <th style="padding:10px; text-align:center;">Acciones</th>
+                        <tr class="titulos-tabla">
+                            <th class="titulo-general">ID Solicitud</th>
+                            <th class="titulo-general">Solicitante</th>
+                            <th class="titulo-general">Motivo</th>
+                            <th class="titulo-general">Tipo Permiso</th>
+                            <th class="titulo-general">Fecha Solicitud</th>
+                            <th class="titulo-general">Rol</th>
+                            <th class="titulo-general">Estado</th>
+                            <th class="titulo-general">Fecha Firma</th>
+                            <th class="titulo-general-centrado">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
