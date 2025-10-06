@@ -29,6 +29,7 @@
     <link rel="stylesheet" href="css/globalForm.css">
     <link rel="stylesheet" href="css/firmados.css">
     <link rel="stylesheet" href="css/tablas.css">
+    <link rel="stylesheet" href="css/botones.css"
 </head>
 <body>
     <!--- Verificación de sesión y rol --->
@@ -40,7 +41,10 @@
 
     <div class="container">
         <div class="header">
-            <div class="logo">APoPS</div>
+            <div class="logo">
+                <cfset usuarioRol = createObject("component", "componentes/usuarioConectadoS").render()>
+                    <cfoutput>#usuarioRol#</cfoutput>
+            </div>
             <h1>Solicitudes ya firmadas</h1>
         </div>
 
@@ -65,13 +69,13 @@
                     <tbody>
                         <cfoutput query="qFirmados">
                             <tr style="border-bottom:1px solid ##e2e8f0;">
-                                <td style="padding:10px;">#id_solicitud#</td>
-                                <td style="padding:10px;">#solicitante#</td>
-                                <td style="padding:10px;">#motivo#</td>
-                                <td style="padding:10px;">#tipo_permiso#</td>
-                                <td style="padding:10px;">#DateFormat(fecha,'dd/mm/yyyy')#</td>
-                                <td style="padding:10px;">#rol#</td>
-                                <td style="padding:10px;">
+                                <td>#id_solicitud#</td>
+                                <td>#solicitante#</td>
+                                <td>#motivo#</td>
+                                <td>#tipo_permiso#</td>
+                                <td>#DateFormat(fecha,'dd/mm/yyyy')#</td>
+                                <td>#rol#</td>
+                                <td>
                                     <cfif aprobado EQ "Aprobado">
                                         <span style="color:green; font-weight:bold;">✔ #aprobado#</span>
                                     <cfelse>
@@ -82,7 +86,7 @@
                                 <td style="padding:10px; text-align:center;">
                                     <form action="solicitudDetalles.cfm" method="get">
                                         <input type="hidden" name="id_solicitud" value="#id_solicitud#">
-                                        <button type="submit" class="submit-btn">Ver Detalles</button>
+                                        <button type="submit" class="submit-btn-verDetalles">Ver Detalles</button>
                                     </form>
                                 </td>
                             </tr>
@@ -91,8 +95,15 @@
                 </table>
             </div>
             <div class="submit-section">
-                <!-- Enlace para regresar al menú principal -->
-                <a href="menu.cfm" class="submit-btn" style="text-decoration: none">Menu</a>
+                <button class="submit-btn-menu">
+                    <!-- Enlace para regresar al menú principal -->
+                    <a href="menu.cfm" class="submit-btn-menu-text">Menu</a>
+                </button>
+                <button class="submit-btn-cerrarSesion">
+                    <a href="cerrarSesion.cfm" class="submit-btn-cerrarSesion-text">
+                            Cerrar Sesion
+                        </a>
+                </button>
             </div>
         </div>
     </div>

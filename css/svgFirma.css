@@ -30,3 +30,39 @@
     margin-right:8px;
     padding:6px 10px;
 }
+
+#firma-solicitante-display {
+    width: 100%;
+    height: 200px;
+    border: 2px dashed #999;
+    border-radius: 6px;
+    background: #fff;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+#firma-solicitante-display svg {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+#signature-wrapper-superior {
+    border: 2px dashed #999;
+    border-radius: 6px;
+    width: 100%;
+    height: 200px;
+    background: #fff;
+    overflow: hidden;
+    box-sizing: border-box;
+    padding: 0; /* evita que el padding bloquee eventos */
+    margin: 0;
+}
+
+#signature-wrapper-superior svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    pointer-events: all; /* garantiza que los eventos cubran todo el área */
+    touch-action: none;
+}

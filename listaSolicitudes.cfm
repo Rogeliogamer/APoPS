@@ -27,6 +27,8 @@
     <meta charset="UTF-8">
     <title>Solicitudes Firmadas</title>
     <link rel="stylesheet" href="css/globalForm.css">
+    <link rel="stylesheet" href="css/tablas.css">
+    <link rel="stylesheet" href="css/botones.css">
 </head>
 <body>
     <!-- Verificación de sesión y rol -->
@@ -37,7 +39,10 @@
 
     <div class="container">
         <div class="header">
-            <div class="logo">APoPS</div>
+            <div class="logo">
+                <cfset usuarioRol = createObject("component", "componentes/usuarioConectadoS").render()>
+                <cfoutput>#usuarioRol#</cfoutput>
+            </div>
             <h1>Solicitudes firmadas por ti</h1>
         </div>
 
@@ -45,30 +50,30 @@
             <div class="section">
                 <h2 class="section-title">Listado de solicitudes</h2>
 
-                <table style="width:100%; border-collapse: collapse;">
+                <table class="tabla">
                     <thead>
-                        <tr style="background:#667eea; color:white;">
-                            <th style="padding:10px; text-align:left;">ID Solicitud</th>
-                            <th style="padding:10px; text-align:left;">Solicitante</th>
-                            <th style="padding:10px; text-align:left;">Motivo</th>
-                            <th style="padding:10px; text-align:left;">Tipo Permiso</th>
-                            <th style="padding:10px; text-align:left;">Fecha Solicitud</th>
-                            <th style="padding:10px; text-align:left;">Rol</th>
-                            <th style="padding:10px; text-align:left;">Estado Firma</th>
-                            <th style="padding:10px; text-align:left;">Fecha Firma</th>
-                            <th style="padding:10px; text-align:center;">Acciones</th>
+                        <tr class="titulos-tabla">
+                            <th class="titulo-general">ID Solicitud</th>
+                            <th class="titulo-general">Solicitante</th>
+                            <th class="titulo-general">Motivo</th>
+                            <th class="titulo-general">Tipo Permiso</th>
+                            <th class="titulo-general">Fecha Solicitud</th>
+                            <th class="titulo-general">Rol</th>
+                            <th class="titulo-general">Estado Firma</th>
+                            <th class="titulo-general">Fecha Firma</th>
+                            <th class="titulo-general-centrado">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         <cfoutput query="qFirmados">
-                            <tr style="border-bottom:1px solid ##e2e8f0;">
-                                <td style="padding:10px;">#id_solicitud#</td>
-                                <td style="padding:10px;">#solicitante#</td>
-                                <td style="padding:10px;">#motivo#</td>
-                                <td style="padding:10px;">#tipo_permiso#</td>
-                                <td style="padding:10px;">#DateFormat(fecha,'dd/mm/yyyy')#</td>
-                                <td style="padding:10px;">#rol#</td>
-                                <td style="padding:10px;">
+                            <tr>
+                                <td>#id_solicitud#</td>
+                                <td>#solicitante#</td>
+                                <td>#motivo#</td>
+                                <td>#tipo_permiso#</td>
+                                <td>#DateFormat(fecha,'dd/mm/yyyy')#</td>
+                                <td>#rol#</td>
+                                <td>
                                     <cfif aprobado EQ "Aprobado">
                                         <span style="color:green; font-weight:bold;">✔ #aprobado#</span>
                                     <cfelseif aprobado EQ "Rechazado">
@@ -81,7 +86,7 @@
                                 <td style="padding:10px; text-align:center;">
                                     <form action="solicitudDetalles.cfm" method="get">
                                         <input type="hidden" name="id_solicitud" value="#id_solicitud#">
-                                        <button type="submit" class="submit-btn">Ver Detalles</button>
+                                        <button type="submit" class="submit-btn-verDetalles">Ver Detalles</button>
                                     </form>
                                 </td>
                             </tr>
@@ -91,7 +96,14 @@
             </div>
 
             <div class="submit-section">
-                <a href="menu.cfm" class="submit-btn" style="text-decoration: none">Menú</a>
+                <button class="submit-btn-menu">
+                    <a href="menu.cfm" class="submit-btn-menu-text">Menú</a>
+                </button>
+                <button class="submit-btn-cerrarSesion">
+                    <a href="cerrarSesion.cfm" class="submit-btn-cerrarSesion-text">
+                        Cerrar Sesion
+                    </a>
+                </button>
             </div>
         </div>
     </div>

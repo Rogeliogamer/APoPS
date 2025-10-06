@@ -34,20 +34,17 @@
     <title>Detalle de Solicitud</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/globalForm.css">
-    <style>
-        .signature-svg svg {
-            width: 150px;
-            height: 80px;
-            display: block;
-            margin: 0 auto 10px auto;
-        }
-    </style>
+    <link rel="stylesheet" href="css/solicitudDetalles.css">
+    <link rel="stylesheet" href="css/botones.css">
 </head>
 <body>
 <div class="container">
     <div class="header">
-        <div class="logo">Detalle Solicitud</div>
-        <h1>Solicitud #<cfoutput>#qSolicitud.id_solicitud#</cfoutput></h1>
+        <div class="logo">
+            <cfset usuarioRol = createObject("component", "componentes/usuarioConectadoS").render()>
+            <cfoutput>#usuarioRol#</cfoutput>
+        </div>
+        <h1>Solicitud <cfoutput>#qSolicitud.id_solicitud#</cfoutput></h1>
     </div>
     <div class="form-container">
         <div class="section">
@@ -113,7 +110,15 @@
         </div>
 
         <div class="submit-section">
-            <a href="menu.cfm" class="submit-btn">Regresar</a>
+            <button class="submit-btn-regresar">
+                <a href="menu.cfm" class="submit-btn-regresar-text">Regresar</a>
+                
+            </button>
+            <button class="submit-btn-regresar">
+                <a href="cerrarSesion.cfm" class="submit-btn-cerrarSesion-text">
+                            Cerrar Sesion
+                        </a>
+                </button>
         </div>
     </div>
 </div>

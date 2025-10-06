@@ -10,8 +10,9 @@
     <!-- Enlace a fuentes y hojas de estilo -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/globalForm.css">
-    <link rel="stylesheet" href="css/svgFirmaRol.css">
+    <link rel="stylesheet" href="css/svgFirma.css">
     <link rel="stylesheet" href="css/firmarSolicitud.css">
+    <link rel="stylesheet" href="css/botones.css">
 </head>
 <body>
     <div class="container">
@@ -133,7 +134,11 @@
                         <div class="signature-label">Solicitante</div>
                         <div class="signature-wrapper">
                             <cfoutput>
-                                <div id="firma-solicitante-display">#qSolicitud.firma_solicitante#</div>
+                                <div id="firma-solicitante-display">
+                                    <svg viewBox="0 0 1000 200" preserveAspectRatio="xMidYMid meet" width="100%" height="100%">
+                                        #qSolicitud.firma_solicitante#
+                                    <svg>
+                                </div>
                             </cfoutput>
                         </div>
                     </div>
@@ -146,7 +151,7 @@
                         <div id="signature-wrapper-superior" class="signature-wrapper" role="application" aria-label="Área de firma">
                             <svg id="signature-svg-superior" class="signature-svg"
                                  xmlns="http://www.w3.org/2000/svg"
-                                 width="100%" height="200"
+                                 width="100%" height="100%"
                                  viewBox="0 0 1000 200"
                                  preserveAspectRatio="xMidYMid meet"></svg>
                         </div>
@@ -166,11 +171,14 @@
                 <!-- Botones de acción -->
                 <div class="submit-section">
                     <button type="submit" name="submit" value="Aprobado" class="submit-btn-aceptar">Aceptar</button>
-                    <button type="submit" name="submit" value="Rechazado" class="submit-btn">Rechazar</button>
+                    <button type="submit" name="submit" value="Rechazado" class="submit-btn-rechazar">Rechazar</button>
                 </div>
                 <div class="submit-section">
-                    <button class="submit-btn-menu"><a href="menu.cfm" class="submit-btn-menu2">Menú</a></button>
-                    <button class="submit-btn-cerrarSesion"><a href="cerrarSesion.cfm" class="submit-btn-cerrarSesion2">
+                    <button class="submit-btn-menu">
+                        <a href="menu.cfm" class="submit-btn-menu-text">Menú</a>
+                    </button>
+                    <button class="submit-btn-cerrarSesion">
+                        <a href="cerrarSesion.cfm" class="submit-btn-cerrarSesion-text">
                             Cerrar Sesion
                     </a></button>
                 </div>

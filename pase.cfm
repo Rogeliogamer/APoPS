@@ -22,6 +22,7 @@
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="css/globalForm.css">
         <link rel="stylesheet" href="css/svgFirma.css">
+        <link rel="stylesheet" href="css/pase.css">
     </head>
     <body>
         <!-- Verificar si el usuario es administrador -->
@@ -322,11 +323,15 @@
 
                     <div class="submit-section">
                         <!-- Enlace para regresar al menú principal -->
-                        <a href="menu.cfm" class="submit-btn" style="text-decoration: none">Menu</a>
-                        <a href="cerrarSesion.cfm" class="submit-btn" style="text-decoration: none">
+                        <button class="submit-btn-menu">
+                            <a href="menu.cfm" style="text-decoration: none">Menu</a>
+                        </button>
+                        <button class="submit-btn-salir">
+                            <a href="cerrarSesion.cfm" style="text-decoration: none">
                             Salir
-                            <img src="elements/salir.svg" alt="Salir" width="16" height="16">
-                        </a>
+                                <img src="elements/salir.svg" alt="Salir" width="16" height="16">
+                            </a>
+                        <button>
                     </div>
                 </form>
             </div>

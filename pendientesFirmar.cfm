@@ -23,7 +23,8 @@
         <!-- Enlace a fuentes y hojas de estilo -->
         <link rel="stylesheet" href="css/globalForm.css">
         <link rel="stylesheet" href="css/pendientesFirmar.css">
-        <link rel="stylesheet" href="css/tablas.css"
+        <link rel="stylesheet" href="css/tablas.css">
+        <link rel="stylesheet" href="css/botones.css">
     </head>
     <body>
         <!--- Verificación de sesión y rol --->
@@ -98,11 +99,15 @@
                 </cfif>
 
                 <div class="submit-section">
-                    <!-- Enlace para regresar al menú principal -->
-                    <a href="menu.cfm" class="submit-btn-menu">Menu</a>
-                    <a href="cerrarSesion.cfm" class="submit-btn-cerrarSesion">
-                            Cerrar Sesion
+                    <button class="submit-btn-menu">
+                        <!-- Enlace para regresar al menú principal -->
+                        <a href="menu.cfm" class="submit-btn-menu-text">Menu</a>
+                    </button>
+                    <button class="submit-btn-cerrarSesion">
+                        <a href="cerrarSesion.cfm" class="submit-btn-cerrarSesion-text">
+                                Cerrar Sesion
                         </a>
+                    </button>
                 </div>
             </div>
         </div>
