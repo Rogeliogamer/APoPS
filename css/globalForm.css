@@ -14,7 +14,7 @@ body {
 }
 
 .container {
-    max-width: 900px;
+    max-width: 99%;
     margin: 0 auto;
     background: #ffffff;
     border-radius: 12px;
@@ -119,6 +119,32 @@ body {
     transition: all 0.3s ease;
     background: white;
 }
+
+/* Forzar color en inputs readonly */
+input.form-input-aprobado[readonly],
+input.form-input-aprobado[readonly]:focus {
+    color: green !important;
+    -webkit-text-fill-color: green !important;
+    opacity: 1 !important;
+    background-color: #f0fff4 !important; /* verde claro opcional */
+}
+
+input.form-input-rechazado[readonly],
+input.form-input-rechazado[readonly]:focus {
+    color: red !important;
+    -webkit-text-fill-color: red !important;
+    opacity: 1 !important;
+    background-color: #fff5f5 !important; /* rojo claro opcional */
+}
+
+input.form-input-pendiente[readonly],
+input.form-input-pendiente[readonly]:focus {
+    color: #d97706 !important;
+    -webkit-text-fill-color: #d97706 !important;
+    opacity: 1 !important;
+    background-color: #fffbeb !important; /* amarillo claro opcional */
+}
+
 
 .form-input:focus {
     outline: none;
