@@ -27,7 +27,8 @@
         <!-- Enlace a fuentes y hojas de estilo -->
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="css/globalForm.css">
-        <link rel="stylesheet" href="css/listaUsuarios.css"
+        <link rel="stylesheet" href="css/listaUsuarios.css">
+        <link rel="stylesheet" href="css/botones.css">
     </head>
     <body>
         <!-- Verificación de sesión y rol -->
@@ -123,12 +124,12 @@
                         <cfoutput>
                             <!-- Mantener el valor ingresado en el campo de búsqueda -->
                             <input type="text" name="search" value="#encodeForHTMLAttribute(form.search)#" 
-                                class="form-input" placeholder="Nombre, Usuario, Área...">
+                                class="form-input-general" placeholder="Nombre, Usuario, Área...">
                         </cfoutput>
                     </div>
 
                     <!-- Botón de búsqueda -->
-                    <button type="submit" class="submit-btn">
+                    <button type="submit" class="submit-btn-buscar">
                         Buscar
                     </button>
                 </form>
@@ -214,10 +215,14 @@
 
                     <div class="submit-section">
                         <!-- Enlace para regresar al menú principal -->
-                        <a href="menu.cfm" class="submit-btn" style="text-decoration: none">Menu</a>
-                        <a href="cerrarSesion.cfm" class="submit-btn-cerrarSesion">
-                            Cerrar Sesion
-                        </a>
+                        <button class="submit-btn-menu">
+                            <a href="menu.cfm" class="submit-btn-menu-text">Menu</a>
+                        </button>
+                        <button class="submit-btn-cerrarSesion">
+                            <a href="cerrarSesion.cfm" class="submit-btn-cerrarSesion-text">
+                                Cerrar Sesion
+                            </a>
+                        </button>
                     </div>
                 </div>
             </div>

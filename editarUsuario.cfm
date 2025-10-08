@@ -104,7 +104,7 @@
                                     </label>
 
                                     <!-- Campo de texto para el nombre de usuario -->
-                                    <input type="text" name="usuario" value="#qUsuario.usuario#" required class="form-input"><br>
+                                    <input type="text" name="usuario" value="#qUsuario.usuario#" required class="form-input-general"><br>
                                 </div>
 
                                 <!-- Campo de rol -->
@@ -115,7 +115,7 @@
                                     </label>
 
                                     <!-- Lista desplegable para seleccionar el rol -->
-                                    <select name="rol" required class="form-input">
+                                    <select name="rol" required class="form-input-general">
                                         <!-- Iterar sobre los valores ENUM para crear las opciones -->
                                         <cfloop list="#enumListR#" index="tipo">
                                             <!-- Marcar la opción seleccionada -->
@@ -132,7 +132,7 @@
                                     </label>
 
                                     <!-- Lista desplegable para seleccionar el área -->
-                                    <select name="id_area" required class="form-input">
+                                    <select name="id_area" required class="form-input-general">
                                         <!-- Iterar sobre las áreas para crear las opciones -->
                                         <cfloop query="qAreas">
                                             <!-- Marcar la opción seleccionada -->
@@ -160,7 +160,7 @@
                                     </label>
 
                                     <!-- Campo de texto para el nombre -->
-                                    <input type="text" name="nombre" value="#qUsuario.nombre#" required class="form-input"><br>
+                                    <input type="text" name="nombre" value="#qUsuario.nombre#" required class="form-input-general"><br>
                                 </div>
 
                                 <!-- Campo de apellido paterno -->
@@ -171,7 +171,7 @@
                                     </label>
 
                                     <!-- Campo de texto para el apellido paterno -->
-                                    <input type="text" name="apellido_paterno" value="#qUsuario.apellido_paterno#" required class="form-input"><br>
+                                    <input type="text" name="apellido_paterno" value="#qUsuario.apellido_paterno#" required class="form-input-general"><br>
                                 </div>
 
                                 <!-- Campo de apellido materno -->
@@ -182,7 +182,7 @@
                                     </label>
 
                                     <!-- Campo de texto para el apellido materno -->
-                                    <input type="text" name="apellido_materno" value="#qUsuario.apellido_materno#" required class="form-input"><br>
+                                    <input type="text" name="apellido_materno" value="#qUsuario.apellido_materno#" required class="form-input-general"><br>
                                 </div>
                             </div>
                         </div>

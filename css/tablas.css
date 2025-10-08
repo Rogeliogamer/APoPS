@@ -13,7 +13,38 @@
     text-align:center;
 }
 
+.titulo-general-aprobado {
+    padding:10px;
+    text-align:center;
+    color:green; 
+    font-weight:bold;
+}
+
+.titulo-general-rechazado {
+    padding:10px;
+    text-align:center;
+    color:red; 
+    font-weight:bold;
+}
+
+.titulo-general-pendiente {
+    padding:10px;
+    text-align:center;
+    color:gray; 
+    font-weight:bold;
+}
+
 .tabla {
     width:100%;
     border-collapse: collapse;
+}
+
+.status-aprobado {
+    color: green;
+    font-weight: bold;
+}
+
+.status-rechazado {
+    color:red; 
+    font-weight:bold;
 }

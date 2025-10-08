@@ -22,6 +22,7 @@
         <!-- Enlace a fuentes y hojas de estilo -->
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="css/globalForm.css">
+        <link rel="stylesheet" href="css/botones.css">
     </head>
     <body>
         <!-- Contenedor principal -->
@@ -51,19 +52,19 @@
                         <div class="form-field">
                             <!-- Campo para el nombre de usuario -->
                             <label class="form-label" for="usuario">Usuario:</label>
-                            <input type="text" id="usuario" name="usuario" placeholder="Username" class="form-input" required>
+                            <input type="text" id="usuario" name="usuario" placeholder="Username" class="form-input-general" required>
                         </div>
 
                         <div class="form-field">
                             <!-- Campo para la contraseña -->
                             <label class="form-label" for="contrasena">Contraseña:</label>
-                            <input type="password" id="contrasena" name="contrasena" placeholder="password" class="form-input" required>
+                            <input type="password" id="contrasena" name="contrasena" placeholder="password" class="form-input-general" required>
                         </div>
                     </div>
 
                     <div class="submit-section">
                         <!-- Botón para enviar el formulario -->
-                        <button type="submit" class="submit-btn">Entrar</button>
+                        <button type="submit" class="submit-btn-entrar">Entrar</button>
                     </div>
                 </form>
             </div>

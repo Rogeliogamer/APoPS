@@ -1,5 +1,5 @@
 .submit-btn-menu {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
     color: white;
     padding: 15px 40px;
     border: none;
@@ -8,16 +8,18 @@
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 4px 15px #FF9800;
 }
 
 .submit-btn-menu:hover {
+    background: linear-gradient(135deg, #0067ff 0%, #0a83ff 100%);
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 8px 25px #0067ff;
 }
 
 .submit-btn-menu:active {
     transform: translateY(0);
+    box-shadow: 0 3px 8px #0067ff;
 }
 
 a.submit-btn-menu-text{
@@ -26,9 +28,9 @@ a.submit-btn-menu-text{
 }
 
 .submit-btn-verDetalles {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #9C27B0 0%, #6A1B9A 100%);
     color: white;
-    padding: 5px 10px;
+    padding: 10px 10px;
     border: none;
     border-radius: 8px;
     font-size: 16px;
@@ -36,19 +38,22 @@ a.submit-btn-menu-text{
     cursor: pointer;
     transition: all 0.3s ease;
     box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    margin: 10px;
 }
 
 .submit-btn-verDetalles:hover {
+    background: linear-gradient(135deg, #63d84f 0%, #95e465 100%);
     transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
 }
 
 .submit-btn-verDetalles:active {
     transform: translateY(0);
+    box-shadow: 0 3px 8px #63d84f;
 }
 
 .submit-btn-cerrarSesion {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #795548 0%, #5D4037 100%);
     color: white;
     padding: 15px 40px;
     border: none;
@@ -57,16 +62,18 @@ a.submit-btn-menu-text{
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 4px 15px #795548;
 }
 
 .submit-btn-cerrarSesion:hover {
+    background: linear-gradient(135deg, #86aab7 0%, #a2bfc8 100%);
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 8px 25px #86aab7;
 }
 
 .submit-btn-cerrarSesion:active {
     transform: translateY(0);
+    box-shadow: 0 3px 8px #86aab7;
 }
 
 a.submit-btn-cerrarSesion-text{
@@ -75,7 +82,7 @@ a.submit-btn-cerrarSesion-text{
 }
 
 .submit-btn-regresar {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #00ACC1 0%, #00838F 100%);
     color: white;
     padding: 15px 40px;
     border: none;
@@ -84,16 +91,18 @@ a.submit-btn-cerrarSesion-text{
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 4px 15px #00ACC1;
 }
 
 .submit-btn-regresar:hover {
+    background: linear-gradient(135deg, #ff533e 0%, #ff7c70 100%);
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 8px 25px #ff533e;
 }
 
 .submit-btn-regresar:active {
     transform: translateY(0);
+    box-shadow: 0 3px 8px #ff533e;
 }
 
 a.submit-btn-regresar-text{
@@ -102,7 +111,7 @@ a.submit-btn-regresar-text{
 }
 
 .submit-btn-firmar {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #673AB7 0%, #512DA8 100%);
     color: white;
     padding: 5px 10px;
     border: none;
@@ -111,21 +120,22 @@ a.submit-btn-regresar-text{
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-
+    box-shadow: 0 4px 15px #673AB7;
 }
 
 .submit-btn-firmar:hover {
+    background: linear-gradient(135deg, #98c548 0%, #aed257 100%);
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 8px 25px #98c548;
 }
 
 .submit-btn-firmar:active {
     transform: translateY(0);
+    box-shadow: 0 3px 8px #98c548;
 }
 
 .submit-btn-limpiar {
-    background: linear-gradient(135deg, #ff6b6b 0%, #ff4757 100%); /* Tonos rojos de advertencia/borrado */
+    background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%);
     color: #fff;
     padding: 12px 32px;
     border: none;
@@ -134,25 +144,38 @@ a.submit-btn-regresar-text{
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(255, 71, 87, 0.3);
+    box-shadow: 0 4px 12px #00c6ff;
     text-decoration: none;
 }
 
 /* Hover con un poco de énfasis */
 .submit-btn-limpiar:hover {
-    background: linear-gradient(135deg, #ff4757 0%, #e84118 100%);
+    background: linear-gradient(135deg, #ff3900 0%, #ff8d00 100%);
     transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(255, 71, 87, 0.4);
+    box-shadow: 0 6px 15px #ff3900;
 }
 
 /* Activo: da la sensación de presionar */
 .submit-btn-limpiar:active {
     transform: translateY(0);
-    box-shadow: 0 3px 8px rgba(255, 71, 87, 0.3);
+    box-shadow: 0 3px 8px #ff3900;
+}
+
+.submit-btn-limpiar-disabled {
+    background: linear-gradient(135deg, #cfd8dc 0%, #b0bec5 100%);
+    color: #fff;
+    padding: 12px 32px;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px #cfd8dc;
+    text-decoration: none;
 }
 
 .submit-btn-aceptar {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #28a745 0%, #218838 100%);
     color: white;
     padding: 15px 40px;
     border: none;
@@ -161,22 +184,24 @@ a.submit-btn-regresar-text{
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 4px 15px #28a745;
 }
 
 /* Hover con un poco de énfasis */
 .submit-btn-aceptar:hover {
+    background: linear-gradient(135deg, #d758ba 0%, #de77c7 100%);
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 8px 25px #d758ba;
 }
 
 /* Activo: da la sensación de presionar */
 .submit-btn-aceptar:active {
     transform: translateY(0);
+    box-shadow: 0 3px 8px #d758ba;
 }
 
 .submit-btn-rechazar {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #ff4d4f 0%, #d9363e 100%);
     color: white;
     padding: 15px 40px;
     border: none;
@@ -185,16 +210,147 @@ a.submit-btn-regresar-text{
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 4px 15px #ff4d4f;
 }
 
 /* Hover con un poco de énfasis */
 .submit-btn-rechazar:hover {
+    background: linear-gradient(135deg, #00b2b0 0%, #26c9c1 100%);
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 8px 25px #00b2b0;
 }
 
 /* Activo: da la sensación de presionar */
 .submit-btn-rechazar:active {
     transform: translateY(0);
+    box-shadow: 0 3px 8px #00b2b0;
+}
+
+.submit-btn-buscar {
+    background: linear-gradient(135deg, #009688 0%, #00796B 100%);
+    color: white;
+    padding: 15px 40px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px #009688;
+}
+
+/* Hover con un poco de énfasis */
+.submit-btn-buscar:hover {
+    background: linear-gradient(135deg, #ff6977 0%, #ff8694 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px #ff6977;
+}
+
+/* Activo: da la sensación de presionar */
+.submit-btn-buscar:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 8px #ff6977;
+}
+
+.submit-btn-enviar {
+    background: linear-gradient(135deg, #FF5722 0%, #E64A19 100%);
+    color: white;
+    padding: 15px 40px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px #FF5722;
+}
+
+/* Hover con un poco de énfasis */
+.submit-btn-enviar:hover {
+    background: linear-gradient(135deg, #00a8dd 0%, #19b5e6 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px #00a8dd;
+}
+
+/* Activo: da la sensación de presionar */
+.submit-btn-enviar:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 8px #00a8dd;
+}
+
+.submit-btn-registrar {
+    background: linear-gradient(135deg, #3F51B5 0%, #303F9F 100%);
+    color: white;
+    padding: 15px 40px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px #3F51B5;
+}
+
+/* Hover con un poco de énfasis */
+.submit-btn-registrar:hover {
+    background: linear-gradient(135deg, #c0ae4a 0%, #cfc060 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px #c0ae4a;
+}
+
+/* Activo: da la sensación de presionar */
+.submit-btn-registrar:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 8px #c0ae4a;
+}
+
+.submit-btn-entrar {
+    background: linear-gradient(135deg, #FFC107 0%, #FFA000 100%);
+    color: white;
+    padding: 15px 40px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px #FFC107;
+}
+
+/* Hover con un poco de énfasis */
+.submit-btn-entrar:hover {
+    background: linear-gradient(135deg, #003ef8 0%, #005fff 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px #003ef8;
+}
+
+/* Activo: da la sensación de presionar */
+.submit-btn-entrar:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 8px #003ef8;
+}
+
+.submit-btn-menu-original {
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 50%, #00d4ff 100%);
+    color: white;
+    padding: 15px 40px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(37, 117, 252, 0.4);
+    text-decoration: none;
+}
+
+.submit-btn-menu-original:hover {
+    background: linear-gradient(135deg, #00d4ff 0%, #2575fc 50%, #6a11cb 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(37, 117, 252, 0.6);
+}
+
+.submit-btn-menu-original:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 8px rgba(37, 117, 252, 0.4);
 }

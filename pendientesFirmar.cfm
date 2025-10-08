@@ -67,25 +67,25 @@
                         <table class="tabla">
                             <thead>
                                 <tr class="titulos-tabla">
-                                    <th class="titulo-general">ID</th>
+                                    <th class="titulo-general-centrado">ID Solicitud</th>
                                     <th class="titulo-general">Solicitante</th>
                                     <th class="titulo-general">Área</th>
                                     <th class="titulo-general">Motivo</th>
                                     <th class="titulo-general">Tipo de Permiso</th>
-                                    <th class="titulo-general">Fecha</th>
+                                    <th class="titulo-general-centrado">Fecha</th>
                                     <th class="titulo-general-centrado">Acción</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <cfoutput query="qPendientes">
                                     <tr>
-                                        <td>#id_solicitud#</td>
+                                        <td class="titulo-general-centrado">#id_solicitud#</td>
                                         <td>#nombre# #apellido_paterno# #apellido_materno#</td>
                                         <td>#area_nombre#</td>
                                         <td>#motivo#</td>
                                         <td>#tipo_permiso#</td>
-                                        <td>#DateFormat(fecha,'yyyy-mm-dd')#</td>
-                                        <td>
+                                        <td class="titulo-general-centrado">#DateFormat(fecha,'yyyy-mm-dd')#</td>
+                                        <td class="titulo-general-centrado">
                                             <form method="get" action="firmarSolicitud.cfm">
                                                 <input type="hidden" name="id_solicitud" value="#id_solicitud#">
                                                 <button type="submit" class="submit-btn-firmar">Firmar</button>
@@ -101,7 +101,9 @@
                 <div class="submit-section">
                     <button class="submit-btn-menu">
                         <!-- Enlace para regresar al menú principal -->
-                        <a href="menu.cfm" class="submit-btn-menu-text">Menu</a>
+                        <a href="menu.cfm" class="submit-btn-menu-text">
+                            Menu
+                        </a>
                     </button>
                     <button class="submit-btn-cerrarSesion">
                         <a href="cerrarSesion.cfm" class="submit-btn-cerrarSesion-text">

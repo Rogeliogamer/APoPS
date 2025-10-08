@@ -23,6 +23,7 @@
         <link rel="stylesheet" href="css/globalForm.css">
         <link rel="stylesheet" href="css/svgFirma.css">
         <link rel="stylesheet" href="css/pase.css">
+        <link rel="stylesheet" href="css/botones.css">
     </head>
     <body>
         <!-- Verificar si el usuario es administrador -->
@@ -67,7 +68,7 @@
                                 <input type="text" 
                                     name="nombre" 
                                     id="nombre" 
-                                    class="form-input" 
+                                    class="form-input-general" 
                                     required="yes" 
                                     message="Por favor ingrese el nombre completo"
                                     maxlength="100"
@@ -96,7 +97,7 @@
                                     <input type="text" 
                                         name="area_adscripcion" 
                                         id="area_adscripcion" 
-                                        class="form-input" 
+                                        class="form-input-general" 
                                         required="yes" 
                                         message="Por favor ingrese el área de adscripción"
                                         maxlength="100"
@@ -195,7 +196,7 @@
                                 <input type="date"
                                     name="fecha" 
                                     id="fecha" 
-                                    class="form-input" 
+                                    class="form-input-general" 
                                     required="yes" 
                                     message="Por favor seleccione una fecha">
                             </div>
@@ -210,7 +211,7 @@
                                     max="24" 
                                     name="tiempo_solicitado" 
                                     id="tiempo_solicitado" 
-                                    class="form-input" 
+                                    class="form-input-general" 
                                     placeholder="ej: 2 horas"
                                     required="yes">
                             </div>
@@ -221,7 +222,7 @@
                                 <input type="time"
                                     name="hora_salida" 
                                     id="hora_salida" 
-                                    class="form-input"
+                                    class="form-input-general"
                                     required="yes">
                             </div>
 
@@ -231,7 +232,7 @@
                                 <input type="time"
                                     name="hora_llegada" 
                                     id="hora_llegada" 
-                                    class="form-input"
+                                    class="form-input-general"
                                     required="yes">
                             </div>
                         </div>
@@ -255,7 +256,7 @@
                                 </div>
 
                                 <div class="signature-controls">
-                                    <button id="clearBtn-solicitante" type="button">Limpiar</button>
+                                    <button id="clearBtn-solicitante" type="button" class="submit-btn-limpiar">Limpiar</button>
                                 </div>
 
                                 <!-- CAMPO OCULTO: debe estar dentro del form para que ColdFusion lo reciba -->
@@ -271,7 +272,7 @@
                                 </div>
                                 <!-- Borra la firma -->
                                 <div class="signature-controls">
-                                    <button id="clearBtn" type="button" disabled>Limpiar</button>
+                                    <button id="clearBtn" type="button" class="submit-btn-limpiar-disabled" disabled>Limpiar</button>
                                 </div>
                             </div>
 
@@ -284,7 +285,7 @@
                                 </div>
                                 <!-- Borra la firma -->
                                 <div class="signature-controls">
-                                    <button id="clearBtn" type="button" disabled>Limpiar</button>
+                                    <button id="clearBtn" type="button" class="submit-btn-limpiar-disabled" disabled>Limpiar</button>
                                 </div>
                             </div>
 
@@ -297,7 +298,7 @@
                                 </div>
                                 <!-- Borra la firma -->
                                 <div class="signature-controls">
-                                    <button id="clearBtn" type="button" disabled>Limpiar</button>
+                                    <button id="clearBtn" type="button" class="submit-btn-limpiar-disabled" disabled>Limpiar</button>
                                 </div>
                             </div>
 
@@ -306,11 +307,11 @@
                                 <div class="signature-label">Para Expediente y Control de Asistencia</div>
                                 <!-- Área de firma -->
                                 <div id="signature-wrapper" class="signature-wrapper" role="application" aria-label="Área de firma">
-                                    <svg id="signature-svg" class="signature-svg" xmlns="http://www.w3.org/2000/svg" width="100%" height="200" viewBox="0 0 1000 200" preserveAspectRatio="xMidYMid meet"></svg>
+                                    <svg id="signature-svg" class="signature-svg" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1000 200" preserveAspectRatio="none"></svg>
                                 </div>
                                 <!-- Borra la firma -->
                                 <div class="signature-controls">
-                                    <button id="clearBtn" type="button" disabled>Limpiar</button>
+                                    <button id="clearBtn" type="button" class="submit-btn-limpiar-disabled" disabled>Limpiar</button>
                                 </div>
                             </div>
                         </div>
@@ -318,20 +319,19 @@
 
                     <!-- Botón de Envío -->
                     <div class="submit-section">
-                        <button type="submit" name="submit" class="submit-btn">Enviar Solicitud</button>
+                        <button type="submit" name="submit" class="submit-btn-enviar">Enviar Solicitud</button>
                     </div>
 
                     <div class="submit-section">
                         <!-- Enlace para regresar al menú principal -->
                         <button class="submit-btn-menu">
-                            <a href="menu.cfm" style="text-decoration: none">Menu</a>
+                            <a href="menu.cfm" class="submit-btn-menu-text">Menu</a>
                         </button>
-                        <button class="submit-btn-salir">
-                            <a href="cerrarSesion.cfm" style="text-decoration: none">
-                            Salir
-                                <img src="elements/salir.svg" alt="Salir" width="16" height="16">
+                        <button class="submit-btn-cerrarSesion">
+                            <a href="cerrarSesion.cfm" class="submit-btn-cerrarSesion-text">
+                            Cerrar Sesion
                             </a>
-                        <button>
+                        </button>
                     </div>
                 </form>
             </div>

@@ -22,6 +22,7 @@
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="css/globalForm.css">
         <link rel="stylesheet" href="css/registrarUsuarios.css">
+        <link rel="stylesheet" href="css/botones.css">
     </head>
     <body>
         <!-- Verificar si el usuario esta logeado -->
@@ -96,7 +97,7 @@
                                 <input type="text"
                                     id="nombre"
                                     name="nombre"
-                                    class="form-input" 
+                                    class="form-input-general" 
                                     pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+"
                                     title="Solo se permiten letras y espacios"
                                     oninput="soloLetras(this)"
@@ -113,7 +114,7 @@
                                 <input type="text"
                                     id="apellido_paterno"
                                     name="apellido_paterno"
-                                    class="form-input"
+                                    class="form-input-general"
                                     pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+"
                                     title="Solo se permiten letras y espacios"
                                     oninput="soloLetras(this)"
@@ -130,7 +131,7 @@
                                 <input type="text"
                                 id="apellido_materno"
                                 name="apellido_materno"
-                                class="form-input"
+                                class="form-input-general"
                                 pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+"
                                 title="Solo se permiten letras y espacios"
                                 oninput="soloLetras(this)" required>
@@ -147,7 +148,7 @@
                                 </label>
 
                                 <!-- Select para elegir el Área de Adscripción -->
-                                <select id="id_area" name="id_area" class="form-input" required>
+                                <select id="id_area" name="id_area" class="form-input-general" required>
                                     <!-- Opción por defecto -->
                                     <option value="">
                                         Selecciona un área
@@ -188,7 +189,7 @@
                                 <input type="text"
                                     id="usuario"
                                     name="usuario"
-                                    class="form-input"
+                                    class="form-input-general"
                                     oninput="sanitizarUsuario(this)"
                                     oninput="this.value = this.value.replace(/<|>|'|&quot;|;|--/g, '')"
                                     required>
@@ -202,7 +203,7 @@
                                 </label>
 
                                 <!-- Select para elegir el Rol -->
-                                <select id="rol" name="rol" class="form-input" required>
+                                <select id="rol" name="rol" class="form-input-general" required>
                                     <!-- Opción por defecto -->
                                     <option value="">
                                         Selecciona un rol
@@ -241,7 +242,7 @@
                                 <input type="password"
                                     id="contrasena"
                                     name="contrasena"
-                                    class="form-input"
+                                    class="form-input-general"
                                     minlength="8"
                                     pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[°|¬!@#$%&/()=?'\\¡¿¨´*+~]}`[{^;,:._&lt;&gt;/\-\+.&quot;]).{8,}$"
                                     title="La contraseña debe tener al menos 8 caracteres, incluyendo mayúsculas, minúsculas, números y un carácter especial."
@@ -255,7 +256,7 @@
                     <!-- Botón de Envío -->
                     <div class="submit-section">
                         <!-- Botón para enviar el formulario -->
-                        <button type="submit" class="submit-btn">Registrar Usuario</button>
+                        <button type="submit" class="submit-btn-registrar">Registrar Usuario</button>
                     </div>
 
                     <div class="submit-section">

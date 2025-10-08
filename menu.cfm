@@ -43,6 +43,7 @@
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="css/menu.css">
         <link rel="stylesheet" href="css/barraSuperior.css">
+        <link rel="stylesheet" href="css/botones.css">
     </head>
     <body>
         <!--- barra superior --->
@@ -55,7 +56,7 @@
                 <h2>Permiso o Pase de salida</h2>
                 <p>Solicitar un permiso o pase de salida</p>
                 <cfif tieneAcceso("pase.cfm")>
-                    <a href="pase.cfm">Solicitar</a>
+                    <a href="pase.cfm" class="submit-btn-menu-original">Solicitar</a>
                 <cfelse>
                     <a href="##" class="disabled">Solicitar</a>
                 </cfif>
@@ -66,9 +67,9 @@
                 <h2>Registrar usuarios</h2>
                 <p>Registra usuarios en el sistema</p>
                 <cfif tieneAcceso("registrarUsuarios.cfm")>
-                    <a href="registrarUsuarios.cfm">Entrar</a>
+                    <a href="registrarUsuarios.cfm" class="submit-btn-menu-original">Registrar</a>
                 <cfelse>
-                    <a href="##" class="disabled">Entrar</a>
+                    <a href="##" class="disabled">Registrar</a>
                 </cfif>
             </div>
 
@@ -77,7 +78,7 @@
                 <h2>Ver usuarios</h2>
                 <p>Lista de usuarios</p>
                 <cfif tieneAcceso("listaUsuarios.cfm")>
-                    <a href="listaUsuarios.cfm">Ver</a>
+                    <a href="listaUsuarios.cfm" class="submit-btn-menu-original">Ver</a>
                 <cfelse>
                     <a href="##" class="disabled">Ver</a>
                 </cfif>
@@ -88,9 +89,9 @@
                 <h2>Solicitudes pendientes de firma</h2>
                 <p>Revisar y firmar solicitudes pendientes</p>
                 <cfif tieneAcceso("pendientes_firmar.cfm")>
-                    <a href="pendientesFirmar.cfm">Revisar</a>
+                    <a href="pendientesFirmar.cfm" class="submit-btn-menu-original">Pendientes</a>
                 <cfelse>
-                    <a href="##" class="disabled">Revisar</a>
+                    <a href="##" class="disabled">Pendientes</a>
                 </cfif>
             </div>
 
@@ -99,9 +100,9 @@
                 <h2>Solicitudes ya firmados</h2>
                 <p>Ver solicitudes que ya han sido firmados</p>
                 <cfif tieneAcceso("firmados.cfm")>
-                    <a href="firmados.cfm">Ver</a>
+                    <a href="firmados.cfm" class="submit-btn-menu-original">Firmados</a>
                 <cfelse>
-                    <a href="##" class="disabled">Ver</a>
+                    <a href="##" class="disabled">Firmados</a>
                 </cfif>
             </div>
 
@@ -110,9 +111,9 @@
                 <h2>Ver Pase Completo</h2>
                 <p>Ver detalles completos de un pase</p>
                 <cfif tieneAcceso("listaSolicitudes.cfm")>
-                    <a href="listaSolicitudes.cfm">Ver</a>
+                    <a href="listaSolicitudes.cfm" class="submit-btn-menu-original">Detalles</a>
                 <cfelse>
-                    <a href="##" class="disabled">Ver</a>
+                    <a href="##" class="disabled">Detalles</a>
                 </cfif>
             </div>
 

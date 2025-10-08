@@ -4,3 +4,33 @@
     display: block;
     margin: 0 auto 10px auto;
 }
+
+.form-input-aprovado {
+    padding: 12px 16px;
+    border: 2px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    background: white;
+    background-color: green;
+}
+
+.form-input-rechazado {
+    padding: 12px 16px;
+    border: 2px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    background: white;
+    background-color: red;
+}
+
+.form-input-pendiente {
+    padding: 12px 16px;
+    border: 2px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    background: white;
+    background-color:thistle;
+}

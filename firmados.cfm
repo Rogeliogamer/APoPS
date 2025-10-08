@@ -1,3 +1,14 @@
+<!---
+ * Página `firmados.cfm` para la visualización de solicitudes emitidas.
+ *
+ * Funcionalidad:
+ * - Muestra un listado de las solicitudes emitidas por el usuario autenticado.
+ * - Presenta información general, el estado de cada solicitud y un botón para ver más detalles.
+ * - El botón de "ver más detalles" permite acceder a toda la información de la solicitud seleccionada.
+ *
+ * Uso:
+ * - Página destinada al seguimiento y revisión de solicitudes emitidas por el usuario.
+--->
 <cfquery name="qFirmados" datasource="autorizacion">
     SELECT 
         s.id_solicitud,
@@ -23,89 +34,94 @@
 
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Solicitudes Firmadas</title>
-    <link rel="stylesheet" href="css/globalForm.css">
-    <link rel="stylesheet" href="css/firmados.css">
-    <link rel="stylesheet" href="css/tablas.css">
-    <link rel="stylesheet" href="css/botones.css"
-</head>
-<body>
-    <!--- Verificación de sesión y rol --->
-    <cfif NOT structKeyExists(session, "rol") 
-        OR ListFindNoCase("Expediente,RecursosHumanos,Autorizacion,Jefe,Solicitante", session.rol) EQ 0>
-        <!--- Redirigir al usuario si no está autorizado --->
-        <cflocation url="menu.cfm" addtoken="no">
-    </cfif>
+    <head>
+        <!-- Metadatos y enlaces a estilos -->
+        <meta charset="UTF-8">
+        <!-- Vista adaptable para dispositivos móviles -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- Título de la página -->
+        <title>Solicitudes Firmadas</title>
+        <!-- Enlace a fuentes y hojas de estilo -->
+        <link rel="stylesheet" href="css/globalForm.css">
+        <link rel="stylesheet" href="css/firmados.css">
+        <link rel="stylesheet" href="css/tablas.css">
+        <link rel="stylesheet" href="css/botones.css">
+    </head>
+    <body>
+        <!--- Verificación de sesión y rol --->
+        <cfif NOT structKeyExists(session, "rol") 
+            OR ListFindNoCase("Expediente,RecursosHumanos,Autorizacion,Jefe,Solicitante", session.rol) EQ 0>
+            <!--- Redirigir al usuario si no está autorizado --->
+            <cflocation url="menu.cfm" addtoken="no">
+        </cfif>
 
-    <div class="container">
-        <div class="header">
-            <div class="logo">
-                <cfset usuarioRol = createObject("component", "componentes/usuarioConectadoS").render()>
-                    <cfoutput>#usuarioRol#</cfoutput>
+        <div class="container">
+            <div class="header">
+                <div class="logo">
+                    <cfset usuarioRol = createObject("component", "componentes/usuarioConectadoS").render()>
+                        <cfoutput>#usuarioRol#</cfoutput>
+                </div>
+                <h1>Solicitudes ya firmadas</h1>
             </div>
-            <h1>Solicitudes ya firmadas</h1>
-        </div>
 
-        <div class="form-container">
-            <div class="section">
-                <h2 class="section-title">Listado de solicitudes con firma</h2>
+            <div class="form-container">
+                <div class="section">
+                    <h2 class="section-title">Listado de solicitudes con firma</h2>
 
-                <table class="tabla">
-                    <thead>
-                        <tr class="titulos-tabla">
-                            <th class="titulo-general">ID Solicitud</th>
-                            <th class="titulo-general">Solicitante</th>
-                            <th class="titulo-general">Motivo</th>
-                            <th class="titulo-general">Tipo Permiso</th>
-                            <th class="titulo-general">Fecha Solicitud</th>
-                            <th class="titulo-general">Rol</th>
-                            <th class="titulo-general">Estado</th>
-                            <th class="titulo-general">Fecha Firma</th>
-                            <th class="titulo-general-centrado">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <cfoutput query="qFirmados">
-                            <tr style="border-bottom:1px solid ##e2e8f0;">
-                                <td>#id_solicitud#</td>
-                                <td>#solicitante#</td>
-                                <td>#motivo#</td>
-                                <td>#tipo_permiso#</td>
-                                <td>#DateFormat(fecha,'dd/mm/yyyy')#</td>
-                                <td>#rol#</td>
-                                <td>
-                                    <cfif aprobado EQ "Aprobado">
-                                        <span style="color:green; font-weight:bold;">✔ #aprobado#</span>
-                                    <cfelse>
-                                        <span style="color:red; font-weight:bold;">✘ #aprobado#</span>
-                                    </cfif>
-                                </td>
-                                <td style="padding:10px;">#DateFormat(fecha_firma,'dd/mm/yyyy')#</td>
-                                <td style="padding:10px; text-align:center;">
-                                    <form action="solicitudDetalles.cfm" method="get">
-                                        <input type="hidden" name="id_solicitud" value="#id_solicitud#">
-                                        <button type="submit" class="submit-btn-verDetalles">Ver Detalles</button>
-                                    </form>
-                                </td>
+                    <table class="tabla">
+                        <thead>
+                            <tr class="titulos-tabla">
+                                <th class="titulo-general">ID Solicitud</th>
+                                <th class="titulo-general">Solicitante</th>
+                                <th class="titulo-general">Motivo</th>
+                                <th class="titulo-general">Tipo Permiso</th>
+                                <th class="titulo-general">Fecha Solicitud</th>
+                                <th class="titulo-general-centrado">Rol</th>
+                                <th class="titulo-general">Estado</th>
+                                <th class="titulo-general">Fecha Firma</th>
+                                <th class="titulo-general-centrado">Acciones</th>
                             </tr>
-                        </cfoutput>
-                    </tbody>
-                </table>
-            </div>
-            <div class="submit-section">
-                <button class="submit-btn-menu">
-                    <!-- Enlace para regresar al menú principal -->
-                    <a href="menu.cfm" class="submit-btn-menu-text">Menu</a>
-                </button>
-                <button class="submit-btn-cerrarSesion">
-                    <a href="cerrarSesion.cfm" class="submit-btn-cerrarSesion-text">
-                            Cerrar Sesion
-                        </a>
-                </button>
+                        </thead>
+                        <tbody>
+                            <cfoutput query="qFirmados">
+                                <tr>
+                                    <td class="titulo-general-centrado">#id_solicitud#</td>
+                                    <td>#solicitante#</td>
+                                    <td>#motivo#</td>
+                                    <td>#tipo_permiso#</td>
+                                    <td class="titulo-general-centrado">#DateFormat(fecha,'dd/mm/yyyy')#</td>
+                                    <td>#rol#</td>
+                                    <td>
+                                        <cfif aprobado EQ "Aprobado">
+                                            <span class="status-aprobado">✔ #aprobado#</span>
+                                        <cfelse>
+                                            <span class="status-rechazado">✘ #aprobado#</span>
+                                        </cfif>
+                                    </td>
+                                    <td class="titulo-general-centrado">#DateFormat(fecha_firma,'dd/mm/yyyy')#</td>
+                                    <td style="text-align:center;">
+                                        <form action="solicitudDetalles.cfm" method="get">
+                                            <input type="hidden" name="id_solicitud" value="#id_solicitud#">
+                                            <button type="submit" class="submit-btn-verDetalles">Ver Detalles</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            </cfoutput>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="submit-section">
+                    <button class="submit-btn-menu">
+                        <!-- Enlace para regresar al menú principal -->
+                        <a href="menu.cfm" class="submit-btn-menu-text">Menu</a>
+                    </button>
+                    <button class="submit-btn-cerrarSesion">
+                        <a href="cerrarSesion.cfm" class="submit-btn-cerrarSesion-text">
+                                Cerrar Sesion
+                            </a>
+                    </button>
+                </div>
             </div>
         </div>
-    </div>
-</body>
+    </body>
 </html>
