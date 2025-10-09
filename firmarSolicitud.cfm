@@ -174,22 +174,30 @@
                             <input type="hidden" name="id_solicitud" value="#url.id_solicitud#">
                             <input type="hidden" name="rol" value="#session.rol#">
                         </cfoutput>
-                    </div>                    
+                    </div>    
+                    <!-- Botones de acción -->
+                    <div class="submit-section">
+                        <div class="field-group">
+                            <button type="submit" name="submit" value="Aprobado" class="submit-btn-aceptar">Aceptar</button>
+                            <button type="submit" name="submit" value="Rechazado" class="submit-btn-rechazar">Rechazar</button>
+                        </div>
+                    </div>                
                 </form>
-                <!-- Botones de acción -->
+                
                 <div class="submit-section">
-                    <button type="submit" name="submit" value="Aprobado" class="submit-btn-aceptar">Aceptar</button>
-                    <button type="submit" name="submit" value="Rechazado" class="submit-btn-rechazar">Rechazar</button>
-                </div>
-                <div class="submit-section">
-                    <button id="submit-btn-menu" class="submit-btn-menu">
-                        <a href="menu.cfm" class="submit-btn-menu-text">Menú</a>
-                    </button>
-                    <button class="submit-btn-cerrarSesion">
-                        <a href="cerrarSesion.cfm" class="submit-btn-cerrarSesion-text">
+                    <div class="field-group triple">
+                        <a class="submit-btn-regresar submit-btn-regresar-text" id="btnRegresar">
+                            Regresar
+                        </a>
+
+                        <a href="menu.cfm" class="submit-btn-menu submit-btn-menu-text" id="submit-btn-menu">
+                            Menú
+                        </a>
+                    
+                        <a href="cerrarSesion.cfm" class="submit-btn-cerrarSesion submit-btn-cerrarSesion-text">
                             Cerrar Sesion
                         </a>
-                    </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -305,6 +313,21 @@
                     // 3. Redirigir a otra página
                     window.location.href = "menu.cfm";
                 }, 150); // 150 ms de retraso para que se note la acción
+            });
+        </script>
+
+        <script>
+            // Capturamos el botón
+            const btnRegresar = document.getElementById('btnRegresar');
+
+            btnRegresar.addEventListener('click', function() {
+                if (document.referrer) {
+                    // Va a la página desde donde llegó
+                    window.location.href = document.referrer;
+                } else {
+                    // Si no hay referrer, va a una página por defecto
+                    window.location.href = 'firmados.cfm';
+                }
             });
         </script>
     </body>

@@ -35,3 +35,20 @@ document.addEventListener('DOMContentLoaded', function() {
 document.getElementById("tiempo_solicitado").addEventListener("input", function () {
     this.value = this.value.replace(/[eE\+\-]/g, "");
 });
+
+// checkboxControl.js
+document.addEventListener("DOMContentLoaded", function () {
+    const checkboxes = document.querySelectorAll('input[name="tipo_permiso"]');
+
+    checkboxes.forEach((checkbox) => {
+        checkbox.addEventListener("change", function () {
+            if (this.checked) {
+                checkboxes.forEach((other) => {
+                    if (other !== this) {
+                        other.checked = false;
+                    }
+                });
+            }
+        });
+    });
+});

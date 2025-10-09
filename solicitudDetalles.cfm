@@ -141,23 +141,19 @@
                 </div>
 
                 <div class="submit-section">
-                    <button class="submit-btn-regresar" id="btnRegresar">
-                        <a class="submit-btn-regresar-text">
+                    <div class="field-group triple">
+                        <a class="submit-btn-regresar submit-btn-regresar-text" id="btnRegresar">
                             Regresar
                         </a>
-                    </button>
-                
-                    <button class="submit-btn-menu">
-                        <a href="menu.cfm" class="submit-btn-regresar-text">
-                        Menu
+                        
+                        <a href="menu.cfm" class="submit-btn-menu submit-btn-regresar-text">
+                            Menu
                         </a>
-                    </button>
 
-                    <button class="submit-btn-cerrarSesion">
-                        <a href="cerrarSesion.cfm" class="submit-btn-cerrarSesion-text">
+                        <a href="cerrarSesion.cfm" class="submit-btn-cerrarSesion submit-btn-cerrarSesion-text">
                             Cerrar Sesion
                         </a>
-                    </button>
+                    </div>
                 </div>
             </div>
         </div>

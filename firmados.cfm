@@ -92,10 +92,14 @@
                                     <td class="titulo-general-centrado">#DateFormat(fecha,'dd/mm/yyyy')#</td>
                                     <td>#rol#</td>
                                     <td>
-                                        <cfif aprobado EQ "Aprobado">
-                                            <span class="status-aprobado">✔ #aprobado#</span>
+                                        <cfif status_final EQ "Aprobado">
+                                            <span class="status-aprobado">✔ #status_final#</span>
+                                        <cfelseif status_final EQ "Rechazado">
+                                            <span class="status-rechazado">✘ #status_final#</span>
+                                        <cfelseif status_final EQ "Pendiente">
+                                            <span class="status-pendiente">⏳ #status_final#</span>
                                         <cfelse>
-                                            <span class="status-rechazado">✘ #aprobado#</span>
+                                            <span class="status-desconocido">#status_final#</span>
                                         </cfif>
                                     </td>
                                     <td class="titulo-general-centrado">#DateFormat(fecha_firma,'dd/mm/yyyy')#</td>
@@ -111,15 +115,16 @@
                     </table>
                 </div>
                 <div class="submit-section">
-                    <button class="submit-btn-menu">
+                    <div class="field-group">
                         <!-- Enlace para regresar al menú principal -->
-                        <a href="menu.cfm" class="submit-btn-menu-text">Menu</a>
-                    </button>
-                    <button class="submit-btn-cerrarSesion">
-                        <a href="cerrarSesion.cfm" class="submit-btn-cerrarSesion-text">
-                                Cerrar Sesion
-                            </a>
-                    </button>
+                        <a href="menu.cfm" class="submit-btn-menu submit-btn-menu-text">
+                            Menu
+                        </a>
+                    
+                        <a href="cerrarSesion.cfm" class="submit-btn-cerrarSesion submit-btn-cerrarSesion-text">
+                            Cerrar Sesion
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

@@ -28,28 +28,27 @@ a.submit-btn-menu-text{
 }
 
 .submit-btn-verDetalles {
-    background: linear-gradient(135deg, #9C27B0 0%, #6A1B9A 100%);
+    background: linear-gradient(135deg, #673AB7 0%, #512DA8 100%);
     color: white;
-    padding: 10px 10px;
+    padding: 5px 10px;
     border: none;
     border-radius: 8px;
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-    margin: 10px;
+    box-shadow: 0 4px 15px #673AB7;
 }
 
 .submit-btn-verDetalles:hover {
     background: linear-gradient(135deg, #63d84f 0%, #95e465 100%);
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 8px 25px #98C548;
 }
 
 .submit-btn-verDetalles:active {
     transform: translateY(0);
-    box-shadow: 0 3px 8px #63d84f;
+    box-shadow: 0 3px 8px #98C548;
 }
 
 .submit-btn-cerrarSesion {

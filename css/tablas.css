@@ -48,3 +48,13 @@
     color:red; 
     font-weight:bold;
 }
+
+.status-pendiente {
+    color: darkgray;
+    font-weight: bold;
+}
+
+.status-desconocido {
+    color: silver;
+    font-weight: bold;
+}

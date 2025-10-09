@@ -99,17 +99,18 @@
                 </cfif>
 
                 <div class="submit-section">
-                    <button class="submit-btn-menu">
+                    <div class="field-group">
+                    
                         <!-- Enlace para regresar al menú principal -->
-                        <a href="menu.cfm" class="submit-btn-menu-text">
+                        <a href="menu.cfm" class="submit-btn-menu submit-btn-menu-text">
                             Menu
                         </a>
-                    </button>
-                    <button class="submit-btn-cerrarSesion">
-                        <a href="cerrarSesion.cfm" class="submit-btn-cerrarSesion-text">
+                    
+                    
+                        <a href="cerrarSesion.cfm" class="submit-btn-cerrarSesion submit-btn-cerrarSesion-text">
                                 Cerrar Sesion
                         </a>
-                    </button>
+                    </div>
                 </div>
             </div>
         </div>

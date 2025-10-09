@@ -91,12 +91,14 @@
                                     <td class="titulo-general-centrado">#DateFormat(fecha,'dd/mm/yyyy')#</td>
                                     <td>#rol#</td>
                                     <td>
-                                        <cfif aprobado EQ "Aprobado">
-                                            <span class="titulo-general-aprobado">✔ #aprobado#</span>
-                                        <cfelseif aprobado EQ "Rechazado">
-                                            <span class="titulo-general-rechazado">✘ #aprobado#</span>
+                                        <cfif status_final EQ "Aprobado">
+                                            <span class="status-aprobado">✔ #status_final#</span>
+                                        <cfelseif status_final EQ "Rechazado">
+                                            <span class="status-rechazado">✘ #status_final#</span>
+                                        <cfelseif status_final EQ "Pendiente">
+                                            <span class="status-pendiente">⏳ #status_final#</span>
                                         <cfelse>
-                                            <span class="titulo-general-pendiente">#aprobado#</span>
+                                            <span class="status-desconocido">#status_final#</span>
                                         </cfif>
                                     </td>
                                     <td class="titulo-general-centrado">#DateFormat(fecha_firma,'dd/mm/yyyy')# #TimeFormat(fecha_firma,'HH:mm')#</td>
@@ -113,14 +115,15 @@
                 </div>
 
                 <div class="submit-section">
-                    <button class="submit-btn-menu">
-                        <a href="menu.cfm" class="submit-btn-menu-text">Menú</a>
-                    </button>
-                    <button class="submit-btn-cerrarSesion">
-                        <a href="cerrarSesion.cfm" class="submit-btn-cerrarSesion-text">
+                    <div class="field-group">
+                        <a href="menu.cfm" class="submit-btn-menu submit-btn-menu-text">
+                            Menú
+                        </a>
+                    
+                        <a href="cerrarSesion.cfm" class="submit-btn-cerrarSesion submit-btn-cerrarSesion-text">
                             Cerrar Sesion
                         </a>
-                    </button>
+                    </div>
                 </div>
             </div>
         </div>
