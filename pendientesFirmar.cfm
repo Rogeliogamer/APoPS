@@ -10,7 +10,35 @@
  * Uso:
  * - Página destinada al flujo de revisión y firma de solicitudes por parte de las autoridades correspondientes.
 --->
+<!--- Evitar error si form.search no existe --->
+<cfif structKeyExists(form, "search")>
+    <cfset searchTerm = trim(form.search)>
+<cfelse>
+    <cfset searchTerm = "">
+</cfif>
 
+<cfquery name="qPendientes" datasource="autorizacion">
+                    SELECT s.id_solicitud, s.motivo, s.tipo_permiso, s.fecha,
+                        du.nombre, du.apellido_paterno, du.apellido_materno,
+                        aa.nombre AS area_nombre
+                    FROM solicitudes s
+                    LEFT JOIN datos_usuario du ON s.id_solicitante = du.id_datos
+                    LEFT JOIN area_adscripcion aa ON du.id_area = aa.id_area
+                    LEFT JOIN firmas f ON s.id_solicitud = f.id_solicitud 
+                        AND f.rol = <cfqueryparam value="#session.rol#" cfsqltype="cf_sql_varchar">
+                    WHERE (f.id_firma IS NULL OR f.aprobado = 'Pendiente')
+                    <cfif len(searchTerm)>
+            AND (
+                du.nombre LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
+                OR du.apellido_paterno LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
+                OR du.apellido_materno LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
+                OR aa.nombre LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
+                OR s.motivo LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
+                OR s.tipo_permiso LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
+            )
+        </cfif>
+                    ORDER BY s.fecha DESC
+                </cfquery>
 <!DOCTYPE html>
 <html lang="es">
     <head>
@@ -34,6 +62,27 @@
             <cflocation url="menu.cfm" addtoken="no">
         </cfif>
 
+<!-- Parámetros de URL y formulario -->
+<cfparam name="url.page" default="1">
+<cfparam name="form.search" default="">
+
+<!-- Configuración de paginación -->
+<cfset rowsPerPage = 10>
+<cfset currentPage = val(url.page)>
+<cfif currentPage LTE 0><cfset currentPage = 1></cfif>
+<cfset startRow = (currentPage - 1) * rowsPerPage + 1>
+
+<!-- Calcular totales -->
+<cfset totalRecords = qPendientes.recordCount>
+<cfset totalPages = ceiling(totalRecords / rowsPerPage)>
+<cfset endRow = min(startRow + rowsPerPage - 1, totalRecords)>
+
+<!-- Subconsulta para mostrar solo las filas de la página actual -->
+<cfquery dbtype="query" name="qPaged">
+    SELECT *
+    FROM qPendientes
+</cfquery>
+
         <div class="container">
             <div class="header">
                 <div class="logo">
@@ -44,18 +93,27 @@
             </div>
 
             <div class="form-container">
-                <cfquery name="qPendientes" datasource="autorizacion">
-                    SELECT s.id_solicitud, s.motivo, s.tipo_permiso, s.fecha,
-                        du.nombre, du.apellido_paterno, du.apellido_materno,
-                        aa.nombre AS area_nombre
-                    FROM solicitudes s
-                    LEFT JOIN datos_usuario du ON s.id_solicitante = du.id_datos
-                    LEFT JOIN area_adscripcion aa ON du.id_area = aa.id_area
-                    LEFT JOIN firmas f ON s.id_solicitud = f.id_solicitud 
-                        AND f.rol = <cfqueryparam value="#session.rol#" cfsqltype="cf_sql_varchar">
-                    WHERE (f.id_firma IS NULL OR f.aprobado = 'Pendiente')
-                    ORDER BY s.fecha DESC
-                </cfquery>
+                <!-- Formulario de búsqueda -->
+                <form method="post" action="pendientesFirmar.cfm" class="field-group single">
+                    <!-- Campo de búsqueda -->
+                    <div class="form-field">
+                        <!-- Etiqueta y campo de entrada -->
+                        <label class="form-label">
+                            Buscar:
+                        </label>
+                        <!-- Campo de texto -->
+                        <cfoutput>
+                            <!-- Mantener el valor ingresado en el campo de búsqueda -->
+                            <input type="text" name="search" value="#encodeForHTMLAttribute(form.search)#" 
+                                class="form-input-general" placeholder="Solicitante, Area, Motivo, Tipo permiso">
+                        </cfoutput>
+                    </div>
+
+                    <!-- Botón de búsqueda -->
+                    <button type="submit" class="submit-btn-buscar">
+                        Buscar
+                    </button>
+                </form>
 
                 <cfif qPendientes.recordcount eq 0>
                     <div class="section">
@@ -77,7 +135,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <cfoutput query="qPendientes">
+                                <cfoutput query="qPaged" startrow="#startRow#" maxrows="#rowsPerPage#">
                                     <tr>
                                         <td class="titulo-general-centrado">#id_solicitud#</td>
                                         <td>#nombre# #apellido_paterno# #apellido_materno#</td>
@@ -95,6 +153,57 @@
                                 </cfoutput>
                             </tbody>
                         </table>
+
+<!-- Paginación en bloques de 10-->
+                    <div class="submit-section">
+                        <!-- Contenedor de la paginación -->
+                        <cfif totalPages GT 1>
+                            <!-- Tamaño del bloque de páginas -->
+                            <cfset blockSize = 10>
+                            <!-- Bloque actual -->
+                            <cfset currentBlock = ceiling(currentPage / blockSize)>
+                            <!-- Página inicial y final del bloque -->
+                            <cfset startPage = ((currentBlock - 1) * blockSize) + 1>
+                            <cfset endPage = min(startPage + blockSize - 1, totalPages)>
+
+                            <!-- Botón 'Anterior' si hay bloques previos -->
+                            <cfif startPage GT 1>
+                                <cfset prevPage = startPage - 1>
+                                <cfoutput>
+                                    <a href="pendientesFirmar.cfm?page=#prevPage#&search=#urlEncodedFormat(form.search)#"
+                                        class="submit-btn-anterior"
+                                        style="text-decoration:none">&laquo; Anterior</a>
+                                </cfoutput>
+                            </cfif>
+
+                            <!-- Números del bloque actual -->
+                            <cfloop from="#startPage#" to="#endPage#" index="i">
+                                <cfif i EQ currentPage>
+                                    <!-- Botón deshabilitado para la página actual -->
+                                    <cfoutput>
+                                        <button class="submit-btn-paginacion-disabled" disabled>#i#</button>
+                                    </cfoutput>
+                                <cfelse>
+                                    <!-- Botón para otras páginas -->
+                                    <cfoutput>
+                                        <a href="pendientesFirmar.cfm?page=#i#&search=#urlEncodedFormat(form.search)#" 
+                                            class="submit-btn-paginacion" style="text-decoration:none">#i#</a>
+                                    </cfoutput>
+                                </cfif>
+                            </cfloop>
+
+                            <!-- Botón 'Siguiente' si hay más bloques -->
+                            <cfif endPage LT totalPages>
+                                <cfset nextPage = endPage + 1>
+                                <cfoutput>
+                                    <a href="pendientesFirmar.cfm?page=#nextPage#&search=#urlEncodedFormat(form.search)#"
+                                        class="submit-btn-siguiente"
+                                        style="text-decoration:none">Siguiente &raquo;</a>
+                                </cfoutput>
+                            </cfif>
+                        </cfif>
+                    </div>
+
                     </div>
                 </cfif>
 

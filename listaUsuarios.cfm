@@ -29,6 +29,7 @@
         <link rel="stylesheet" href="css/globalForm.css">
         <link rel="stylesheet" href="css/listaUsuarios.css">
         <link rel="stylesheet" href="css/botones.css">
+        <link rel="stylesheet" href="css/tablas.css">
     </head>
     <body>
         <!-- Verificación de sesión y rol -->
@@ -54,6 +55,7 @@
         <!-- Consulta con filtro de búsqueda -->
         <cfquery name="qUsuarios" datasource="autorizacion">
             SELECT 
+                u.activo,
                 u.id_usuario,
                 u.usuario,
                 u.rol,
@@ -64,7 +66,7 @@
             FROM usuarios u
             INNER JOIN datos_usuario du ON u.id_datos = du.id_datos
             INNER JOIN area_adscripcion a ON du.id_area = a.id_area
-            WHERE 1=1
+            WHERE 1=1 AND u.activo = 1
             <cfif len(trim(form.search))>
                 AND (
                     u.usuario LIKE <cfqueryparam value="%#form.search#%" cfsqltype="cf_sql_varchar">
@@ -124,7 +126,7 @@
                         <cfoutput>
                             <!-- Mantener el valor ingresado en el campo de búsqueda -->
                             <input type="text" name="search" value="#encodeForHTMLAttribute(form.search)#" 
-                                class="form-input-general" placeholder="Nombre, Usuario, Área...">
+                                class="form-input-general" placeholder="Usuario, Nombre, Apellidos, Área">
                         </cfoutput>
                     </div>
 
@@ -142,21 +144,21 @@
                     </div>
 
                     <!-- Contenedor de la tabla y paginación -->
-                    <table border="0" width="100%" cellpadding="10" cellspacing="2">
+                    <table class="tabla">
                         <!-- Encabezados de la tabla -->
-                        <tr style="background:#f1f5f9; font-weight:bold;">
-                            <td>ID</td>
-                            <td>Usuario</td>
-                            <td>Rol</td>
-                            <td>Nombre</td>
-                            <td>Apellido Paterno</td>
-                            <td>Apellido Materno</td>
-                            <td>Área</td>
+                        <tr class="titulos-tabla">
+                            <td class="titulo-general">ID</td>
+                            <td class="titulo-general">Usuario</td>
+                            <td class="titulo-general">Rol</td>
+                            <td class="titulo-general">Nombre</td>
+                            <td class="titulo-general">Apellido Paterno</td>
+                            <td class="titulo-general">Apellido Materno</td>
+                            <td class="titulo-general">Área</td>
 
                             <!-- Mostrar columnas Editar y Eliminar solo si el usuario tiene rol admin -->
                             <cfif structKeyExists(session, "usuario") AND session.rol EQ "admin">
-                                <td>Editar</td>
-                                <td>Eliminar</td>
+                                <td class="titulo-general">Editar</td>
+                                <td class="titulo-general">Eliminar</td>
                             </cfif>
                         </tr>
 
@@ -167,21 +169,21 @@
                                 <td>#usuario#</td>
                                 <td>#rol#</td>
                                 <td>#nombre#</td>
-                                <td>#apellido_materno#</td>
                                 <td>#apellido_paterno#</td>
+                                <td>#apellido_materno#</td>
                                 <td>#area#</td>
 
                                 <cfif structKeyExists(session, "usuario") AND session.rol EQ "admin">
                                     <!-- Botón Editar -->
-                                    <td>
+                                    <td class="submit-btn-editar-separacion">
                                         <a href="editarUsuario.cfm?id=#id_usuario#" class="submit-btn-editar">
                                             Editar
                                         </a>
                                     </td>
 
                                     <!-- Botón Eliminar -->
-                                    <td>
-                                        <a href="eliminarUsuario.cfm?id=#id_usuario#" class="submit-btn-eliminar" onclick="return confirm('¿Estás seguro de eliminar este usuario?');">
+                                    <td class="submit-btn-eliminar-separacion">
+                                        <a href="" class="submit-btn-eliminar" onclick="desactivarUsuario(#id_usuario#)">
                                             Eliminar
                                         </a>
                                     </td>
@@ -190,26 +192,53 @@
                         </cfoutput>
                     </table>
 
-                    <!-- Paginación -->
+                    <!-- Paginación en bloques de 10-->
                     <div class="submit-section">
                         <!-- Contenedor de la paginación -->
                         <cfif totalPages GT 1>
-                            <!-- Mostrar total de páginas y registros -->
-                            <cfloop from="1" to="#totalPages#" index="i">
-                                <!-- Botones de paginación -->
+                            <!-- Tamaño del bloque de páginas -->
+                            <cfset blockSize = 10>
+                            <!-- Bloque actual -->
+                            <cfset currentBlock = ceiling(currentPage / blockSize)>
+                            <!-- Página inicial y final del bloque -->
+                            <cfset startPage = ((currentBlock - 1) * blockSize) + 1>
+                            <cfset endPage = min(startPage + blockSize - 1, totalPages)>
+
+                            <!-- Botón 'Anterior' si hay bloques previos -->
+                            <cfif startPage GT 1>
+                                <cfset prevPage = startPage - 1>
+                                <cfoutput>
+                                    <a href="listaUsuarios.cfm?page=#prevPage#&search=#urlEncodedFormat(form.search)#"
+                                        class="submit-btn-anterior"
+                                        style="text-decoration:none">&laquo; Anterior</a>
+                                </cfoutput>
+                            </cfif>
+
+                            <!-- Números del bloque actual -->
+                            <cfloop from="#startPage#" to="#endPage#" index="i">
                                 <cfif i EQ currentPage>
                                     <!-- Botón deshabilitado para la página actual -->
                                     <cfoutput>
-                                        <button class="submit-btn" disabled>#i#</button>
+                                        <button class="submit-btn-paginacion-disabled" disabled>#i#</button>
                                     </cfoutput>
                                 <cfelse>
                                     <!-- Botón para otras páginas -->
                                     <cfoutput>
                                         <a href="listaUsuarios.cfm?page=#i#&search=#urlEncodedFormat(form.search)#" 
-                                            class="submit-btn" style="text-decoration:none">#i#</a>
+                                            class="submit-btn-paginacion" style="text-decoration:none">#i#</a>
                                     </cfoutput>
                                 </cfif>
                             </cfloop>
+
+                            <!-- Botón 'Siguiente' si hay más bloques -->
+                            <cfif endPage LT totalPages>
+                                <cfset nextPage = endPage + 1>
+                                <cfoutput>
+                                    <a href="listaUsuarios.cfm?page=#nextPage#&search=#urlEncodedFormat(form.search)#"
+                                        class="submit-btn-siguiente"
+                                        style="text-decoration:none">Siguiente &raquo;</a>
+                                </cfoutput>
+                            </cfif>
                         </cfif>
                     </div>
 

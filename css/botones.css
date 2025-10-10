@@ -353,3 +353,162 @@ a.submit-btn-regresar-text{
     transform: translateY(0);
     box-shadow: 0 3px 8px rgba(37, 117, 252, 0.4);
 }
+
+.submit-btn-paginacion-disabled {
+    background: linear-gradient(135deg, #cfd8dc 0%, #b0bec5 100%);
+    color: #fff;
+    padding: 12px 32px;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px #cfd8dc;
+    text-decoration: none;
+}
+
+.submit-btn-paginacion-disabled:hover {
+    background: linear-gradient(135deg, #302723 0%, #4f413a 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px #302723;
+}
+
+.ssubmit-btn-paginacion-disabled:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 8px #302723;
+}
+
+.submit-btn-paginacion {
+    background: linear-gradient(135deg, #4b79a1 0%, #283e51 100%);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 18px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 10px #4b79a1;
+    text-decoration: none;
+}
+
+.submit-btn-paginacion:hover {
+    background: linear-gradient(135deg, #b4865e 0%, #d7c1ae 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px #b4865e;
+}
+
+.submit-btn-paginacion:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 8px #b4865e;
+}
+
+.submit-btn-anterior {
+    background: linear-gradient(135deg, #ea1b63 0%, #15e49c 100%);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 18px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 10px #ea1b63;
+    text-decoration: none;
+}
+
+.submit-btn-anterior:hover {
+    background: linear-gradient(135deg, #15e49c 0%, #ea1b63 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px #15e49c;
+}
+
+.submit-btn-anterior:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 8px #15e49c;
+}
+
+.submit-btn-siguiente {
+    background: linear-gradient(135deg, #15e49c 0%, #ea1b63 100%);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 18px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 10px #15e49c;
+    text-decoration: none;
+}
+
+.submit-btn-siguiente:hover {
+    background: linear-gradient(135deg, #ea1b63 0%, #15e49c 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px #ea1b63;
+}
+
+.submit-btn-siguiente:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 8px #ea1b63;
+}
+
+.submit-btn-editar {
+    background: linear-gradient(135deg, #9b59b6 0%, #e91e63 100%);
+    color: white;
+    padding: 15px 40px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px #9b59b6;
+    padding: 3px 20px;
+    text-decoration:none;
+}
+
+.submit-btn-editar:hover {
+    background: linear-gradient(135deg, #64a649 0%, #16e19c 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px #64a649;
+}
+
+.submit-btn-editar:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 8px #64a649;
+}
+
+.submit-btn-eliminar {
+    background: linear-gradient(135deg, #4b4b4b 0%, #e74c3c 100%);
+    color: white;
+    padding: 15px 40px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px #4b4b4b;
+    padding: 3px 20px;
+    text-decoration:none;
+}
+
+.submit-btn-eliminar:hover {
+    background: linear-gradient(135deg, #b4b4b4 0%, #18b3c3 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px #b4b4b4;
+}
+
+.submit-btn-eliminar:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 8px #b4b4b4;
+}
+
+.submit-btn-editar-separacion {
+    padding-top: 10px;
+}
+
+.submit-btn-eliminar-separacion {
+    padding-top: 10px;
+}

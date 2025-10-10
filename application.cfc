@@ -24,6 +24,11 @@
         <!--- Argumento que recibe la página objetivo --->
         <cfargument name="targetPage" type="string" required="true">
 
+        <!--- Evitar caché del navegador --->
+        <cfheader name="Cache-Control" value="no-cache, no-store, must-revalidate">
+        <cfheader name="Pragma" value="no-cache">
+        <cfheader name="Expires" value="0">
+
         <!--- Lista de páginas públicas (no necesitan login) --->
         <cfset var paginasPublicas = "login.cfm">
 
