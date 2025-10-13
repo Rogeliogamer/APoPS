@@ -512,3 +512,55 @@ a.submit-btn-regresar-text{
 .submit-btn-eliminar-separacion {
     padding-top: 10px;
 }
+
+.submit-btn-guardar {
+    background: linear-gradient(135deg, #3F51B5 0%, #303F9F 100%);
+    color: white;
+    padding: 15px 40px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px #3F51B5;
+}
+
+/* Hover con un poco de énfasis */
+.submit-btn-guardar:hover {
+    background: linear-gradient(135deg, #c0ae4a 0%, #cfc060 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px #c0ae4a;
+}
+
+/* Activo: da la sensación de presionar */
+.submit-btn-guardar:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 8px #c0ae4a;
+}
+
+.submit-btn-eliminarUsuario {
+    background: linear-gradient(135deg, #4b4b4b 0%, #e74c3c 100%);
+    color: white;
+    padding: 15px 40px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px #4b4b4b;
+}
+
+/* Hover con un poco de énfasis */
+.submit-btn-eliminarUsuario:hover {
+    background: linear-gradient(135deg, #b4b4b4 0%, #18b3c3 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px #b4b4b4;
+}
+
+/* Activo: da la sensación de presionar */
+.submit-btn-eliminarUsuario:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 8px #b4b4b4;
+}

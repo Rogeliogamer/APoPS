@@ -46,23 +46,12 @@
         <cfset enumListR = REReplace(enumStringR,"','",",","all")>
 
         <!-- Procesar formulario -->
-        <cfif structKeyExists(form, "guardar")>
+        <cfif structKeyExists(form, "eliminar")>
             <!-- Actualizar tabla usuarios -->
             <cfquery datasource="autorizacion">
                 UPDATE usuarios
-                SET usuario = <cfqueryparam value="#form.usuario#" cfsqltype="cf_sql_varchar">,
-                    rol = <cfqueryparam value="#form.rol#" cfsqltype="cf_sql_varchar">
+                SET activo = 0
                 WHERE id_usuario = <cfqueryparam value="#url.id#" cfsqltype="cf_sql_integer">
-            </cfquery>
-
-            <!-- Actualizar tabla datos_usuario -->
-            <cfquery datasource="autorizacion">
-                UPDATE datos_usuario
-                SET nombre = <cfqueryparam value="#form.nombre#" cfsqltype="cf_sql_varchar">,
-                    apellido_paterno = <cfqueryparam value="#form.apellido_paterno#" cfsqltype="cf_sql_varchar">,
-                    apellido_materno = <cfqueryparam value="#form.apellido_materno#" cfsqltype="cf_sql_varchar">,
-                    id_area = <cfqueryparam value="#form.id_area#" cfsqltype="cf_sql_integer">
-                WHERE id_datos = <cfqueryparam value="#qUsuario.id_datos#" cfsqltype="cf_sql_integer">
             </cfquery>
 
             <!-- Redirigir a la lista de usuarios -->
@@ -192,8 +181,8 @@
                         <!-- Sección de envío -->
                         <div class="submit-section">
                             <!-- Botón para guardar los cambios -->
-                            <button type="submit" name="guardar" class="submit-btn-guardar">
-                                Guardar cambios
+                            <button type="submit" name="eliminar" class="submit-btn-eliminarUsuario">
+                                Eliminar
                             </button>
                         </div>
 

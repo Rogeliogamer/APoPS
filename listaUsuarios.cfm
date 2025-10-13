@@ -183,7 +183,7 @@
 
                                     <!-- Botón Eliminar -->
                                     <td class="submit-btn-eliminar-separacion">
-                                        <a href="" class="submit-btn-eliminar" onclick="desactivarUsuario(#id_usuario#)">
+                                        <a href="eliminarUsuario.cfm?id=#id_usuario#" class="submit-btn-eliminar" onclick="desactivarUsuario(#id_usuario#)">
                                             Eliminar
                                         </a>
                                     </td>
