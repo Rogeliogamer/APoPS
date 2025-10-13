@@ -17,28 +17,73 @@
     <cfset searchTerm = "">
 </cfif>
 
+<!-- Determinar el filtro según el rol -->
+<cfset filtroRol = "">
+
+<cfif session.rol EQ "Jefe">
+    <cfset filtroRol = "AND du.id_area = " & session.id_area>
+
+<cfelseif session.rol EQ "RecursosHumanos">
+    <cfset filtroRol = "
+        AND EXISTS (
+            SELECT 1 FROM firmas f2
+            WHERE f2.id_solicitud = s.id_solicitud
+            AND f2.rol = 'Jefe'
+            AND f2.aprobado = 'Aprobado'
+        )">
+
+<cfelseif session.rol EQ "Autorizacion">
+    <cfset filtroRol = "
+        AND EXISTS (
+            SELECT 1 FROM firmas f3
+            WHERE f3.id_solicitud = s.id_solicitud
+            AND f3.rol = 'RecursosHumanos'
+            AND f3.aprobado = 'Aprobado'
+        )">
+
+<cfelseif session.rol EQ "Expediente">
+    <cfset filtroRol = "
+        AND EXISTS (
+            SELECT 1 FROM firmas f4
+            WHERE f4.id_solicitud = s.id_solicitud
+            AND f4.rol = 'Autorizacion'
+            AND f4.aprobado = 'Aprobado'
+        )">
+
+<cfelseif session.rol EQ "Solicitante">
+    <cfset filtroRol = "AND 1=0">
+</cfif>
+<cfparam name="form.search" default="">
+<!-- Consulta principal -->
 <cfquery name="qPendientes" datasource="autorizacion">
-                    SELECT s.id_solicitud, s.motivo, s.tipo_permiso, s.fecha,
-                        du.nombre, du.apellido_paterno, du.apellido_materno,
-                        aa.nombre AS area_nombre
-                    FROM solicitudes s
-                    LEFT JOIN datos_usuario du ON s.id_solicitante = du.id_datos
-                    LEFT JOIN area_adscripcion aa ON du.id_area = aa.id_area
-                    LEFT JOIN firmas f ON s.id_solicitud = f.id_solicitud 
-                        AND f.rol = <cfqueryparam value="#session.rol#" cfsqltype="cf_sql_varchar">
-                    WHERE (f.id_firma IS NULL OR f.aprobado = 'Pendiente')
-                    <cfif len(searchTerm)>
-            AND (
-                du.nombre LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
-                OR du.apellido_paterno LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
-                OR du.apellido_materno LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
-                OR aa.nombre LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
-                OR s.motivo LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
-                OR s.tipo_permiso LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
-            )
-        </cfif>
-                    ORDER BY s.fecha DESC
-                </cfquery>
+    SELECT s.id_solicitud, s.motivo, s.tipo_permiso, s.fecha,
+           du.nombre, du.apellido_paterno, du.apellido_materno,
+           aa.nombre AS area_nombre
+    FROM solicitudes s
+    INNER JOIN datos_usuario du ON s.id_solicitante = du.id_datos
+    INNER JOIN usuarios u ON s.id_solicitante = u.id_usuario
+    INNER JOIN area_adscripcion aa ON du.id_area = aa.id_area
+    LEFT JOIN firmas f ON s.id_solicitud = f.id_solicitud 
+        AND f.rol = <cfqueryparam value="#session.rol#" cfsqltype="cf_sql_varchar">
+    WHERE u.activo = 1
+    AND (f.id_firma IS NULL OR f.aprobado = 'Pendiente')
+    #PreserveSingleQuotes(filtroRol)#
+    
+    <cfif len(trim(form.search))>
+        AND (
+            du.nombre LIKE <cfqueryparam value="%#form.search#%" cfsqltype="cf_sql_varchar">
+            OR du.apellido_paterno LIKE <cfqueryparam value="%#form.search#%" cfsqltype="cf_sql_varchar">
+            OR du.apellido_materno LIKE <cfqueryparam value="%#form.search#%" cfsqltype="cf_sql_varchar">
+            OR aa.nombre LIKE <cfqueryparam value="%#form.search#%" cfsqltype="cf_sql_varchar">
+            OR s.motivo LIKE <cfqueryparam value="%#form.search#%" cfsqltype="cf_sql_varchar">
+            OR s.tipo_permiso LIKE <cfqueryparam value="%#form.search#%" cfsqltype="cf_sql_varchar">
+        )
+    </cfif>
+
+    ORDER BY s.fecha DESC
+</cfquery>
+
+
 <!DOCTYPE html>
 <html lang="es">
     <head>

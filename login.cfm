@@ -77,11 +77,12 @@
 
             <!-- Consulta para verificar las credenciales -->
             <cfquery name="qLogin" datasource="autorizacion">
-                SELECT u.id_usuario, u.usuario, u.rol, d.id_area
+                SELECT u.id_usuario, u.usuario, u.rol, d.id_area, u.activo
                 FROM usuarios u
                 INNER JOIN datos_usuario d ON u.id_datos = d.id_datos
                 WHERE u.usuario = <cfqueryparam value="#form.usuario#" cfsqltype="cf_sql_varchar">
                 AND u.contraseña = <cfqueryparam value="#contrasenaHasheada#" cfsqltype="cf_sql_varchar">
+                AND u.activo = 1
             </cfquery>
 
             <!-- Verificar si se encontró un usuario con las credenciales proporcionadas -->

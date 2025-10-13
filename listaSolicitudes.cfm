@@ -36,6 +36,7 @@
     INNER JOIN usuarios u ON s.id_solicitante = u.id_usuario
     INNER JOIN datos_usuario d ON u.id_datos = d.id_datos
     WHERE f.id_usuario = <cfqueryparam value="#session.id_usuario#" cfsqltype="cf_sql_integer">
+        AND u.activo = '1'
     <!--- Filtro de búsqueda si hay texto --->
     <cfif len(searchTerm)>
         AND (

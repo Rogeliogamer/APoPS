@@ -28,7 +28,7 @@
         s.hora_salida,
         s.hora_llegada,
         s.status_final,
-        f.rol,
+        u.rol AS rol_solicitante,
         f.aprobado,
         f.fecha_firma
     FROM solicitudes s
@@ -36,6 +36,14 @@
     INNER JOIN usuarios u ON s.id_solicitante = u.id_usuario
     INNER JOIN datos_usuario d ON u.id_datos = d.id_datos
     WHERE f.id_usuario = <cfqueryparam value="#session.id_usuario#" cfsqltype="cf_sql_integer">
+        AND u.activo = 1
+        AND f.fecha_firma IS NOT NULL
+        AND d.id_area = (
+            SELECT du.id_area
+            FROM usuarios uu
+            INNER JOIN datos_usuario du ON uu.id_datos = du.id_datos
+            WHERE uu.id_usuario = <cfqueryparam value="#session.id_usuario#" cfsqltype="cf_sql_integer">
+        )
     <!--- Filtro dinámico de búsqueda --->
     <cfif len(searchTerm)>
         AND (
@@ -44,7 +52,7 @@
             OR d.apellido_materno LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
             OR s.tipo_permiso LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
             OR s.motivo LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
-            OR f.rol LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
+            OR u.rol LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
             OR f.aprobado LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
         )
     </cfif>
@@ -152,7 +160,7 @@
                                     <td>#motivo#</td>
                                     <td>#tipo_permiso#</td>
                                     <td class="titulo-general-centrado">#DateFormat(fecha,'dd/mm/yyyy')#</td>
-                                    <td>#rol#</td>
+                                    <td>#rol_solicitante#</td>
                                     <td>
                                         <cfif status_final EQ "Aprobado">
                                             <span class="status-aprobado">✔ #status_final#</span>
