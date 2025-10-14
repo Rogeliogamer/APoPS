@@ -24,6 +24,11 @@
     <cfset filtroRol = "AND du.id_area = " & session.id_area>
 
 <cfelseif session.rol EQ "RecursosHumanos">
+    <!--- 
+        El rol "RecursosHumanos" es un rol de firmante especial (no es Jefe ni Solicitante)
+        Este usuario puede ver TODAS las solicitudes que ya fueron aprobadas por los Jefes de área
+        Independientemente de su área de adscripción
+    --->
     <cfset filtroRol = "
         AND EXISTS (
             SELECT 1 FROM firmas f2
@@ -83,6 +88,36 @@
     ORDER BY s.fecha DESC
 </cfquery>
 
+<cfparam name="form.search" default="">
+
+<!-- Consulta principal -->
+<cfquery name="qPendientes" datasource="autorizacion">
+    SELECT s.id_solicitud, s.motivo, s.tipo_permiso, s.fecha,
+           du.nombre, du.apellido_paterno, du.apellido_materno,
+           aa.nombre AS area_nombre
+    FROM solicitudes s
+    INNER JOIN datos_usuario du ON s.id_solicitante = du.id_datos
+    INNER JOIN usuarios u ON s.id_solicitante = u.id_usuario
+    INNER JOIN area_adscripcion aa ON du.id_area = aa.id_area
+    LEFT JOIN firmas f ON s.id_solicitud = f.id_solicitud 
+        AND f.rol = <cfqueryparam value="#session.rol#" cfsqltype="cf_sql_varchar">
+    WHERE u.activo = 1
+    AND (f.id_firma IS NULL OR f.aprobado = 'Pendiente')
+    #PreserveSingleQuotes(filtroRol)#
+    
+    <cfif len(trim(form.search))>
+        AND (
+            du.nombre LIKE <cfqueryparam value="%#form.search#%" cfsqltype="cf_sql_varchar">
+            OR du.apellido_paterno LIKE <cfqueryparam value="%#form.search#%" cfsqltype="cf_sql_varchar">
+            OR du.apellido_materno LIKE <cfqueryparam value="%#form.search#%" cfsqltype="cf_sql_varchar">
+            OR aa.nombre LIKE <cfqueryparam value="%#form.search#%" cfsqltype="cf_sql_varchar">
+            OR s.motivo LIKE <cfqueryparam value="%#form.search#%" cfsqltype="cf_sql_varchar">
+            OR s.tipo_permiso LIKE <cfqueryparam value="%#form.search#%" cfsqltype="cf_sql_varchar">
+        )
+    </cfif>
+
+    ORDER BY s.fecha DESC
+</cfquery>
 
 <!DOCTYPE html>
 <html lang="es">
