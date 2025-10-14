@@ -28,7 +28,7 @@
         s.hora_salida,
         s.hora_llegada,
         s.status_final,
-        f.rol,
+        u.rol AS rol_solicitante,
         f.aprobado,
         f.fecha_firma
     FROM solicitudes s
@@ -152,7 +152,7 @@
                                     <td>#motivo#</td>
                                     <td>#tipo_permiso#</td>
                                     <td class="titulo-general-centrado">#DateFormat(fecha,'dd/mm/yyyy')#</td>
-                                    <td>#rol#</td>
+                                    <td>#rol_solicitante#</td>
                                     <td>
                                         <cfif status_final EQ "Aprobado">
                                             <span class="status-aprobado">✔ #status_final#</span>
