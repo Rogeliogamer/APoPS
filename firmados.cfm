@@ -16,6 +16,17 @@
     <cfset searchTerm = "">
 </cfif>
 
+<cfif session.rol EQ "Solicitante">
+    <!--- Los Solicitantes solo ven sus propias solicitudes --->
+    <cfset filtroArea = "AND s.id_solicitante = " & session.id_usuario>
+<cfelseif session.rol EQ "Jefe">
+    <!--- Los Jefes solo ven solicitudes de su área --->
+    <cfset filtroArea = "AND d.id_area = " & session.id_area>
+<cfelseif session.rol EQ "RecursosHumanos" OR session.rol EQ "Autorizacion" OR session.rol EQ "Expediente">
+    <!--- Estos roles ven solicitudes de todas las áreas --->
+    <cfset filtroArea = "">
+</cfif>
+
 <cfquery name="qFirmados" datasource="autorizacion">
     SELECT 
         s.id_solicitud,
@@ -38,12 +49,7 @@
     WHERE f.id_usuario = <cfqueryparam value="#session.id_usuario#" cfsqltype="cf_sql_integer">
         AND u.activo = 1
         AND f.fecha_firma IS NOT NULL
-        AND d.id_area = (
-            SELECT du.id_area
-            FROM usuarios uu
-            INNER JOIN datos_usuario du ON uu.id_datos = du.id_datos
-            WHERE uu.id_usuario = <cfqueryparam value="#session.id_usuario#" cfsqltype="cf_sql_integer">
-        )
+        #PreserveSingleQuotes(filtroArea)#
     <!--- Filtro dinámico de búsqueda --->
     <cfif len(searchTerm)>
         AND (
