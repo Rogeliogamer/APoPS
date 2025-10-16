@@ -564,3 +564,29 @@ a.submit-btn-regresar-text{
     transform: translateY(0);
     box-shadow: 0 3px 8px #b4b4b4;
 }
+
+.submit-btn-actualizar {
+    background: linear-gradient(135deg, #667eea 0%, #998115 100%);
+    color: white;
+    padding: 15px 40px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px #667eea;
+}
+
+/* Hover con un poco de énfasis */
+.submit-btn-actualizar:hover {
+    background: linear-gradient(135deg, #998115 0%, #667eea 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px #998115;
+}
+
+/* Activo: da la sensación de presionar */
+.submit-btn-actualizar:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 8px #998115;
+}
