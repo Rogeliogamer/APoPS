@@ -4,8 +4,6 @@
 <cfparam name="FORM.rango" default="30">
 <cfparam name="FORM.area" default="">
 
-<!--- Conexión a la base de datos --->
-
 <!--- Calcular fechas --->
 <cfset fechaFin = now()>
 <cfset fechaInicio = dateAdd("d", -val(FORM.rango), fechaFin)>

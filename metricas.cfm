@@ -578,6 +578,122 @@
             });
         </script>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+var chartTendencia; // Variable global para la gráfica
+
+function actualizarTendencia() {
+    var rango = $("#rangoFechas").val();
+    var area = $("#areaSeleccionada").val();
+
+    $.ajax({
+        url: "obtenerTendencia.cfm",
+        method: "POST",
+        data: { rango: rango, area: area },
+        dataType: "json",
+        success: function(response) {
+            var labels = [];
+            var aprobadas = [];
+            var pendientes = [];
+            var rechazadas = [];
+
+            response.tendencia.forEach(function(item) {
+                // Convertir fecha a formato legible si quieres
+                labels.push(item.fecha);
+                aprobadas.push(item.aprobadas);
+                pendientes.push(item.pendientes);
+                rechazadas.push(item.rechazadas);
+            });
+
+            // Si ya existe la gráfica, la destruimos antes de crear una nueva
+            if(chartTendencia) {
+                chartTendencia.destroy();
+            }
+
+            var ctx = document.getElementById("chartTendencia").getContext("2d");
+            chartTendencia = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Aprobadas',
+                            data: aprobadas,
+                            borderColor: 'green',
+                            backgroundColor: 'rgba(0,128,0,0.1)',
+                            fill: true,
+                            tension: 0.3
+                        },
+                        {
+                            label: 'Pendientes',
+                            data: pendientes,
+                            borderColor: 'orange',
+                            backgroundColor: 'rgba(255,165,0,0.1)',
+                            fill: true,
+                            tension: 0.3
+                        },
+                        {
+                            label: 'Rechazadas',
+                            data: rechazadas,
+                            borderColor: 'red',
+                            backgroundColor: 'rgba(255,0,0,0.1)',
+                            fill: true,
+                            tension: 0.3
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                        }
+                    },
+                    interaction: {
+                        mode: 'nearest',
+                        intersect: false
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Fecha'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Cantidad de solicitudes'
+                            },
+                            beginAtZero: true,
+                            precision: 0
+                        }
+                    }
+                }
+            });
+        },
+        error: function(err) {
+            console.error("Error al obtener la tendencia:", err);
+        }
+    });
+}
+
+// Evento click del botón
+$("#btnActualizar").click(function(e){
+    e.preventDefault();
+    actualizarTendencia();
+});
+
+// Ejecutar al cargar la página
+$(document).ready(function(){
+    actualizarTendencia();
+});
+</script>
+
 
     </body>
 </html>
