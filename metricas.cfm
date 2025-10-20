@@ -14,6 +14,11 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Dashboard - Sistema de Permisos</title>
+
+        <!-- Carga de jQuery (local) -->
+        <script src="js/jquery-3.6.0.min.js"></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         
         <link rel="stylesheet" href="css/globalForm.css">
         <link rel="stylesheet" href="css/botones.css">
@@ -231,8 +236,8 @@
 
             @keyframes spin { 0%{transform:rotate(0deg);} 100%{transform:rotate(360deg);} }
         </style>
-        </head>
-        <body>
+    </head>
+    <body>
             <div class="loading-overlay" id="loadingOverlay">
                 <div class="spinner"></div>
             </div>
@@ -255,36 +260,35 @@
                             </div>
                             <select class="form-input-general" id="rangoFechas">
                                 <option value="30" selected>Últimos 30 días</option>
-                                <option value="90">Últimos 60 días</option>
-                                <option value="180">Últimos 90 días</option>
+                                <option value="60">Últimos 60 días</option>
+                                <option value="90">Últimos 90 días</option>
                             </select>
 
                             <div class="section-title">
                                 Área
                             </div>
 
-                            <!--- Consultar todas las áreas --->
-                            <cfquery name="qAreas" datasource="Autorizacion">
-                                SELECT id_area, nombre
-                                FROM area_adscripcion
-                                ORDER BY nombre
-                            </cfquery>
-
                             <!--- Select dinámico --->
-                            <select class="form-input-general" id="filtroArea">
+                            <select class="form-input-general" id="areaSeleccionada">
                                 <!--- Opción para todas las áreas --->
-                                <option value="">Todas las áreas</option>
+                                <option value="">-- Seleciona un área --</option>
+                                
+                                <!--- Consultar todas las áreas --->
+                                <cfquery name="getAreas" datasource="Autorizacion">
+                                    SELECT id_area, nombre
+                                    FROM area_adscripcion
+                                </cfquery>
 
                                 <!--- Iterar sobre la consulta --->
-                                <cfoutput query="qAreas">
+                                <cfoutput query="getAreas">
                                     <option value="#id_area#">#nombre#</option>
                                 </cfoutput>
                             </select>
                         </div>
                         <div class="submit-section">
-                            <a class="submit-btn-actualizar" id="btnActualizar">
+                            <button class="submit-btn-actualizar" id="btnActualizar">
                                 🔍 Actualizar
-                            </a>
+                            </button>
                         </div>
                     </div>   
                     
@@ -299,25 +303,25 @@
 
                             <div class="kpi-header-aprovadas">
                                 <div class="kpi-title">Aprobadas</div>
-                                <div class="kpi-value" id="aprobadas">0</div>
-                                <div class="kpi-subtitle" id="tasaAprobacion">0% de aprobación</div>
+                                <div class="kpi-value" id="solicitudesAprobadas">0</div>
+                                <div class="kpi-subtitle" id="solicitudesAprobadasPct">0% de aprobación</div>
                             </div>
 
                             <div class="kpi-header-pendientes">
                                 <div class="kpi-title">Pendientes</div>
-                                <div class="kpi-value" id="pendientes">0</div>
-                                <div class="kpi-subtitle" id="tasaAprobacion">0% de aprobación</div>
+                                <div class="kpi-value" id="solicitudesPendientes">0</div>
+                                <div class="kpi-subtitle" id="solicitudesPendientesPct">0% de aprobación</div>
                             </div>
 
                             <div class="kpi-header-rechazadas">
                                 <div class="kpi-title">Rechazadas</div>
-                                <div class="kpi-value" id="rechazadas">0</div>
-                                <div class="kpi-subtitle" id="tasaRechazo">0% de rechazo</div>
+                                <div class="kpi-value" id="solicitudesRechazadas">0</div>
+                                <div class="kpi-subtitle" id="solicitudesRechazadasPct">0% de rechazo</div>
                             </div>
 
                             <div class="kpi-header-tiempoPromedio">
                                 <div class="kpi-title">Tiempo Promedio</div>
-                                <div class="kpi-value" id="promedioTiempo">0h</div>
+                                <div class="kpi-value" id="tiempoPromedio">0 días</div>
                                 <div class="kpi-subtitle">Hasta aprobación final</div>
                             </div>
                         </div>
@@ -328,7 +332,7 @@
                         <div class="field-group">
                             <div class="kpi-header">
                                 <div class="chart-title">Estado de solicitudes</div>
-                                <canvas id="chartEstados" height="250"></canvas>
+                                <canvas id="chartEstados" height="50"></canvas>
                                 Aqui va una grafica de pastel de todas las solicitudes
                             </div>
 
@@ -424,5 +428,72 @@
                 </div> 
             </div>
         </div>
-    </head>
+
+        
+        <!--- Carga de jQuery (local o CDN) --->
+        <script src="js/jquery-3.6.0.min.js"></script>
+        
+        <script>
+            $(document).ready(function(){
+
+                // Función para actualizar las métricas
+                function actualizarMetricas(){
+                    let dias = $("#rangoFechas").val();
+                    let area = $("#areaSeleccionada").val();
+
+                    if(area === ""){
+                        alert("Por favor selecciona un área.");
+                        return;
+                    }
+
+                    $("#loadingOverlay").addClass("active");
+
+                    $.ajax({
+                        url: "obtenerMetricas.cfm",
+                        method: "POST",
+                        data: { rango: dias, area: area },
+                        dataType: "json",
+                        success: function(response){
+                            // Total de solicitudes
+                            $("#totalSolicitudes").text(response.totalSolicitudes);
+
+                            // Aprobadas
+                            $("#solicitudesAprobadas").text(response.solicitudesAprobadas);
+                            $("#solicitudesAprobadasPct").text(response.porcentajeAprobadas.toFixed(1) + "% de aprobación");
+
+                            // Pendientes
+                            $("#solicitudesPendientes").text(response.solicitudesPendientes);
+                            $("#solicitudesPendientesPct").text(response.porcentajePendientes.toFixed(1) + "% de aprobación");
+
+                            // Rechazadas
+                            $("#solicitudesRechazadas").text(response.solicitudesRechazadas);
+                            $("#solicitudesRechazadasPct").text(response.porcentajeRechazadas.toFixed(1) + "% de rechazo");
+
+                            // Tiempo promedio
+                            $("#tiempoPromedio").text(response.tiempoPromedio + " días");
+                        },
+                        error: function(xhr, status, error){
+                            console.error("Error al obtener métricas:", error);
+                            alert("Hubo un error al cargar las métricas.");
+                        },
+                        complete: function(){
+                            $("#loadingOverlay").removeClass("active");
+                        }
+                    });
+                }
+
+                // Evento del botón
+                $("#btnActualizar").click(function(){
+                    actualizarMetricas();
+                });
+
+                // Opcional: cargar métricas automáticamente al cargar la página
+                // actualizarMetricas();
+            });
+        </script>
+
+    
+
+
+    </body>
 </html>
