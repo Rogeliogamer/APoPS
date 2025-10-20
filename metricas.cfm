@@ -332,7 +332,7 @@
                         <div class="field-group">
                             <div class="kpi-header">
                                 <div class="chart-title">Estado de solicitudes</div>
-                                <canvas id="chartEstados" height="50"></canvas>
+                                <canvas id="chartEstados" height="250">vacio</canvas>
                                 Aqui va una grafica de pastel de todas las solicitudes
                             </div>
 
@@ -586,6 +586,12 @@ function actualizarTendencia() {
     var rango = $("#rangoFechas").val();
     var area = $("#areaSeleccionada").val();
 
+    // Solo continuar si el usuario seleccionó un área
+    if(area === "") {
+        alert("Por favor selecciona un área para mostrar la gráfica.");
+        return;
+    }
+
     $.ajax({
         url: "obtenerTendencia.cfm",
         method: "POST",
@@ -685,11 +691,6 @@ function actualizarTendencia() {
 // Evento click del botón
 $("#btnActualizar").click(function(e){
     e.preventDefault();
-    actualizarTendencia();
-});
-
-// Ejecutar al cargar la página
-$(document).ready(function(){
     actualizarTendencia();
 });
 </script>
