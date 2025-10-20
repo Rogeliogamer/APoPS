@@ -492,7 +492,91 @@
             });
         </script>
 
-    
+        <script>
+            $(document).ready(function(){
+
+                let chartEstados; // Variable global para mantener la referencia de la gráfica
+
+                function actualizarGraficaEstados(area, dias){
+                    $.ajax({
+                        url: "obtenerMetricas.cfm",
+                        method: "POST",
+                        data: { rango: dias, area: area },
+                        dataType: "json",
+                        success: function(response){
+                
+                            // Datos para el pie chart usando status_final
+                            const data = {
+                                labels: ['Aprobadas', 'Pendientes', 'Rechazadas'],
+                                datasets: [{
+                                    label: 'Estado de solicitudes',
+                                    data: [
+                                        response.solicitudesAprobadas,
+                                        response.solicitudesPendientes,
+                                        response.solicitudesRechazadas
+                                    ],
+                                    backgroundColor: [
+                                        '#2F855A', // Verde
+                                        '#D69E2E', // Amarillo
+                                        '#C53030'  // Rojo
+                                    ],
+                                    borderWidth: 1
+                                }]
+                            };
+
+                            const config = {
+                                type: 'pie',
+                                data: data,
+                                options: {
+                                    responsive: true,
+                                    plugins: {
+                                        legend: {
+                                            position: 'bottom',
+                                        },
+                                        tooltip: {
+                                            callbacks: {
+                                                label: function(context){
+                                                    let total = context.dataset.data.reduce((a,b)=>a+b,0);
+                                                    let value = context.raw;
+                                                    let pct = total ? ((value/total)*100).toFixed(1) : 0;
+                                                    return `${context.label}: ${value} (${pct}%)`;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            };
+
+                            // Si la gráfica ya existe, destrúyela antes de crear una nueva
+                            if(chartEstados) chartEstados.destroy();
+
+                            chartEstados = new Chart(
+                                document.getElementById('chartEstados'),
+                                config
+                            );
+                        },
+                        error: function(xhr, status, error){
+                            console.error("Error al obtener datos para la gráfica:", error);
+                        }
+                    });
+                }
+
+                // Llamar la función al dar click en actualizar
+                $("#btnActualizar").click(function(){
+                    let dias = $("#rangoFechas").val();
+                    let area = $("#areaSeleccionada").val();
+                    if(area === ""){
+                        alert("Por favor selecciona un área.");
+                        return;
+                    }
+                    actualizarGraficaEstados(area, dias);
+                });
+
+                // Opcional: generar gráfico al cargar la página con valores por defecto
+                // actualizarGraficaEstados($("#areaSeleccionada").val(), $("#rangoFechas").val());
+
+            });
+        </script>
 
 
     </body>
