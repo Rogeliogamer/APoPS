@@ -695,6 +695,108 @@ $("#btnActualizar").click(function(e){
 });
 </script>
 
+<script>
+// Variable global para la gráfica
+let chartFirmantes = null;
+
+$(document).ready(function() {
+    $("#btnActualizar").click(function() {
+        const areaSeleccionada = $("#areaSeleccionada").val();
+
+        if (!areaSeleccionada) {
+            alert("Selecciona un área primero.");
+            return;
+        }
+
+        $.ajax({
+            url: "obtenerFirmantes.cfm",
+            method: "POST",
+            data: { area: areaSeleccionada },
+            dataType: "json",
+            success: function(response) {
+                if (!response.firmantes || response.firmantes.length === 0) {
+                    alert("No hay datos de firmantes para el área seleccionada.");
+                    // Limpiar gráfica anterior si existe
+                    if (chartFirmantes) {
+                        chartFirmantes.destroy();
+                        chartFirmantes = null;
+                    }
+                    return;
+                }
+
+                // Preparar datos
+                const labels = response.firmantes.map(f => f.nombre);
+                const aprobadas = response.firmantes.map(f => f.aprobadas);
+                const pendientes = response.firmantes.map(f => f.pendientes);
+                const rechazadas = response.firmantes.map(f => f.rechazadas);
+
+                // Si la gráfica ya existe, destruirla antes de crear otra
+                if (chartFirmantes) {
+                    chartFirmantes.destroy();
+                }
+
+                const ctx = document.getElementById("chartAreas").getContext("2d");
+                chartFirmantes = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Aprobadas',
+                                data: aprobadas,
+                                backgroundColor: 'rgba(75, 192, 192, 0.7)'
+                            },
+                            {
+                                label: 'Pendientes',
+                                data: pendientes,
+                                backgroundColor: 'rgba(255, 206, 86, 0.7)'
+                            },
+                            {
+                                label: 'Rechazadas',
+                                data: rechazadas,
+                                backgroundColor: 'rgba(255, 99, 132, 0.7)'
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            title: {
+                                display: true,
+                                text: 'Solicitudes por Firmante'
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Cantidad de Solicitudes'
+                                }
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Firmantes'
+                                }
+                            }
+                        }
+                    }
+                });
+            },
+            error: function(err) {
+                console.error("Error al obtener datos de firmantes:", err);
+                alert("Hubo un error al cargar los datos de firmantes.");
+            }
+        });
+    });
+});
+</script>
+
+
 
     </body>
 </html>
