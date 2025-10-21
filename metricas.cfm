@@ -419,8 +419,28 @@
                                             </tr>
                                         </thead>
                                         <tbody id="tablaAreasBody">
-                                            <tr><td colspan="6" style="text-align: center;">Cargando...</td></tr>
-                                        </tbody>
+    <cfif NOT structKeyExists(variables, "rankingAreas") OR rankingAreas.recordCount EQ 0>
+        <tr>
+            <td colspan="6" style="text-align:center;">No hay datos disponibles para el periodo seleccionado</td>
+        </tr>
+    <cfelse>
+        <cfoutput query="rankingAreas">
+            <tr
+                <cfif rankingAreas.id_area EQ val(form.areaSeleccionada)>
+                    style="font-weight:bold; background-color:##1b263b; color:white;"
+                </cfif>
+            >
+                <td>#area#</td>
+                <td>#total_solicitudes#</td>
+                <td>#aprobadas#</td>
+                <td>#rechazadas#</td>
+                <td>#pendientes#</td>
+                <td>#tasa_aprobacion#%</td>
+            </tr>
+        </cfoutput>
+    </cfif>
+</tbody>
+
                                     </table>
                                 </div>
                             </div>
@@ -1171,6 +1191,37 @@ function renderAdvancedChart(data) {
 }
 
 </script>
+
+<script>
+document.getElementById("btnActualizar").addEventListener("click", function(e) {
+    e.preventDefault();
+
+    // Obtener valores del formulario
+    const rango = document.getElementById("rangoFechas").value;
+    const area = document.getElementById("areaSeleccionada").value;
+
+    // Mostrar mensaje de carga
+    document.getElementById("tablaAreasBody").innerHTML =
+        '<tr><td colspan="6" style="text-align:center;">Cargando...</td></tr>';
+
+    // Llamar al archivo CFM que genera la tabla
+    fetch("ranking.cfm", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: `rangoFechas=${rango}&areaSeleccionada=${area}`
+    })
+    .then(response => response.text())
+    .then(html => {
+        document.getElementById("tablaAreasBody").innerHTML = html;
+    })
+    .catch(err => {
+        console.error(err);
+        document.getElementById("tablaAreasBody").innerHTML =
+            '<tr><td colspan="6" style="text-align:center;color:red;">Error al cargar los datos</td></tr>';
+    });
+});
+</script>
+
 
     </body>
 </html>
