@@ -862,7 +862,62 @@ document.getElementById("btnActualizar").addEventListener("click", function () {
 });
 </script>
 
+<script>
+$('#btnActualizar').on('click', function(e) {
+    e.preventDefault();
 
+    const rango = $('#rangoFechas').val();
+    const area = $('#areaSeleccionada').val();
+
+    $.ajax({
+        url: 'obtenerTipoSolicitud.cfm',
+        method: 'GET',
+        data: { rango: rango, area: area },
+        dataType: 'json',
+        success: function(response) {
+            console.log("Datos recibidos:", response);
+
+            const labels = response.TIPOSSOLICITUD.map(item => item.TIPO);
+            const cantidades = response.TIPOSSOLICITUD.map(item => item.CANTIDAD);
+
+            if (labels.length === 0) {
+                $('#chartTipoSolicitud').hide();
+                $('#chartTipoSolicitud').after('<div>No hay datos disponibles para el área seleccionada.</div>');
+                return;
+            }
+
+            $('#chartTipoSolicitud').show();
+            // Limpiar canvas anterior si existe
+            if (window.tipoSolicitudChart) {
+                window.tipoSolicitudChart.destroy();
+            }
+
+            const ctx = document.getElementById('chartTipoSolicitud').getContext('2d');
+            window.tipoSolicitudChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: cantidades,
+                        backgroundColor: ['#36A2EB', '#FF6384'],
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+        },
+        error: function(err) {
+            console.error(err);
+            alert("Ocurrió un error al cargar la gráfica.");
+        }
+    });
+});
+
+</script>
 
 
     </body>
