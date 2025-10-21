@@ -796,6 +796,73 @@ $(document).ready(function() {
 });
 </script>
 
+<script>
+document.getElementById("btnActualizar").addEventListener("click", function () {
+    const idArea = document.getElementById("areaSeleccionada").value;
+    const rangoDias = document.getElementById("rangoFechas").value;
+
+    if (!idArea) {
+        alert("Por favor selecciona un área.");
+        return;
+    }
+
+    // Llamada AJAX a obtener_tipos_permiso.cfm
+    fetch(`obtenerTiposPermiso.cfm?id_area=${idArea}&rangoDias=${rangoDias}`)
+        .then(response => response.json())
+        .then(data => {
+            console.log("Respuesta de permisos:", data);
+
+            const ctx = document.getElementById("chartTipoPermiso").getContext("2d");
+
+            // Si existe una gráfica previa, destruirla
+            if (window.graficoTipoPermiso) {
+                window.graficoTipoPermiso.destroy();
+            }
+
+            // Validar si hay datos
+            if (!data.tiposPermiso || data.tiposPermiso.length === 0) {
+                ctx.font = "16px Arial";
+                ctx.fillText("No hay datos disponibles para el área seleccionada.", 50, 100);
+                return;
+            }
+
+            // Preparar datos para la gráfica
+            const labels = data.tiposPermiso.map(item => item.tipo_permiso);
+            const valores = data.tiposPermiso.map(item => item.cantidad);
+
+            // Crear gráfica
+            window.graficoTipoPermiso = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Cantidad de Solicitudes',
+                        data: valores,
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: true },
+                        title: {
+                            display: true,
+                            text: 'Tipos de Permiso por Área Seleccionada'
+                        }
+                    },
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        })
+        .catch(err => {
+            console.error("Error al obtener los tipos de permiso:", err);
+        });
+});
+</script>
+
+
 
 
     </body>
