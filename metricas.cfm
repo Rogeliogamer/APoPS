@@ -919,6 +919,69 @@ $('#btnActualizar').on('click', function(e) {
 
 </script>
 
+<script>
+    $('#btnActualizar').on('click', function(e) {
+    e.preventDefault();
+
+    const rango = $('#rangoFechas').val();
+    const area = $('#areaSeleccionada').val();
+
+    // --- Graficar Etapas de Firma ---
+    $.ajax({
+        url: 'obtenerFirmasPorRol.cfm',
+        method: 'GET',
+        data: { rango: rango, area: area },
+        dataType: 'json',
+        success: function(response) {
+            console.log("Datos de firmas por rol:", response);
+
+            const labels = response.FIRMASROL.map(item => item.ROL);
+            const cantidades = response.FIRMASROL.map(item => item.CANTIDAD);
+
+            if (labels.length === 0) {
+                $('#chartEtapas').hide();
+                $('#chartEtapas').after('<div>No hay datos de firmas para el área seleccionada.</div>');
+                return;
+            }
+
+            $('#chartEtapas').show();
+            if (window.firmasRolChart) {
+                window.firmasRolChart.destroy();
+            }
+
+            const ctx = document.getElementById('chartEtapas').getContext('2d');
+            window.firmasRolChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Cantidad de Firmas',
+                        data: cantidades,
+                        backgroundColor: '#36A2EB'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { stepSize: 1 }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        },
+        error: function(err) {
+            console.error(err);
+            alert("Ocurrió un error al cargar la gráfica de firmas.");
+        }
+    });
+});
+
+</script>
 
     </body>
 </html>
