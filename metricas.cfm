@@ -22,7 +22,7 @@
         
         <link rel="stylesheet" href="css/globalForm.css">
         <link rel="stylesheet" href="css/botones.css">
-
+<link rel="stylesheet" href="css/temp.css">
         <style>
             /* Extensiones específicas para Dashboard */
             .kpi-grid {
@@ -332,38 +332,57 @@
                         <div class="field-group">
                             <div class="kpi-header">
                                 <div class="chart-title">Estado de solicitudes</div>
-                                <canvas id="chartEstados" height="250">vacio</canvas>
-                                Aqui va una grafica de pastel de todas las solicitudes
+                                <canvas id="chartEstados" height="250"></canvas>
+
+                                <!-- Overlay solo para este canvas -->
+                                <div class="canvasOverlay">
+                                    ¡A punto de revelar las estadísticas!
+                                </div>
                             </div>
 
                             <div class="kpi-header">
                                 <div class="chart-title">Por Etapa de Firma</div>
                                 <canvas id="chartEtapas" height="250"></canvas>
-                                Aqui va una grafica de barras de todas las firmas por etapa
+                                <!-- Overlay solo para este canvas -->
+                                <div class="canvasOverlay">
+                                    ¡A punto de revelar las estadísticas!
+                                </div>
                             </div>
                             
                             <div class="kpi-header">
                                 <div class="chart-title">Tendencia de Solicitudes (Por periodo)</div>
                                 <canvas id="chartTendencia" height="250"></canvas>
-                                Aqui va un grafico de lineas (aprovadas, pendientes, rechazadas)
+                                <!-- Overlay solo para este canvas -->
+                                <div class="canvasOverlay">
+                                    ¡A punto de revelar las estadísticas!
+                                </div>
                             </div>
 
                             <div class="kpi-header">
                                 <div class="chart-title">Solicitudes por Área sleccionada</div>
                                 <canvas id="chartAreas" height="250"></canvas>
-                                Aqui va un grafico de barras (aprovadas, pendientes, rechazadas) por los diferentes firmantes
+                                <!-- Overlay solo para este canvas -->
+                                <div class="canvasOverlay">
+                                    ¡A punto de revelar las estadísticas!
+                                </div>
                             </div>
 
                             <div class="kpi-header">
                                 <div class="chart-title">Tipos de Permiso por Área selecionada</div>
                                 <canvas id="chartTipoPermiso" height="250"></canvas>
-                                Aqui va una grafica de barras de los tipos de permiso de las solicitudes
+                                <!-- Overlay solo para este canvas -->
+                                <div class="canvasOverlay">
+                                    ¡A punto de revelar las estadísticas!
+                                </div>
                             </div>
 
                             <div class="kpi-header">
                                 <div class="chart-title">Personal vs Oficial por Area Seleccionada</div>
                                 <canvas id="chartTipoSolicitud" height="250"></canvas>
-                                Aqui va una grafica de pastel 
+                                <!-- Overlay solo para este canvas -->
+                                <div class="canvasOverlay">
+                                    ¡A punto de revelar las estadísticas!
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -374,7 +393,10 @@
                             <div class="kpi-header">
                                 <div class="chart-title">Predicion a 7 dias por area selecionada</div>
                                 <canvas id="chartPredicion" height="250"></canvas>
-                                Grafica de de lineas para predecir las solicitudes
+                                <!-- Overlay solo para este canvas -->
+                                <div class="canvasOverlay">
+                                    ¡A punto de revelar las estadísticas!
+                                </div>
                             </div>
                         
                     </div>
@@ -383,7 +405,7 @@
                     <div class="section">
                         <div class="field-group">
                             <div class="kpi-header">
-                                <div class="chart-title">Ranking por Área selecionada</div>
+                                <div class="chart-title">Ranking por Área</div>
                                 <div class="table-container">
                                     <table>
                                         <thead>
@@ -432,6 +454,33 @@
         
         <!--- Carga de jQuery (local o CDN) --->
         <script src="js/jquery-3.6.0.min.js"></script>
+        
+<script>
+    $('#btnActualizar').click(function() {
+    // Oculta todos los overlays
+    $('.canvasOverlay').fadeOut(300);
+
+    // Aquí tu lógica AJAX para actualizar gráficos
+    let rangoDias = $('#rangoFechas').val();
+    let areaId = $('#areaSeleccionada').val();
+
+    $.ajax({
+        url: 'prediccion.cfc?method=getPrediccion',
+        type: 'GET',
+        data: { rangoDias: rangoDias, areaId: areaId },
+        dataType: 'json',
+        success: function(response) {
+            let data = (typeof response === 'string') ? JSON.parse(response) : response;
+            renderAdvancedChart(data); // tu función de gráficas
+        },
+        error: function(err) {
+            console.error('Error al obtener predicción', err);
+        }
+    });
+});
+
+
+</script>
         
         <script>
             $(document).ready(function(){
