@@ -372,8 +372,8 @@
                     <div class="section">
                         
                             <div class="kpi-header">
-                                <div class="chart-title">Predicion a 30 dias por area selecionada</div>
-                                <canvas id="chartTipoSolicitud" height="250"></canvas>
+                                <div class="chart-title">Predicion a 7 dias por area selecionada</div>
+                                <canvas id="chartPredicion" height="250"></canvas>
                                 Grafica de de lineas para predecir las solicitudes
                             </div>
                         
@@ -472,6 +472,10 @@
                             // Tiempo promedio
                             $("#tiempoPromedio").text(response.tiempoPromedio + " días");
                         },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false
+                        }
                         error: function(xhr, status, error){
                             console.error("Error al obtener métricas:", error);
                             alert("Hubo un error al cargar las métricas.");
@@ -980,6 +984,142 @@ $('#btnActualizar').on('click', function(e) {
         }
     });
 });
+
+</script>
+
+<script>
+    $(document).ready(function() {
+    $('#btnActualizar').click(function() {
+        let rangoDias = $('#rangoFechas').val();
+        let areaId = $('#areaSeleccionada').val();
+
+        $.ajax({
+            url: 'prediccion.cfc?method=getPrediccion',
+            type: 'GET',
+            data: { rangoDias: rangoDias, areaId: areaId },
+            dataType: 'json',
+            success: function(response) {
+                // Asegurarse de parsear JSON si viene como string
+                let data = (typeof response === 'string') ? JSON.parse(response) : response;
+                console.log('Datos AJAX:', data);
+                renderAdvancedChart(data);
+            },
+            error: function(err) {
+                console.error('Error al obtener predicción', err);
+            }
+        });
+    });
+});
+
+function renderAdvancedChart(data) {
+    const labels = data.map(d => d.fecha);
+    const ctx = document.getElementById('chartPredicion').getContext('2d');
+
+    // Gradientes futuristas
+    const gradientAprobados = ctx.createLinearGradient(0,0,0,400);
+    gradientAprobados.addColorStop(0,'rgba(0,255,128,0.5)');
+    gradientAprobados.addColorStop(1,'rgba(0,128,64,0.1)');
+
+    const gradientPendientes = ctx.createLinearGradient(0,0,0,400);
+    gradientPendientes.addColorStop(0,'rgba(255,200,0,0.5)');
+    gradientPendientes.addColorStop(1,'rgba(128,100,0,0.1)');
+
+    const gradientRechazados = ctx.createLinearGradient(0,0,0,400);
+    gradientRechazados.addColorStop(0,'rgba(255,0,0,0.5)');
+    gradientRechazados.addColorStop(1,'rgba(128,0,0,0.1)');
+
+    const gradientCredibilidad = ctx.createLinearGradient(0,0,0,400);
+    gradientCredibilidad.addColorStop(0,'rgba(0,128,255,0.5)');
+    gradientCredibilidad.addColorStop(1,'rgba(0,64,128,0.1)');
+
+    // Destruir instancia previa
+    if(window.chartInstance) window.chartInstance.destroy();
+
+    window.chartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'Aprobados',
+                    data: data.map(d => d.aprobados + 0.5),
+                    borderColor: 'green',
+                    backgroundColor: gradientAprobados,
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 5,
+                    pointHoverRadius: 8
+                },
+                {
+                    label: 'Pendientes',
+                    data: data.map(d => d.pendientes + 0.5),
+                    borderColor: 'orange',
+                    backgroundColor: gradientPendientes,
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 5,
+                    pointHoverRadius: 8,
+                    borderDash: [5,5]
+                },
+                {
+                    label: 'Rechazados',
+                    data: data.map(d => d.rechazados + 0.5),
+                    borderColor: 'red',
+                    backgroundColor: gradientRechazados,
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 5,
+                    pointHoverRadius: 8,
+                    borderDash: [10,5]
+                },
+                {
+                    label: 'Credibilidad (%)',
+                    data: data.map(d => d.credibilidad),
+                    borderColor: 'blue',
+                    backgroundColor: gradientCredibilidad,
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 3,
+                    pointHoverRadius: 6,
+                    yAxisID: 'yCredibilidad',
+                    borderDash: [2,3]
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let d = data[context.dataIndex];
+                            return `${context.dataset.label}: ${Math.round(context.parsed.y)} | Tipo: ${d.tipo_solicitud} | Permiso: ${d.tipo_permiso}`;
+                        }
+                    }
+                },
+                legend: { labels: { usePointStyle: true, pointStyle: 'rectRounded' } }
+            },
+            scales: {
+                y: {
+                    title: { display: true, text: 'Cantidad de solicitudes' },
+                    suggestedMin: 0,
+                    suggestedMax: Math.max(...data.map(d=>Math.max(d.aprobados,d.pendientes,d.rechazados))) + 2
+                },
+                yCredibilidad: {
+                    position: 'right',
+                    min: 0,
+                    max: 100,
+                    title: { display: true, text: 'Credibilidad (%)' },
+                    grid: { drawOnChartArea: false }
+                },
+                x: {
+                    title: { display: true, text: 'Fecha' }
+                }
+            }
+        }
+    });
+}
 
 </script>
 
