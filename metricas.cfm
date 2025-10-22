@@ -341,7 +341,7 @@
                             </div>
 
                             <div class="kpi-header">
-                                <div class="chart-title">Por Etapa de Firma</div>
+                                <div class="chart-title">Etapa de Firma</div>
                                 <canvas id="chartEtapas" height="250"></canvas>
                                 <!-- Overlay solo para este canvas -->
                                 <div class="canvasOverlay">
@@ -359,7 +359,7 @@
                             </div>
 
                             <div class="kpi-header">
-                                <div class="chart-title">Solicitudes por Área sleccionada</div>
+                                <div class="chart-title">Solicitudes por Área seleccionada</div>
                                 <canvas id="chartAreas" height="250"></canvas>
                                 <!-- Overlay solo para este canvas -->
                                 <div class="canvasOverlay">
@@ -368,7 +368,7 @@
                             </div>
 
                             <div class="kpi-header">
-                                <div class="chart-title">Tipos de Permiso por Área selecionada</div>
+                                <div class="chart-title">Tipos de Permiso por Área seleccionada</div>
                                 <canvas id="chartTipoPermiso" height="250"></canvas>
                                 <!-- Overlay solo para este canvas -->
                                 <div class="canvasOverlay">
@@ -391,7 +391,7 @@
                     <div class="section">
                         
                             <div class="kpi-header">
-                                <div class="chart-title">Predicion a 7 dias por area selecionada</div>
+                                <div class="chart-title">Predicion a 7 dias por area seleccionada</div>
                                 <canvas id="chartPredicion" height="250"></canvas>
                                 <!-- Overlay solo para este canvas -->
                                 <div class="canvasOverlay">
@@ -405,7 +405,7 @@
                     <div class="section">
                         <div class="field-group">
                             <div class="kpi-header">
-                                <div class="chart-title">Ranking por Área</div>
+                                <div class="chart-title">Ranking por Área seleccionada</div>
                                 <div class="table-container">
                                     <table>
                                         <thead>
@@ -419,40 +419,21 @@
                                             </tr>
                                         </thead>
                                         <tbody id="tablaAreasBody">
-    <cfif NOT structKeyExists(variables, "rankingAreas") OR rankingAreas.recordCount EQ 0>
-        <tr>
-            <td colspan="6" style="text-align:center;">No hay datos disponibles para el periodo seleccionado</td>
-        </tr>
-    <cfelse>
-        <cfoutput query="rankingAreas">
-            <tr
-                <cfif rankingAreas.id_area EQ val(form.areaSeleccionada)>
-                    style="font-weight:bold; background-color:##1b263b; color:white;"
-                </cfif>
-            >
-                <td>#area#</td>
-                <td>#total_solicitudes#</td>
-                <td>#aprobadas#</td>
-                <td>#rechazadas#</td>
-                <td>#pendientes#</td>
-                <td>#tasa_aprobacion#%</td>
-            </tr>
-        </cfoutput>
-    </cfif>
-</tbody>
-
+                                            <tr><td colspan="6" style="text-align: center;">Cargando...</td></tr>
+                                        </tbody>
                                     </table>
                                 </div>
                             </div>
 
                             <div class="kpi-header">
-                                <div class="chart-title">Top 10 Solicitantes por area selecionada</div>
+                                <div class="chart-title">Top 10 Solicitantes por area seleccionada</div>
                                     <div class="table-container">
                                         <table>
                                             <thead>
                                                 <tr>
                                                     <th>Firmante</th>
                                                     <th>Rol</th>
+                                                    <th>Total</th>
                                                     <th>Aprovadas</th>
                                                     <th>Rechazadas</th>
                                                     <th>Pendientes</th>
@@ -471,46 +452,22 @@
             </div>
         </div>
 
-        
         <!--- Carga de jQuery (local o CDN) --->
         <script src="js/jquery-3.6.0.min.js"></script>
-        
-<script>
-    $('#btnActualizar').click(function() {
-    // Oculta todos los overlays
-    $('.canvasOverlay').fadeOut(300);
 
-    // Aquí tu lógica AJAX para actualizar gráficos
-    let rangoDias = $('#rangoFechas').val();
-    let areaId = $('#areaSeleccionada').val();
-
-    $.ajax({
-        url: 'prediccion.cfc?method=getPrediccion',
-        type: 'GET',
-        data: { rangoDias: rangoDias, areaId: areaId },
-        dataType: 'json',
-        success: function(response) {
-            let data = (typeof response === 'string') ? JSON.parse(response) : response;
-            renderAdvancedChart(data); // tu función de gráficas
-        },
-        error: function(err) {
-            console.error('Error al obtener predicción', err);
-        }
-    });
-});
-
-
-</script>
-        
+        <!--- 
+            Seccion 2
+            Actuliza el contador del estado de las solicitudes y el tiempo promedio de aprobacion 
+            --->
         <script>
-            $(document).ready(function(){
+            $(document).ready(function() {
 
                 // Función para actualizar las métricas
-                function actualizarMetricas(){
+                function actualizarMetricas() {
                     let dias = $("#rangoFechas").val();
                     let area = $("#areaSeleccionada").val();
 
-                    if(area === ""){
+                    if(area === "") {
                         alert("Por favor selecciona un área.");
                         return;
                     }
@@ -521,8 +478,12 @@
                         url: "obtenerMetricas.cfm",
                         method: "POST",
                         data: { rango: dias, area: area },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false
+                        },
                         dataType: "json",
-                        success: function(response){
+                        success: function(response) {
                             // Total de solicitudes
                             $("#totalSolicitudes").text(response.totalSolicitudes);
 
@@ -541,11 +502,7 @@
                             // Tiempo promedio
                             $("#tiempoPromedio").text(response.tiempoPromedio + " días");
                         },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false
-                        }
-                        error: function(xhr, status, error){
+                        error: function(xhr, status, error) {
                             console.error("Error al obtener métricas:", error);
                             alert("Hubo un error al cargar las métricas.");
                         },
@@ -556,7 +513,7 @@
                 }
 
                 // Evento del botón
-                $("#btnActualizar").click(function(){
+                $("#btnActualizar").click(function() {
                     actualizarMetricas();
                 });
 
@@ -565,19 +522,24 @@
             });
         </script>
 
+        <!---
+            Seccion -> 3
+            Grafica -> 1
+            Grafica -> Estado de solicitudes
+        --->
+
         <script>
-            $(document).ready(function(){
+            $(document).ready(function() {
 
                 let chartEstados; // Variable global para mantener la referencia de la gráfica
 
-                function actualizarGraficaEstados(area, dias){
+                function actualizarGraficaEstados(area, dias) {
                     $.ajax({
-                        url: "obtenerMetricas.cfm",
+                        url: "obtenerEstadoSolicitudes.cfm",
                         method: "POST",
                         data: { rango: dias, area: area },
                         dataType: "json",
-                        success: function(response){
-                
+                        success: function(response) {
                             // Datos para el pie chart usando status_final
                             const data = {
                                 labels: ['Aprobadas', 'Pendientes', 'Rechazadas'],
@@ -628,17 +590,17 @@
                                 config
                             );
                         },
-                        error: function(xhr, status, error){
+                        error: function(xhr, status, error) {
                             console.error("Error al obtener datos para la gráfica:", error);
                         }
                     });
                 }
 
                 // Llamar la función al dar click en actualizar
-                $("#btnActualizar").click(function(){
+                $("#btnActualizar").click(function() {
                     let dias = $("#rangoFechas").val();
                     let area = $("#areaSeleccionada").val();
-                    if(area === ""){
+                    if(area === "") {
                         alert("Por favor selecciona un área.");
                         return;
                     }
@@ -647,581 +609,712 @@
 
                 // Opcional: generar gráfico al cargar la página con valores por defecto
                 // actualizarGraficaEstados($("#areaSeleccionada").val(), $("#rangoFechas").val());
-
             });
         </script>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-var chartTendencia; // Variable global para la gráfica
+        <!---
+            Seccion -> 3
+            Grafica -> 2
+            Grafica -> Etapa de Firma
+        --->
 
-function actualizarTendencia() {
-    var rango = $("#rangoFechas").val();
-    var area = $("#areaSeleccionada").val();
+        <script>
+            $('#btnActualizar').on('click', function(e) {
+                e.preventDefault();
 
-    // Solo continuar si el usuario seleccionó un área
-    if(area === "") {
-        alert("Por favor selecciona un área para mostrar la gráfica.");
-        return;
-    }
+                const rango = $('#rangoFechas').val();
+                const area = $('#areaSeleccionada').val();
 
-    $.ajax({
-        url: "obtenerTendencia.cfm",
-        method: "POST",
-        data: { rango: rango, area: area },
-        dataType: "json",
-        success: function(response) {
-            var labels = [];
-            var aprobadas = [];
-            var pendientes = [];
-            var rechazadas = [];
+                // --- Graficar Etapas de Firma ---
+                $.ajax({
+                    url: 'obtenerFirmasPorRol.cfm',
+                    method: 'GET',
+                    data: { 
+                        rango: rango, 
+                        area: area 
+                    },
+                    dataType: 'json',
+                    success: function(response) {
+                        console.log("Datos de firmas por rol:", response);
 
-            response.tendencia.forEach(function(item) {
-                // Convertir fecha a formato legible si quieres
-                labels.push(item.fecha);
-                aprobadas.push(item.aprobadas);
-                pendientes.push(item.pendientes);
-                rechazadas.push(item.rechazadas);
+                        const labels = response.FIRMASROL.map(item => item.ROL);
+                        const cantidades = response.FIRMASROL.map(item => item.CANTIDAD);
+
+                        if (labels.length === 0) {
+                            $('#chartEtapas').hide();
+                            $('#chartEtapas').after('<div>No hay datos de firmas para el área seleccionada.</div>');
+                            return;
+                        }
+
+                        $('#chartEtapas').show();
+                        if (window.firmasRolChart) {
+                            window.firmasRolChart.destroy();
+                        }
+
+                        const ctx = document.getElementById('chartEtapas').getContext('2d');
+
+                        window.firmasRolChart = new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                labels: labels,
+                                datasets: [{
+                                    label: 'Cantidad de Firmas',
+                                    data: cantidades,
+                                    backgroundColor: '#36A2EB'
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        ticks: { stepSize: 1 }
+                                    }
+                                },
+                                plugins: {
+                                    legend: { display: false }
+                                }
+                            }
+                        });
+                    },
+                    error: function(err) {
+                        console.error(err);
+                        alert("Ocurrió un error al cargar la gráfica de firmas.");
+                    }
+                });
             });
+        </script>
 
-            // Si ya existe la gráfica, la destruimos antes de crear una nueva
-            if(chartTendencia) {
-                chartTendencia.destroy();
+        <!---
+            Seccion -> 3
+            Grafica -> 3
+            Grafica -> Tendencia de Solicitudes
+        --->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+        <script>
+            var chartTendencia; // Variable global para la gráfica
+
+            function actualizarTendencia() {
+                var rango = $("#rangoFechas").val();
+                var area = $("#areaSeleccionada").val();
+
+                // Solo continuar si el usuario seleccionó un área
+                if(area === "") {
+                    alert("Por favor selecciona un área para mostrar la gráfica.");
+                    return;
+                }
+
+                $.ajax({
+                    url: "obtenerTendencia.cfm",
+                    method: "POST",
+                    data: { 
+                        rango: rango, 
+                        area: area 
+                    },
+                    dataType: "json",
+                    success: function(response) {
+                        var labels = [];
+                        var aprobadas = [];
+                        var pendientes = [];
+                        var rechazadas = [];
+
+                        response.tendencia.forEach(function(item) {
+                            // Convertir fecha a formato legible si quieres
+                            labels.push(item.fecha);
+                            aprobadas.push(item.aprobadas);
+                            pendientes.push(item.pendientes);
+                            rechazadas.push(item.rechazadas);
+                        });
+
+                        // Si ya existe la gráfica, la destruimos antes de crear una nueva
+                        if(chartTendencia) {
+                            chartTendencia.destroy();
+                        }
+
+                        var ctx = document.getElementById("chartTendencia").getContext("2d");
+                        
+                        chartTendencia = new Chart(ctx, {
+                            type: 'line',
+                            data: {
+                                labels: labels,
+                                datasets: [
+                                    {
+                                        label: 'Aprobadas',
+                                        data: aprobadas,
+                                        borderColor: 'green',
+                                        backgroundColor: 'rgba(0,128,0,0.1)',
+                                        fill: true,
+                                        tension: 0.3
+                                    },
+                                    {
+                                        label: 'Pendientes',
+                                        data: pendientes,
+                                        borderColor: 'orange',
+                                        backgroundColor: 'rgba(255,165,0,0.1)',
+                                        fill: true,
+                                        tension: 0.3
+                                    },
+                                    {
+                                        label: 'Rechazadas',
+                                        data: rechazadas,
+                                        borderColor: 'red',
+                                        backgroundColor: 'rgba(255,0,0,0.1)',
+                                        fill: true,
+                                        tension: 0.3
+                                    }
+                                ]
+                            },
+                            options: {
+                                responsive: true,
+                                plugins: {
+                                    legend: {
+                                        position: 'top',
+                                    },
+                                    tooltip: {
+                                        mode: 'index',
+                                        intersect: false,
+                                    }
+                                },
+                                interaction: {
+                                    mode: 'nearest',
+                                    intersect: false
+                                },
+                                scales: {
+                                    x: {
+                                        title: {
+                                            display: true,
+                                            text: 'Fecha'
+                                        }
+                                    },
+                                    y: {
+                                        title: {
+                                            display: true,
+                                            text: 'Cantidad de solicitudes'
+                                        },
+                                        beginAtZero: true,
+                                        precision: 0
+                                    }
+                                }
+                            }
+                        });
+                    },
+                    error: function(err) {
+                        console.error("Error al obtener la tendencia:", err);
+                    }
+                });
             }
 
-            var ctx = document.getElementById("chartTendencia").getContext("2d");
-            chartTendencia = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [
+            // Evento click del botón
+            $("#btnActualizar").click(function(e) {
+                e.preventDefault();
+                actualizarTendencia();
+            });
+        </script>
+
+        <!---
+            Seccion -> 3
+            Grafica -> 4
+            Grafica -> Solicitudes por Área Selecionada
+        --->
+
+        <script>
+        // Variable global para la gráfica
+        let chartFirmantes = null;
+        
+        $(document).ready(function() {
+            $("#btnActualizar").click(function() {
+                const areaSeleccionada = $("#areaSeleccionada").val();
+                
+                if (!areaSeleccionada) {
+                    alert("Selecciona un área primero.");
+                    return;
+                }
+
+                $.ajax({
+                    url: "obtenerSolicitudesAreaSeleccionada.cfm",
+                    method: "POST",
+                    data: { 
+                        area: areaSeleccionada 
+                    },
+                    dataType: "json",
+                    success: function(response) {
+                        if (!response.firmantes || response.firmantes.length === 0) {
+                            alert("No hay datos de firmantes para el área seleccionada.");
+                            // Limpiar gráfica anterior si existe
+                            if (chartFirmantes) {
+                                chartFirmantes.destroy();
+                                chartFirmantes = null;
+                            }
+                            return;
+                        }
+
+                        // Preparar datos
+                        const labels = response.firmantes.map(f => f.nombre);
+                        const aprobadas = response.firmantes.map(f => f.aprobadas);
+                        const pendientes = response.firmantes.map(f => f.pendientes);
+                        const rechazadas = response.firmantes.map(f => f.rechazadas);
+
+                        // Si la gráfica ya existe, destruirla antes de crear otra
+                        if (chartFirmantes) {
+                            chartFirmantes.destroy();
+                        }
+
+                        const ctx = document.getElementById("chartAreas").getContext("2d");
+
+                        chartFirmantes = new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                labels: labels,
+                                datasets: [
+                                    {
+                                        label: 'Aprobadas',
+                                        data: aprobadas,
+                                        backgroundColor: 'rgba(75, 192, 192, 0.7)'
+                                    },
+                                    {
+                                        label: 'Pendientes',
+                                        data: pendientes,
+                                        backgroundColor: 'rgba(255, 206, 86, 0.7)'
+                                    },
+                                    {
+                                        label: 'Rechazadas',
+                                        data: rechazadas,
+                                        backgroundColor: 'rgba(255, 99, 132, 0.7)'
+                                    }
+                                ]
+                            },
+                            options: {
+                                responsive: true,
+                                plugins: {
+                                    legend: {
+                                        position: 'top',
+                                    },
+                                    title: {
+                                        display: true,
+                                        text: 'Solicitudes por Firmante'
+                                    }
+                                },
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        title: {
+                                            display: true,
+                                            text: 'Cantidad de Solicitudes'
+                                        }
+                                    },
+                                    x: {
+                                        title: {
+                                            display: true,
+                                            text: 'Firmantes'
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    },
+                    error: function(err) {
+                        console.error("Error al obtener datos de firmantes:", err);
+                        alert("Hubo un error al cargar los datos de firmantes.");
+                    }
+                });
+            });
+        });
+        </script>
+
+        <!---
+            Seccion -> 3
+            Grafica -> 5
+            Grafica -> Tipos de Permiso por Área Seleccionada
+        --->
+
+        <script>
+            document.getElementById("btnActualizar").addEventListener("click", function () {
+                const idArea = document.getElementById("areaSeleccionada").value;
+                const rangoDias = document.getElementById("rangoFechas").value;
+
+                if (!idArea) {
+                    alert("Por favor selecciona un área.");
+                    return;
+                }
+
+                // Llamada AJAX a obtener_tipos_permiso.cfm
+                fetch(`obtenerTiposPermiso.cfm?id_area=${idArea}&rangoDias=${rangoDias}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Respuesta de permisos:", data);
+
+                    const ctx = document.getElementById("chartTipoPermiso").getContext("2d");
+
+                    // Si existe una gráfica previa, destruirla
+                    if (window.graficoTipoPermiso) {
+                        window.graficoTipoPermiso.destroy();
+                    }
+
+                    // Validar si hay datos
+                    if (!data.tiposPermiso || data.tiposPermiso.length === 0) {
+                        ctx.font = "16px Arial";
+                        ctx.fillText("No hay datos disponibles para el área seleccionada.", 50, 100);
+                        return;
+                    }
+
+                    // Preparar datos para la gráfica
+                    const labels = data.tiposPermiso.map(item => item.tipo_permiso);
+                    const valores = data.tiposPermiso.map(item => item.cantidad);
+
+                    // Crear gráfica
+                    window.graficoTipoPermiso = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: 'Cantidad de Solicitudes',
+                                data: valores,
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: { 
+                                    display: true 
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Tipos de Permiso por Área Seleccionada'
+                                }
+                            },
+                            scales: {
+                                y: { beginAtZero: true }
+                            }
+                        }
+                    });
+                })
+                .catch(err => {
+                    console.error("Error al obtener los tipos de permiso:", err);
+                });
+            });
+        </script>
+
+        <!---
+            Seccion -> 3
+            Grafica -> 6
+            Grafica -> Personal VS Oficial por Área Seleccionada
+        --->
+
+        <script>
+            $('#btnActualizar').on('click', function(e) {
+                e.preventDefault();
+
+                const rango = $('#rangoFechas').val();
+                const area = $('#areaSeleccionada').val();
+
+                $.ajax({
+                    url: 'obtenerPersonalVSOficial.cfm',
+                    method: 'GET',
+                    data: { 
+                        rango: rango, 
+                        area: area 
+                    },
+                    dataType: 'json',
+                    success: function(response) {
+                        console.log("Datos recibidos:", response);
+
+                        const labels = response.TIPOSSOLICITUD.map(item => item.TIPO);
+                        const cantidades = response.TIPOSSOLICITUD.map(item => item.CANTIDAD);
+
+                        if (labels.length === 0) {
+                            $('#chartTipoSolicitud').hide();
+                            $('#chartTipoSolicitud').after('<div>No hay datos disponibles para el área seleccionada.</div>');
+                            return;
+                        }
+
+                        $('#chartTipoSolicitud').show();
+                        
+                        // Limpiar canvas anterior si existe
+                        if (window.tipoSolicitudChart) {
+                            window.tipoSolicitudChart.destroy();
+                        }
+
+                        const ctx = document.getElementById('chartTipoSolicitud').getContext('2d');
+                        window.tipoSolicitudChart = new Chart(ctx, {
+                            type: 'pie',
+                            data: {
+                                labels: labels,
+                                datasets: [{
+                                    data: cantidades,
+                                    backgroundColor: ['#36A2EB', '#FF6384'],
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                plugins: {
+                                    legend: { 
+                                        position: 'bottom' 
+                                    }
+                                }
+                            }
+                        });
+                    },
+                    error: function(err) {
+                        console.error(err);
+                        alert("Ocurrió un error al cargar la gráfica.");
+                    }
+                });
+            });
+        </script>
+
+        <!---
+            Seccion -> 3, 4
+            Grafica -> 1, 2, 3, 4, 5, 6, 7
+            Quita los overlays de las graficas
+        --->
+
+        <script>
+            $('#btnActualizar').click(function() {
+                // Oculta todos los overlays
+                $('.canvasOverlay').fadeOut(300);
+            });
+        </script>
+
+        <!---
+            Seccion -> 4
+            Grafica -> 7
+            Grafica -> Predicion a 7 dias por area selecionada
+        --->
+
+        <script>
+            $(document).ready(function() {
+                $('#btnActualizar').click(function() {
+                    let rangoDias = $('#rangoFechas').val();
+                    let areaId = $('#areaSeleccionada').val();
+
+                    $.ajax({
+                        url: 'obtenerPrediccion.cfc?method=getPrediccion',
+                        type: 'GET',
+                        data: { 
+                            rangoDias: rangoDias, 
+                            areaId: areaId 
+                        },
+                        dataType: 'json',
+                        success: function(response) {
+                            // Asegurarse de parsear JSON si viene como string
+                            let data = (typeof response === 'string') ? JSON.parse(response) : response;
+                            console.log('Datos AJAX:', data);
+                            renderAdvancedChart(data);
+                        },
+                        error: function(err) {
+                            console.error('Error al obtener predicción', err);
+                        }
+                    });
+                });
+            });
+
+            function renderAdvancedChart(data) {
+                const labels = data.map(d => d.fecha);
+                const ctx = document.getElementById('chartPredicion').getContext('2d');
+
+                // Gradientes futuristas
+                const gradientAprobados = ctx.createLinearGradient(0,0,0,400);
+                gradientAprobados.addColorStop(0,'rgba(0,255,128,0.5)');
+                gradientAprobados.addColorStop(1,'rgba(0,128,64,0.1)');
+
+                const gradientPendientes = ctx.createLinearGradient(0,0,0,400);
+                gradientPendientes.addColorStop(0,'rgba(255,200,0,0.5)');
+                gradientPendientes.addColorStop(1,'rgba(128,100,0,0.1)');
+
+                const gradientRechazados = ctx.createLinearGradient(0,0,0,400);
+                gradientRechazados.addColorStop(0,'rgba(255,0,0,0.5)');
+                gradientRechazados.addColorStop(1,'rgba(128,0,0,0.1)');
+
+                const gradientCredibilidad = ctx.createLinearGradient(0,0,0,400);
+                gradientCredibilidad.addColorStop(0,'rgba(0,128,255,0.5)');
+                gradientCredibilidad.addColorStop(1,'rgba(0,64,128,0.1)');
+
+                // Destruir instancia previa
+                if (window.chartInstance) {
+                    window.chartInstance.destroy();
+                }
+
+                window.chartInstance = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [
                         {
-                            label: 'Aprobadas',
-                            data: aprobadas,
+                            label: 'Aprobados',
+                            data: data.map(d => d.aprobados + 0.5),
                             borderColor: 'green',
-                            backgroundColor: 'rgba(0,128,0,0.1)',
+                            backgroundColor: gradientAprobados,
                             fill: true,
-                            tension: 0.3
+                            tension: 0.4,
+                            pointRadius: 5,
+                            pointHoverRadius: 8
                         },
                         {
                             label: 'Pendientes',
-                            data: pendientes,
+                            data: data.map(d => d.pendientes + 0.5),
                             borderColor: 'orange',
-                            backgroundColor: 'rgba(255,165,0,0.1)',
+                            backgroundColor: gradientPendientes,
                             fill: true,
-                            tension: 0.3
+                            tension: 0.4,
+                            pointRadius: 5,
+                            pointHoverRadius: 8,
+                            borderDash: [5,5]
                         },
                         {
-                            label: 'Rechazadas',
-                            data: rechazadas,
+                            label: 'Rechazados',
+                            data: data.map(d => d.rechazados + 0.5),
                             borderColor: 'red',
-                            backgroundColor: 'rgba(255,0,0,0.1)',
+                            backgroundColor: gradientRechazados,
                             fill: true,
-                            tension: 0.3
+                            tension: 0.4,
+                            pointRadius: 5,
+                            pointHoverRadius: 8,
+                            borderDash: [10,5]
+                        },
+                        {
+                            label: 'Credibilidad (%)',
+                            data: data.map(d => d.credibilidad),
+                            borderColor: 'blue',
+                            backgroundColor: gradientCredibilidad,
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 3,
+                            pointHoverRadius: 6,
+                            yAxisID: 'yCredibilidad',
+                            borderDash: [2,3]
                         }
                     ]
                 },
                 options: {
                     responsive: true,
+                    interaction: { 
+                        mode: 'index', 
+                        intersect: false 
+                    },
                     plugins: {
-                        legend: {
-                            position: 'top',
-                        },
                         tooltip: {
-                            mode: 'index',
-                            intersect: false,
-                        }
-                    },
-                    interaction: {
-                        mode: 'nearest',
-                        intersect: false
-                    },
-                    scales: {
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Fecha'
+                            callbacks: {
+                                label: function(context) {
+                                    let d = data[context.dataIndex];
+                                    return `${context.dataset.label}: ${Math.round(context.parsed.y)} | Tipo: ${d.tipo_solicitud} | Permiso: ${d.tipo_permiso}`;
+                                }
                             }
                         },
+                        legend: { labels: { usePointStyle: true, pointStyle: 'rectRounded' } }
+                    },
+                    scales: {
                         y: {
-                            title: {
-                                display: true,
-                                text: 'Cantidad de solicitudes'
+                            title: { 
+                                display: true, 
+                                text: 'Cantidad de solicitudes' 
                             },
-                            beginAtZero: true,
-                            precision: 0
+                            suggestedMin: 0,
+                            suggestedMax: Math.max(...data.map(d=>Math.max(d.aprobados,d.pendientes,d.rechazados))) + 2
+                        },
+                        yCredibilidad: {
+                            position: 'right',
+                            min: 0,
+                            max: 100,
+                            title: { 
+                                display: true, 
+                                text: 'Credibilidad (%)' 
+                            },
+                            grid: { 
+                                drawOnChartArea: false 
+                            }
+                        },
+                        x: {
+                            title: { 
+                                display: true, 
+                                text: 'Fecha' 
+                            }
                         }
                     }
                 }
             });
-        },
-        error: function(err) {
-            console.error("Error al obtener la tendencia:", err);
         }
-    });
-}
+        </script>
 
-// Evento click del botón
-$("#btnActualizar").click(function(e){
-    e.preventDefault();
-    actualizarTendencia();
-});
-</script>
+        <!---
+            Seccion -> 5
+            Tabla -> 1
+            Tabla -> Ranking por Área
+        --->
 
-<script>
-// Variable global para la gráfica
-let chartFirmantes = null;
+        <script>
+            document.getElementById("btnActualizar").addEventListener("click", function(e) {
+                e.preventDefault();
 
-$(document).ready(function() {
-    $("#btnActualizar").click(function() {
-        const areaSeleccionada = $("#areaSeleccionada").val();
+                // Obtener valores del formulario
+                const rango = document.getElementById("rangoFechas").value;
+                const area = document.getElementById("areaSeleccionada").value;
 
-        if (!areaSeleccionada) {
-            alert("Selecciona un área primero.");
-            return;
-        }
+                // Mostrar mensaje de carga
+                document.getElementById("tablaAreasBody").innerHTML =
+                    '<tr><td colspan="6" style="text-align:center;">Cargando...</td></tr>';
 
-        $.ajax({
-            url: "obtenerFirmantes.cfm",
-            method: "POST",
-            data: { area: areaSeleccionada },
-            dataType: "json",
-            success: function(response) {
-                if (!response.firmantes || response.firmantes.length === 0) {
-                    alert("No hay datos de firmantes para el área seleccionada.");
-                    // Limpiar gráfica anterior si existe
-                    if (chartFirmantes) {
-                        chartFirmantes.destroy();
-                        chartFirmantes = null;
-                    }
+                // Llamar al archivo CFM que genera la tabla
+                fetch("obtenerMetricasRanking.cfm", {
+                    method: "POST",
+                    headers: { 
+                        "Content-Type": "application/x-www-form-urlencoded" 
+                    },
+                    body: `rangoFechas=${rango}&areaSeleccionada=${area}`
+                })
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById("tablaAreasBody").innerHTML = html;
+                })
+                .catch(err => {
+                    console.error(err);
+                    document.getElementById("tablaAreasBody").innerHTML =
+                        '<tr><td colspan="6" style="text-align:center;color:red;">Error al cargar los datos</td></tr>';
+                });
+            });
+        </script>
+
+        <!---
+            Seccion -> 5
+            Tabla -> 2
+            Tabla -> Top 10 Solicitantes
+        --->
+
+        <script>
+            function actualizarTopFirmantes() {
+                const areaSeleccionada = document.getElementById("areaSeleccionada").value;
+                const rangoFechas = document.getElementById("rangoFechas").value;
+                const tablaBody = document.getElementById("tablaFirmantesBody");
+
+                if (!areaSeleccionada) {
+                    tablaBody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Por favor selecciona un área</td></tr>`;
                     return;
                 }
 
-                // Preparar datos
-                const labels = response.firmantes.map(f => f.nombre);
-                const aprobadas = response.firmantes.map(f => f.aprobadas);
-                const pendientes = response.firmantes.map(f => f.pendientes);
-                const rechazadas = response.firmantes.map(f => f.rechazadas);
+                tablaBody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Cargando datos...</td></tr>`;
 
-                // Si la gráfica ya existe, destruirla antes de crear otra
-                if (chartFirmantes) {
-                    chartFirmantes.destroy();
-                }
-
-                const ctx = document.getElementById("chartAreas").getContext("2d");
-                chartFirmantes = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: labels,
-                        datasets: [
-                            {
-                                label: 'Aprobadas',
-                                data: aprobadas,
-                                backgroundColor: 'rgba(75, 192, 192, 0.7)'
-                            },
-                            {
-                                label: 'Pendientes',
-                                data: pendientes,
-                                backgroundColor: 'rgba(255, 206, 86, 0.7)'
-                            },
-                            {
-                                label: 'Rechazadas',
-                                data: rechazadas,
-                                backgroundColor: 'rgba(255, 99, 132, 0.7)'
-                            }
-                        ]
+                fetch("obtenerTop10.cfm", {
+                    method: "POST",
+                    headers: { 
+                        "Content-Type": "application/x-www-form-urlencoded" 
                     },
-                    options: {
-                        responsive: true,
-                        plugins: {
-                            legend: {
-                                position: 'top',
-                            },
-                            title: {
-                                display: true,
-                                text: 'Solicitudes por Firmante'
-                            }
-                        },
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                title: {
-                                    display: true,
-                                    text: 'Cantidad de Solicitudes'
-                                }
-                            },
-                            x: {
-                                title: {
-                                    display: true,
-                                    text: 'Firmantes'
-                                }
-                            }
-                        }
-                    }
+                    body: `areaSeleccionada=${encodeURIComponent(areaSeleccionada)}&rangoFechas=${encodeURIComponent(rangoFechas)}`
+                })
+                .then(response => response.text())
+                .then(html => {
+                    tablaBody.innerHTML = html.trim();
+                })
+                .catch(error => {
+                    console.error("Error al cargar firmantes:", error);
+                    tablaBody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:red;">Error al cargar los datos</td></tr>`;
                 });
-            },
-            error: function(err) {
-                console.error("Error al obtener datos de firmantes:", err);
-                alert("Hubo un error al cargar los datos de firmantes.");
-            }
-        });
-    });
-});
-</script>
-
-<script>
-document.getElementById("btnActualizar").addEventListener("click", function () {
-    const idArea = document.getElementById("areaSeleccionada").value;
-    const rangoDias = document.getElementById("rangoFechas").value;
-
-    if (!idArea) {
-        alert("Por favor selecciona un área.");
-        return;
-    }
-
-    // Llamada AJAX a obtener_tipos_permiso.cfm
-    fetch(`obtenerTiposPermiso.cfm?id_area=${idArea}&rangoDias=${rangoDias}`)
-        .then(response => response.json())
-        .then(data => {
-            console.log("Respuesta de permisos:", data);
-
-            const ctx = document.getElementById("chartTipoPermiso").getContext("2d");
-
-            // Si existe una gráfica previa, destruirla
-            if (window.graficoTipoPermiso) {
-                window.graficoTipoPermiso.destroy();
             }
 
-            // Validar si hay datos
-            if (!data.tiposPermiso || data.tiposPermiso.length === 0) {
-                ctx.font = "16px Arial";
-                ctx.fillText("No hay datos disponibles para el área seleccionada.", 50, 100);
-                return;
-            }
-
-            // Preparar datos para la gráfica
-            const labels = data.tiposPermiso.map(item => item.tipo_permiso);
-            const valores = data.tiposPermiso.map(item => item.cantidad);
-
-            // Crear gráfica
-            window.graficoTipoPermiso = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Cantidad de Solicitudes',
-                        data: valores,
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: { display: true },
-                        title: {
-                            display: true,
-                            text: 'Tipos de Permiso por Área Seleccionada'
-                        }
-                    },
-                    scales: {
-                        y: { beginAtZero: true }
-                    }
-                }
-            });
-        })
-        .catch(err => {
-            console.error("Error al obtener los tipos de permiso:", err);
-        });
-});
-</script>
-
-<script>
-$('#btnActualizar').on('click', function(e) {
-    e.preventDefault();
-
-    const rango = $('#rangoFechas').val();
-    const area = $('#areaSeleccionada').val();
-
-    $.ajax({
-        url: 'obtenerTipoSolicitud.cfm',
-        method: 'GET',
-        data: { rango: rango, area: area },
-        dataType: 'json',
-        success: function(response) {
-            console.log("Datos recibidos:", response);
-
-            const labels = response.TIPOSSOLICITUD.map(item => item.TIPO);
-            const cantidades = response.TIPOSSOLICITUD.map(item => item.CANTIDAD);
-
-            if (labels.length === 0) {
-                $('#chartTipoSolicitud').hide();
-                $('#chartTipoSolicitud').after('<div>No hay datos disponibles para el área seleccionada.</div>');
-                return;
-            }
-
-            $('#chartTipoSolicitud').show();
-            // Limpiar canvas anterior si existe
-            if (window.tipoSolicitudChart) {
-                window.tipoSolicitudChart.destroy();
-            }
-
-            const ctx = document.getElementById('chartTipoSolicitud').getContext('2d');
-            window.tipoSolicitudChart = new Chart(ctx, {
-                type: 'pie',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        data: cantidades,
-                        backgroundColor: ['#36A2EB', '#FF6384'],
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: { position: 'bottom' }
-                    }
-                }
-            });
-        },
-        error: function(err) {
-            console.error(err);
-            alert("Ocurrió un error al cargar la gráfica.");
-        }
-    });
-});
-
-</script>
-
-<script>
-    $('#btnActualizar').on('click', function(e) {
-    e.preventDefault();
-
-    const rango = $('#rangoFechas').val();
-    const area = $('#areaSeleccionada').val();
-
-    // --- Graficar Etapas de Firma ---
-    $.ajax({
-        url: 'obtenerFirmasPorRol.cfm',
-        method: 'GET',
-        data: { rango: rango, area: area },
-        dataType: 'json',
-        success: function(response) {
-            console.log("Datos de firmas por rol:", response);
-
-            const labels = response.FIRMASROL.map(item => item.ROL);
-            const cantidades = response.FIRMASROL.map(item => item.CANTIDAD);
-
-            if (labels.length === 0) {
-                $('#chartEtapas').hide();
-                $('#chartEtapas').after('<div>No hay datos de firmas para el área seleccionada.</div>');
-                return;
-            }
-
-            $('#chartEtapas').show();
-            if (window.firmasRolChart) {
-                window.firmasRolChart.destroy();
-            }
-
-            const ctx = document.getElementById('chartEtapas').getContext('2d');
-            window.firmasRolChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Cantidad de Firmas',
-                        data: cantidades,
-                        backgroundColor: '#36A2EB'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: { stepSize: 1 }
-                        }
-                    },
-                    plugins: {
-                        legend: { display: false }
-                    }
-                }
-            });
-        },
-        error: function(err) {
-            console.error(err);
-            alert("Ocurrió un error al cargar la gráfica de firmas.");
-        }
-    });
-});
-
-</script>
-
-<script>
-    $(document).ready(function() {
-    $('#btnActualizar').click(function() {
-        let rangoDias = $('#rangoFechas').val();
-        let areaId = $('#areaSeleccionada').val();
-
-        $.ajax({
-            url: 'prediccion.cfc?method=getPrediccion',
-            type: 'GET',
-            data: { rangoDias: rangoDias, areaId: areaId },
-            dataType: 'json',
-            success: function(response) {
-                // Asegurarse de parsear JSON si viene como string
-                let data = (typeof response === 'string') ? JSON.parse(response) : response;
-                console.log('Datos AJAX:', data);
-                renderAdvancedChart(data);
-            },
-            error: function(err) {
-                console.error('Error al obtener predicción', err);
-            }
-        });
-    });
-});
-
-function renderAdvancedChart(data) {
-    const labels = data.map(d => d.fecha);
-    const ctx = document.getElementById('chartPredicion').getContext('2d');
-
-    // Gradientes futuristas
-    const gradientAprobados = ctx.createLinearGradient(0,0,0,400);
-    gradientAprobados.addColorStop(0,'rgba(0,255,128,0.5)');
-    gradientAprobados.addColorStop(1,'rgba(0,128,64,0.1)');
-
-    const gradientPendientes = ctx.createLinearGradient(0,0,0,400);
-    gradientPendientes.addColorStop(0,'rgba(255,200,0,0.5)');
-    gradientPendientes.addColorStop(1,'rgba(128,100,0,0.1)');
-
-    const gradientRechazados = ctx.createLinearGradient(0,0,0,400);
-    gradientRechazados.addColorStop(0,'rgba(255,0,0,0.5)');
-    gradientRechazados.addColorStop(1,'rgba(128,0,0,0.1)');
-
-    const gradientCredibilidad = ctx.createLinearGradient(0,0,0,400);
-    gradientCredibilidad.addColorStop(0,'rgba(0,128,255,0.5)');
-    gradientCredibilidad.addColorStop(1,'rgba(0,64,128,0.1)');
-
-    // Destruir instancia previa
-    if(window.chartInstance) window.chartInstance.destroy();
-
-    window.chartInstance = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: labels,
-            datasets: [
-                {
-                    label: 'Aprobados',
-                    data: data.map(d => d.aprobados + 0.5),
-                    borderColor: 'green',
-                    backgroundColor: gradientAprobados,
-                    fill: true,
-                    tension: 0.4,
-                    pointRadius: 5,
-                    pointHoverRadius: 8
-                },
-                {
-                    label: 'Pendientes',
-                    data: data.map(d => d.pendientes + 0.5),
-                    borderColor: 'orange',
-                    backgroundColor: gradientPendientes,
-                    fill: true,
-                    tension: 0.4,
-                    pointRadius: 5,
-                    pointHoverRadius: 8,
-                    borderDash: [5,5]
-                },
-                {
-                    label: 'Rechazados',
-                    data: data.map(d => d.rechazados + 0.5),
-                    borderColor: 'red',
-                    backgroundColor: gradientRechazados,
-                    fill: true,
-                    tension: 0.4,
-                    pointRadius: 5,
-                    pointHoverRadius: 8,
-                    borderDash: [10,5]
-                },
-                {
-                    label: 'Credibilidad (%)',
-                    data: data.map(d => d.credibilidad),
-                    borderColor: 'blue',
-                    backgroundColor: gradientCredibilidad,
-                    fill: true,
-                    tension: 0.4,
-                    pointRadius: 3,
-                    pointHoverRadius: 6,
-                    yAxisID: 'yCredibilidad',
-                    borderDash: [2,3]
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            interaction: { mode: 'index', intersect: false },
-            plugins: {
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            let d = data[context.dataIndex];
-                            return `${context.dataset.label}: ${Math.round(context.parsed.y)} | Tipo: ${d.tipo_solicitud} | Permiso: ${d.tipo_permiso}`;
-                        }
-                    }
-                },
-                legend: { labels: { usePointStyle: true, pointStyle: 'rectRounded' } }
-            },
-            scales: {
-                y: {
-                    title: { display: true, text: 'Cantidad de solicitudes' },
-                    suggestedMin: 0,
-                    suggestedMax: Math.max(...data.map(d=>Math.max(d.aprobados,d.pendientes,d.rechazados))) + 2
-                },
-                yCredibilidad: {
-                    position: 'right',
-                    min: 0,
-                    max: 100,
-                    title: { display: true, text: 'Credibilidad (%)' },
-                    grid: { drawOnChartArea: false }
-                },
-                x: {
-                    title: { display: true, text: 'Fecha' }
-                }
-            }
-        }
-    });
-}
-
-</script>
-
-<script>
-document.getElementById("btnActualizar").addEventListener("click", function(e) {
-    e.preventDefault();
-
-    // Obtener valores del formulario
-    const rango = document.getElementById("rangoFechas").value;
-    const area = document.getElementById("areaSeleccionada").value;
-
-    // Mostrar mensaje de carga
-    document.getElementById("tablaAreasBody").innerHTML =
-        '<tr><td colspan="6" style="text-align:center;">Cargando...</td></tr>';
-
-    // Llamar al archivo CFM que genera la tabla
-    fetch("ranking.cfm", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: `rangoFechas=${rango}&areaSeleccionada=${area}`
-    })
-    .then(response => response.text())
-    .then(html => {
-        document.getElementById("tablaAreasBody").innerHTML = html;
-    })
-    .catch(err => {
-        console.error(err);
-        document.getElementById("tablaAreasBody").innerHTML =
-            '<tr><td colspan="6" style="text-align:center;color:red;">Error al cargar los datos</td></tr>';
-    });
-});
-</script>
-
-
+            // Reutiliza el mismo botón que ya tienes
+            document.getElementById("btnActualizar").addEventListener("click", function() {
+                actualizarTopFirmantes();
+            }); 
+        </script>
     </body>
 </html>
