@@ -269,6 +269,12 @@
         </style>
     </head>
     <body>
+        <!-- Verificación de sesión y rol -->
+        <cfif NOT structKeyExists(session, "rol") 
+            OR ListFindNoCase("Admin,Expediente,RecursosHumanos,Autorizacion,Jefe,Solicitante", session.rol) EQ 0>
+            <cflocation url="menu.cfm" addtoken="no">
+        </cfif>
+
             <div class="loading-overlay" id="loadingOverlay">
                 <div class="spinner"></div>
             </div>

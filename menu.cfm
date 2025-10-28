@@ -15,10 +15,10 @@
         var accesos = {
             "Solicitante": ["pase.cfm", "firmados.cfm", "listaSolicitudes.cfm"],
             "Jefe": ["pase.cfm", "listaUsuarios.cfm", "pendientes_firmar.cfm", "firmados.cfm", "listaSolicitudes.cfm"],
-            "RecursosHumanos": ["pase.cfm", "listaUsuarios.cfm", "pendientes_firmar.cfm", "firmados.cfm", "listaSolicitudes.cfm"],
+            "RecursosHumanos": ["pase.cfm", "listaUsuarios.cfm", "pendientes_firmar.cfm", "firmados.cfm", "listaSolicitudes.cfm", "metricas.cfm"],
             "Autorizacion": ["pase.cfm", "pendientes_firmar.cfm", "firmados.cfm", "listaSolicitudes.cfm"],
             "Expediente": ["pase.cfm", "listaUsuarios.cfm", "pendientes_firmar.cfm", "firmados.cfm", "listaSolicitudes.cfm"],
-            "Admin": ["registrarUsuarios.cfm", "listaUsuarios.cfm"]
+            "Admin": ["registrarUsuarios.cfm", "listaUsuarios.cfm", "metricas.cfm"]
         };
 
         // Validar si el rol existe en el struct
@@ -88,7 +88,7 @@
             <div class="menu-card">
                 <h2>Solicitudes pendientes de firma</h2>
                 <p>Revisar y firmar solicitudes pendientes</p>
-                <cfif tieneAcceso("pendientes_firmar.cfm")>
+                <cfif tieneAcceso("pendientesfirmar.cfm")>
                     <a href="pendientesFirmar.cfm" class="submit-btn-menu-original">Pendientes</a>
                 <cfelse>
                     <a href="##" class="disabled">Pendientes</a>
@@ -117,6 +117,16 @@
                 </cfif>
             </div>
 
+            <!-- 7. metricas.cfm -->
+            <div class="menu-card">
+                <h2>Metricas</h2>
+                <p>Ver graficas</p>
+                <cfif tieneAcceso("metricas.cfm")>
+                    <a href="metricas.cfm" class="submit-btn-menu-original">Detalles</a>
+                <cfelse>
+                    <a href="##" class="disabled">Detalles</a>
+                </cfif>
+            </div>
         </div>
     </body>
 </html>
