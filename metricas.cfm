@@ -19,11 +19,48 @@
         <script src="js/jquery-3.6.0.min.js"></script>
 
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+        <!-- Scripts del sistema -->
+<script src="js/graficasKPI.js"></script>
+<script src="js/metricas.js"></script>
         
         <link rel="stylesheet" href="css/globalForm.css">
         <link rel="stylesheet" href="css/botones.css">
 <link rel="stylesheet" href="css/temp.css">
         <style>
+
+
+.kpi-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 25px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.kpi-info {
+    flex: 1; /* permite que texto y gráfico compartan espacio */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.kpi-chart {
+    flex: 1;
+    height: 60px; /* altura visible del mini gráfico */
+    max-width: 250px; /* mantiene proporciones */
+    display: flex;
+    align-items: center; /* centra verticalmente el canvas */
+    justify-content: center; /* centra horizontalmente el canvas */
+}
+
+.kpi-chart canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
             /* Extensiones específicas para Dashboard */
             .kpi-grid {
                 display: grid;
@@ -32,13 +69,7 @@
                 margin-bottom: 25px;
             }
 
-            .kpi-card {
-                background: #ebebeb;
-                padding: 25px;
-                border-radius: 15px;
-                box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-                transition: transform 0.3s;
-            }
+            
 
             .kpi-card:hover {
                 transform: translateY(-5px);
@@ -295,34 +326,59 @@
                     <!-- KPIs -->
                     <div class="section">
                         <div class="field-group">
-                            <div class="kpi-header-totalSolicitudes">
-                                <div class="kpi-title">Total Solicitudes</div>
-                                <div class="kpi-value" id="totalSolicitudes">0</div>
-                                <div class="kpi-subtitle">Este período</div>
+                            <div class="kpi-header-totalSolicitudes kpi-card">
+                                <div class="kpi-info">
+                                    <div class="kpi-title">Total Solicitudes</div>
+                                    <div class="kpi-value" id="totalSolicitudes">0</div>
+                                    <div class="kpi-subtitle">Este período</div>
+                                </div> 
+                                <div class="kpi-chart">
+                                    <canvas id="graficoTotalSolicitudes" width="200" height="80"></canvas>
+                                </div>
                             </div>
 
-                            <div class="kpi-header-aprovadas">
-                                <div class="kpi-title">Aprobadas</div>
-                                <div class="kpi-value" id="solicitudesAprobadas">0</div>
-                                <div class="kpi-subtitle" id="solicitudesAprobadasPct">0% de aprobación</div>
+                            <div class="kpi-header-aprovadas kpi-card">
+                                <div class="kpi-info">
+                                    <div class="kpi-title">Aprobadas</div>
+                                    <div class="kpi-value" id="solicitudesAprobadas">0</div>
+                                    <div class="kpi-subtitle" id="solicitudesAprobadasPct">0% de aprobación</div>
+                                </div>
+                                <div class="kpi-chart">
+                                    <canvas id="graficoAprobadas" width="200" height="80"></canvas>
+                                </div>
                             </div>
 
-                            <div class="kpi-header-pendientes">
-                                <div class="kpi-title">Pendientes</div>
-                                <div class="kpi-value" id="solicitudesPendientes">0</div>
-                                <div class="kpi-subtitle" id="solicitudesPendientesPct">0% de aprobación</div>
+                            <div class="kpi-header-pendientes kpi-card">
+                                <div class="kpi-info">
+                                    <div class="kpi-title">Pendientes</div>
+                                    <div class="kpi-value" id="solicitudesPendientes">0</div>
+                                    <div class="kpi-subtitle" id="solicitudesPendientesPct">0% de aprobación</div>
+                                </div>
+                                <div class="kpi-chart">
+                                    <canvas id="graficoPendientes" width="200" height="80"></canvas>
+                                </div>
                             </div>
 
-                            <div class="kpi-header-rechazadas">
-                                <div class="kpi-title">Rechazadas</div>
-                                <div class="kpi-value" id="solicitudesRechazadas">0</div>
-                                <div class="kpi-subtitle" id="solicitudesRechazadasPct">0% de rechazo</div>
+                            <div class="kpi-header-rechazadas kpi-card">
+                                <div class="kpi-info">
+                                    <div class="kpi-title">Rechazadas</div>
+                                    <div class="kpi-value" id="solicitudesRechazadas">0</div>
+                                    <div class="kpi-subtitle" id="solicitudesRechazadasPct">0% de rechazo</div>
+                                </div>
+                                <div class="kpi-chart">
+                                    <canvas id="graficoRechazadas" width="200" height="80"></canvas>
+                                </div>
                             </div>
 
-                            <div class="kpi-header-tiempoPromedio">
-                                <div class="kpi-title">Tiempo Promedio</div>
-                                <div class="kpi-value" id="tiempoPromedio">0 días</div>
-                                <div class="kpi-subtitle">Hasta aprobación final</div>
+                            <div class="kpi-header-tiempoPromedio kpi-card">
+                                <div class="kpi-info">
+                                    <div class="kpi-title">Tiempo Promedio</div>
+                                    <div class="kpi-value" id="tiempoPromedio">0 días</div>
+                                    <div class="kpi-subtitle">Hasta aprobación final</div>
+                                </div>
+                                <div class="kpi-chart">
+                                    <canvas id="graficoTiempo" width="200" height="80"></canvas>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -484,6 +540,7 @@
                         },
                         dataType: "json",
                         success: function(response) {
+                            console.log("Datos recibidos mini:", response);
                             // Total de solicitudes
                             $("#totalSolicitudes").text(response.totalSolicitudes);
 
@@ -501,6 +558,9 @@
 
                             // Tiempo promedio
                             $("#tiempoPromedio").text(response.tiempoPromedio + " días");
+
+                            // ✅ Llamar a las mini gráficas
+    actualizarGraficasKPI(response);
                         },
                         error: function(xhr, status, error) {
                             console.error("Error al obtener métricas:", error);
@@ -521,6 +581,75 @@
                 // actualizarMetricas();
             });
         </script>
+
+<script>
+let graficosKPI = {}; // Guardamos las instancias para poder actualizarlas
+
+function actualizarGraficasKPI(datos) {
+    console.log("🎨 Actualizando gráficas con:", datos);
+
+    const configuraciones = [
+        { id: 'graficoTotalSolicitudes', valor: datos.totalSolicitudes, color: '#007bff', etiqueta: 'Total' },
+        { id: 'graficoAprobadas', valor: datos.solicitudesAprobadas, color: '#28a745', etiqueta: 'Aprobadas' },
+        { id: 'graficoPendientes', valor: datos.solicitudesPendientes, color: '#ffc107', etiqueta: 'Pendientes' },
+        { id: 'graficoRechazadas', valor: datos.solicitudesRechazadas, color: '#dc3545', etiqueta: 'Rechazadas' },
+        { id: 'graficoTiempo', valor: datos.tiempoPromedio, color: '#6f42c1', etiqueta: 'Tiempo Promedio' }
+    ];
+
+    configuraciones.forEach(cfg => {
+        const ctx = document.getElementById(cfg.id);
+        if (!ctx) {
+            console.warn(`⚠️ No se encontró el canvas con id ${cfg.id}`);
+            return;
+        }
+
+        // Si ya existe una gráfica previa, la destruimos antes de crear una nueva
+        if (graficosKPI[cfg.id]) {
+            graficosKPI[cfg.id].destroy();
+        }
+
+        graficosKPI[cfg.id] = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Semana 1', 'Semana 2', 'Semana 3', 'Semana 4'],
+                datasets: [{
+                    label: cfg.etiqueta,
+                    data: generarDatosHistoricos(cfg.valor),
+                    borderColor: cfg.color,
+                    backgroundColor: cfg.color + '33', // versión transparente del color
+                    tension: 0.4,
+                    fill: true,
+                    borderWidth: 2,
+                    pointRadius: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { display: false },
+                    y: { display: false }
+                },
+                elements: {
+                    line: { borderJoinStyle: 'round' }
+                }
+            }
+        });
+    });
+}
+
+// Genera valores simulados para dar efecto de tendencia
+function generarDatosHistoricos(valorActual) {
+    const variacion = Math.max(1, Math.round(valorActual * 0.1)); // 10% de variación
+    return [
+        Math.max(0, valorActual - variacion * 2),
+        Math.max(0, valorActual - variacion),
+        valorActual,
+        Math.max(0, valorActual + variacion)
+    ];
+}
+</script>
 
         <!---
             Seccion -> 3
@@ -1316,5 +1445,14 @@
                 actualizarTopFirmantes();
             }); 
         </script>
+
+        <!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Tu script de métricas (ya existente) -->
+<script src="js/metricas.js"></script>
+
+<!-- Nuevo script de gráficas -->
+<script src="js/graficasKPI.js"></script>
     </body>
 </html>
