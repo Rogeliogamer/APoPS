@@ -333,9 +333,19 @@
                             </select>
                         </div>
                         <div class="submit-section">
-                            <button class="submit-btn-actualizar" id="btnActualizar">
-                                🔍 Actualizar
-                            </button>
+                            <div class="field-group triple">
+                                <a href="menu.cfm" class="submit-btn-menu submit-btn-menu-text">
+                                    Menu
+                                </a>
+
+                                <button class="submit-btn-actualizar" id="btnActualizar">
+                                    🔍 Actualizar
+                                </button>
+
+                                <a href="cerrarSesion.cfm" class="submit-btn-cerrarSesion submit-btn-cerrarSesion-text">
+                                    Cerrar Sesion
+                                </a>
+                            </div>
                         </div>
                     </div>   
                     
