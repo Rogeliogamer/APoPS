@@ -13,11 +13,11 @@
     function tieneAcceso(pagina) {
         var rol = session.rol;
         var accesos = {
-            "Solicitante": ["pase.cfm", "firmados.cfm", "listaSolicitudes.cfm"],
-            "Jefe": ["pase.cfm", "listaUsuarios.cfm", "pendientes_firmar.cfm", "firmados.cfm", "listaSolicitudes.cfm"],
+            "Solicitante": ["pase.cfm", "firmados.cfm", "listaSolicitudes.cfm", "metricas.cfm"],
+            "Jefe": ["pase.cfm", "listaUsuarios.cfm", "pendientes_firmar.cfm", "firmados.cfm", "listaSolicitudes.cfm", "metricas.cfm"],
             "RecursosHumanos": ["pase.cfm", "listaUsuarios.cfm", "pendientes_firmar.cfm", "firmados.cfm", "listaSolicitudes.cfm", "metricas.cfm"],
-            "Autorizacion": ["pase.cfm", "pendientes_firmar.cfm", "firmados.cfm", "listaSolicitudes.cfm"],
-            "Expediente": ["pase.cfm", "listaUsuarios.cfm", "pendientes_firmar.cfm", "firmados.cfm", "listaSolicitudes.cfm"],
+            "Autorizacion": ["pase.cfm", "pendientes_firmar.cfm", "firmados.cfm", "listaSolicitudes.cfm", "metricas.cfm"],
+            "Expediente": ["pase.cfm", "listaUsuarios.cfm", "pendientes_firmar.cfm", "firmados.cfm", "listaSolicitudes.cfm", "metricas.cfm"],
             "Admin": ["registrarUsuarios.cfm", "listaUsuarios.cfm", "metricas.cfm"]
         };
 

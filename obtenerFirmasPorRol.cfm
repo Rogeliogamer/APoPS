@@ -4,13 +4,19 @@
 <cfparam name="url.rango" default="30">
 <cfparam name="url.area" default="">
 
+<cfset fechaFin = now()>
+<cfset fechaInicio = dateAdd("d", -val(url.rango), fechaFin)>
+
 <cftry>
     <cfquery name="firmasPorRol" datasource="Autorizacion">
         SELECT u.rol AS ROL, COUNT(f.id_firma) AS CANTIDAD
         FROM firmas f
         INNER JOIN usuarios u ON f.id_usuario = u.id_usuario
         INNER JOIN solicitudes s ON f.id_solicitud = s.id_solicitud
-        WHERE f.fecha_firma >= DATE_SUB(NOW(), INTERVAL <cfqueryparam cfsqltype="cf_sql_integer" value="#url.rango#"> DAY)
+        WHERE f.fecha_firma BETWEEN
+            <cfqueryparam cfsqltype="cf_sql_date" value="#fechaInicio#">
+            AND 
+            <cfqueryparam cfsqltype="cf_sql_date" value="#fechaFin#">
         <cfif len(url.area)>
             AND s.id_area = <cfqueryparam cfsqltype="cf_sql_integer" value="#url.area#">
         </cfif>

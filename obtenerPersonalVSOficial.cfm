@@ -4,11 +4,17 @@
 <cfparam name="url.rango" default="30">
 <cfparam name="url.area" default="">
 
+<cfset fechaFin = now()>
+<cfset fechaInicio = dateAdd("d", -val(url.rango), fechaFin)>
+
 <cftry>
     <cfquery name="getTiposSolicitud" datasource="Autorizacion">
         SELECT tipo_solicitud AS TIPO, COUNT(*) AS CANTIDAD
         FROM solicitudes
-        WHERE fecha_creacion >= DATE_SUB(NOW(), INTERVAL <cfqueryparam cfsqltype="cf_sql_integer" value="#url.rango#"> DAY)
+        WHERE fecha BETWEEN
+            <cfqueryparam value="#fechaInicio#" cfsqltype="cf_sql_date">
+            AND 
+            <cfqueryparam value="#fechaFin#" cfsqltype="cf_sql_date">
         <cfif len(url.area)>
             AND id_area = <cfqueryparam cfsqltype="cf_sql_integer" value="#url.area#">
         </cfif>

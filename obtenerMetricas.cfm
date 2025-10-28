@@ -15,7 +15,7 @@
         SUM(CASE WHEN status_final='Aprobado' THEN 1 ELSE 0 END) AS aprobadas,
         SUM(CASE WHEN status_final='Pendiente' THEN 1 ELSE 0 END) AS pendientes,
         SUM(CASE WHEN status_final='Rechazado' THEN 1 ELSE 0 END) AS rechazadas,
-        AVG(tiempo_solicitado) AS tiempoPromedio
+        COALESCE(AVG(tiempo_solicitado),0) AS tiempoPromedio
     FROM solicitudes
     WHERE fecha BETWEEN <cfqueryparam value="#fechaInicio#" cfsqltype="cf_sql_date">
                   AND <cfqueryparam value="#fechaFin#" cfsqltype="cf_sql_date">
@@ -44,19 +44,19 @@
 <!--- Consultar datos diarios --->
 <cfquery name="getTendencia" datasource="Autorizacion">
     SELECT 
-        CAST(fecha AS DATE) AS dia,
+        fecha AS dia,
         COUNT(*) AS total,
         SUM(CASE WHEN status_final='Aprobado' THEN 1 ELSE 0 END) AS aprobadas,
         SUM(CASE WHEN status_final='Pendiente' THEN 1 ELSE 0 END) AS pendientes,
         SUM(CASE WHEN status_final='Rechazado' THEN 1 ELSE 0 END) AS rechazadas,
-        AVG(tiempo_solicitado) AS tiempoPromedio
+        COALESCE(AVG(tiempo_solicitado),0) AS tiempoPromedio
     FROM solicitudes
     WHERE fecha BETWEEN <cfqueryparam value="#fechaInicio#" cfsqltype="cf_sql_date">
                   AND <cfqueryparam value="#fechaFin#" cfsqltype="cf_sql_date">
     <cfif FORM.area neq "">
         AND id_area = <cfqueryparam value="#FORM.area#" cfsqltype="cf_sql_integer">
     </cfif>
-    GROUP BY CAST(fecha AS DATE)
+    GROUP BY fecha
     ORDER BY dia
 </cfquery>
 

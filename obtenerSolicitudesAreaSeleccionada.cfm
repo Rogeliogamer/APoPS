@@ -1,7 +1,12 @@
 <cfsetting enablecfoutputonly="yes">
 <cfcontent type="application/json; charset=utf-8">
 
+<cfparam name="FORM.rango" default="30">
 <cfparam name="FORM.area" default="">
+
+<!--- Calcular fechas --->
+<cfset fechaFin = now()>
+<cfset fechaInicio = dateAdd("d", -val(FORM.rango), fechaFin)>
 
 <cfif len(FORM.area) EQ 0>
     <cfoutput>
@@ -20,6 +25,8 @@
     LEFT JOIN usuarios u ON u.id_datos = du.id_datos
     LEFT JOIN solicitudes s ON s.id_solicitante = u.id_usuario
     WHERE du.id_area = <cfqueryparam value="#FORM.area#" cfsqltype="cf_sql_integer">
+        AND fecha BETWEEN <cfqueryparam value="#fechaInicio#" cfsqltype="cf_sql_date">
+        AND <cfqueryparam value="#fechaFin#" cfsqltype="cf_sql_date">
     GROUP BY du.id_datos, du.nombre, du.apellido_paterno, du.apellido_materno
     ORDER BY du.nombre ASC
 </cfquery>

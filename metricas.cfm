@@ -310,11 +310,21 @@
                                 <!--- Opción para todas las áreas --->
                                 <option value="">-- Seleciona un área --</option>
                                 
-                                <!--- Consultar todas las áreas --->
-                                <cfquery name="getAreas" datasource="Autorizacion">
-                                    SELECT id_area, nombre
-                                    FROM area_adscripcion
-                                </cfquery>
+                                <!--- Consultar áreas según el rol del usuario --->
+                                <cfif ListFindNoCase("Admin,RecursosHumanos,Autorizacion,Expediente", session.rol)>
+                                    <!--- Estos roles pueden ver todas las áreas --->
+                                    <cfquery name="getAreas" datasource="Autorizacion">
+                                        SELECT id_area, nombre
+                                        FROM area_adscripcion
+                                    </cfquery>
+                                <cfelse>
+                                    <!--- Otros roles solo pueden ver su propia área --->
+                                    <cfquery name="getAreas" datasource="Autorizacion">
+                                        SELECT id_area, nombre
+                                        FROM area_adscripcion
+                                        WHERE id_area = <cfqueryparam value="#session.id_area#" cfsqltype="cf_sql_integer">
+                                    </cfquery>
+                                </cfif>
 
                                 <!--- Iterar sobre la consulta --->
                                 <cfoutput query="getAreas">
