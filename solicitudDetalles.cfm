@@ -9,7 +9,7 @@
  * Uso:
  * - Página destinada a revisar el detalle completo y el historial de firmas de una solicitud.
 --->
-<cfparam name="url.id_solicitud" default="0">
+<cfparam name="form.id_solicitud" default="0">
 
 <cfquery name="qSolicitud" datasource="autorizacion">
     SELECT 
@@ -26,13 +26,13 @@
     FROM solicitudes s
     INNER JOIN usuarios u ON s.id_solicitante = u.id_usuario
     INNER JOIN datos_usuario d ON u.id_datos = d.id_datos
-    WHERE s.id_solicitud = <cfqueryparam value="#url.id_solicitud#" cfsqltype="cf_sql_integer">
+    WHERE s.id_solicitud = <cfqueryparam value="#form.id_solicitud#" cfsqltype="cf_sql_integer">
 </cfquery>
 
 <cfquery name="qFirmas" datasource="autorizacion">
     SELECT rol, aprobado, fecha_firma, svg
     FROM firmas
-    WHERE id_solicitud = <cfqueryparam value="#url.id_solicitud#" cfsqltype="cf_sql_integer">
+    WHERE id_solicitud = <cfqueryparam value="#form.id_solicitud#" cfsqltype="cf_sql_integer">
     ORDER BY FIELD(rol, 'Solicitante','Jefe','RecursosHumanos','Autorizacion','Expediente')
 </cfquery>
 

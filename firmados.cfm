@@ -180,7 +180,7 @@
                                     </td>
                                     <td class="titulo-general-centrado">#DateFormat(fecha_firma,'dd/mm/yyyy')#</td>
                                     <td style="text-align:center;">
-                                        <form action="solicitudDetalles.cfm" method="get">
+                                        <form action="solicitudDetalles.cfm" method="post">
                                             <input type="hidden" name="id_solicitud" value="#id_solicitud#">
                                             <button type="submit" class="submit-btn-verDetalles">Ver Detalles</button>
                                         </form>
