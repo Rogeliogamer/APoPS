@@ -251,9 +251,9 @@
                 </div>
 
                 <!-- prediccion a futuro -->
-                <div class="section">
+                <div class="section container-fluid">
                     <div class="kpi-header">
-                        <div class="chart-title">
+                        <div class="chart-title text-center mb-2">
                             Predicion a 7 dias por area seleccionada
                         </div>
 
