@@ -14,10 +14,10 @@
         var rol = session.rol;
         var accesos = {
             "Solicitante": ["pase.cfm", "firmados.cfm", "listaSolicitudes.cfm", "metricas.cfm"],
-            "Jefe": ["pase.cfm", "listaUsuarios.cfm", "pendientes_firmar.cfm", "firmados.cfm", "listaSolicitudes.cfm", "metricas.cfm"],
-            "RecursosHumanos": ["pase.cfm", "listaUsuarios.cfm", "pendientes_firmar.cfm", "firmados.cfm", "listaSolicitudes.cfm", "metricas.cfm"],
-            "Autorizacion": ["pase.cfm", "pendientes_firmar.cfm", "firmados.cfm", "listaSolicitudes.cfm", "metricas.cfm"],
-            "Expediente": ["pase.cfm", "listaUsuarios.cfm", "pendientes_firmar.cfm", "firmados.cfm", "listaSolicitudes.cfm", "metricas.cfm"],
+            "Jefe": ["pase.cfm", "listaUsuarios.cfm", "pendientesFirmar.cfm", "firmados.cfm", "listaSolicitudes.cfm", "metricas.cfm"],
+            "RecursosHumanos": ["pase.cfm", "listaUsuarios.cfm", "pendientesFirmar.cfm", "firmados.cfm", "listaSolicitudes.cfm", "metricas.cfm"],
+            "Autorizacion": ["pase.cfm", "pendientesFirmar.cfm", "firmados.cfm", "listaSolicitudes.cfm", "metricas.cfm"],
+            "Expediente": ["pase.cfm", "listaUsuarios.cfm", "pendientesFirmar.cfm", "firmados.cfm", "listaSolicitudes.cfm", "metricas.cfm"],
             "Admin": ["registrarUsuarios.cfm", "listaUsuarios.cfm", "metricas.cfm"]
         };
 
@@ -84,11 +84,11 @@
                 </cfif>
             </div>
 
-            <!-- 4. pendientes_firmar.cfm -->
+            <!-- 4. pendientesFirmar.cfm -->
             <div class="menu-card">
                 <h2>Solicitudes pendientes de firma</h2>
                 <p>Revisar y firmar solicitudes pendientes</p>
-                <cfif tieneAcceso("pendientesfirmar.cfm")>
+                <cfif tieneAcceso("pendientesFirmar.cfm")>
                     <a href="pendientesFirmar.cfm" class="submit-btn-menu-original">Pendientes</a>
                 <cfelse>
                     <a href="##" class="disabled">Pendientes</a>
