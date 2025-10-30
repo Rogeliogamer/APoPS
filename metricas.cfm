@@ -23,12 +23,13 @@
         <!-- Scripts del sistema -->
         <script src="js/graficasKPI.js"></script>
         <script src="js/metricas.js"></script>
+
         
         <link rel="stylesheet" href="css/globalForm.css">
         <link rel="stylesheet" href="css/metricas.css">
         <link rel="stylesheet" href="css/botones.css">
         <link rel="stylesheet" href="css/temp.css">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        
     </head>
     <body>
         <!-- Verificación de sesión y rol -->
@@ -37,17 +38,21 @@
             <cflocation url="menu.cfm" addtoken="no">
         </cfif>
 
-        <div class="loading-overlay" id="loadingOverlay">
-            <div class="spinner"></div>
-        </div>
-
         <div class="container">
+            <!-- Contenedor del formulario -->
             <div class="header">
+                <!-- Nombre del usuario y rol que esta conectado -->
                 <div class="logo">
                     <cfset usuarioRol = createObject("component", "componentes/usuarioConectadoS").render()>
                     <cfoutput>#usuarioRol#</cfoutput>
                 </div>
-                <h1>📊 Metricas de Permisos y Pases de Salida</h1>
+
+                <!-- Nombre del formulario -->
+                <h1>Metricas</h1>
+            </div>
+
+            <div class="loading-overlay" id="loadingOverlay">
+                <div class="spinner"></div>
             </div>
 
             <!-- Filtros -->
@@ -173,38 +178,30 @@
                 </div>
 
                 <!-- KPI Cards -->
-                <div class="section">
+                <div class="section container-fluid">
                     <div class="field-group">
-                        <div class="kpi-header">
-                            <div class="chart-title">
+                        <div class="kpi-header container-fluid px-2 px-md-3">
+                            <div class="chart-title text-center text-md-start">
                                 Estado de solicitudes
                             </div>
-                                
-                            <canvas id="chartEstados" height="250"></canvas>
-
-                            <!-- Overlay solo para este canvas -->
-                            <div class="canvasOverlay">
-                                ¡A punto de revelar las estadísticas!
-                            </div>
+                                <canvas id="chartEstados" height="250"></canvas>
+                                <!-- Overlay solo para este canvas -->
+                                <div class="canvasOverlay">
+                                    ¡A punto de revelar las estadísticas!
+                                </div>
                         </div>
 
                         <div class="kpi-header">
-                            <div class="chart-title">
-                                Etapa de Firma
-                            </div>
-
+                            <div class="chart-title">Etapa de Firma</div>
                             <canvas id="chartEtapas" height="250"></canvas>
                             <!-- Overlay solo para este canvas -->
                             <div class="canvasOverlay">
                                 ¡A punto de revelar las estadísticas!
                             </div>
                         </div>
-                            
-                        <div class="kpi-header">
-                            <div class="chart-title">
-                                Tendencia de Solicitudes (Por periodo)
-                            </div>
 
+                        <div class="kpi-header">
+                            <div class="chart-title">Tendencia de Solicitudes (Por periodo)</div>
                             <canvas id="chartTendencia" height="250"></canvas>
                             <!-- Overlay solo para este canvas -->
                             <div class="canvasOverlay">
@@ -213,10 +210,7 @@
                         </div>
 
                         <div class="kpi-header">
-                            <div class="chart-title">
-                                Solicitudes por Área seleccionada
-                            </div>
-
+                            <div class="chart-title">Solicitudes por Área seleccionada</div>
                             <canvas id="chartAreas" height="250"></canvas>
                             <!-- Overlay solo para este canvas -->
                             <div class="canvasOverlay">
@@ -225,10 +219,7 @@
                         </div>
 
                         <div class="kpi-header">
-                            <div class="chart-title">
-                                Tipos de Permiso por Área seleccionada
-                            </div>
-
+                            <div class="chart-title">Tipos de Permiso por Área seleccionada</div>
                             <canvas id="chartTipoPermiso" height="250"></canvas>
                             <!-- Overlay solo para este canvas -->
                             <div class="canvasOverlay">
@@ -237,10 +228,7 @@
                         </div>
 
                         <div class="kpi-header">
-                            <div class="chart-title">
-                                Personal vs Oficial por Area Seleccionada
-                            </div>
-
+                            <div class="chart-title">Personal vs Oficial por Area Seleccionada</div>
                             <canvas id="chartTipoSolicitud" height="250"></canvas>
                             <!-- Overlay solo para este canvas -->
                             <div class="canvasOverlay">

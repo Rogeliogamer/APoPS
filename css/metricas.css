@@ -228,3 +228,12 @@ td {
     100%{transform:rotate(360deg);} 
 }
 
+@media (max-width: 768px) {
+  .kpi-header {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    padding: 0 10px;
+    box-sizing: border-box;
+  }
+}
