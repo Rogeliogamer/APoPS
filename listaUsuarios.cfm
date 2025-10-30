@@ -99,7 +99,7 @@
         </cfquery>
 
         <!-- Listado de usuarios -->
-        <div class="container" style="max-width: 1200px;">
+        <div class="container">
             <!-- Contenedor principal -->
             <div class="header">
                 <!-- Título y logo -->
