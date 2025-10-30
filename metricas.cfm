@@ -27,6 +27,8 @@
         <link rel="stylesheet" href="css/globalForm.css">
         <link rel="stylesheet" href="css/metricas.css">
         <link rel="stylesheet" href="css/botones.css">
+        <link rel="stylesheet" href="css/temp.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     </head>
     <body>
         <!-- Verificación de sesión y rol -->
@@ -35,263 +37,284 @@
             <cflocation url="menu.cfm" addtoken="no">
         </cfif>
 
-            <div class="loading-overlay" id="loadingOverlay">
-                <div class="spinner"></div>
+        <div class="loading-overlay" id="loadingOverlay">
+            <div class="spinner"></div>
+        </div>
+
+        <div class="container">
+            <div class="header">
+                <div class="logo">
+                    <cfset usuarioRol = createObject("component", "componentes/usuarioConectadoS").render()>
+                    <cfoutput>#usuarioRol#</cfoutput>
+                </div>
+                <h1>📊 Metricas de Permisos y Pases de Salida</h1>
             </div>
 
-            <div class="container">
-                <div class="header">
-                    <div class="logo">
-                        <cfset usuarioRol = createObject("component", "componentes/usuarioConectadoS").render()>
-                        <cfoutput>#usuarioRol#</cfoutput>
+            <!-- Filtros -->
+            <div class="form-container">
+                <div class="section">
+                    <div class="field-group single">
+                        <div class="section-title">
+                            Rango de Fechas
+                        </div>
+                        <select class="form-input-general" id="rangoFechas">
+                            <option value="30" selected>Últimos 30 días</option>
+                            <option value="60">Últimos 60 días</option>
+                            <option value="90">Últimos 90 días</option>
+                        </select>
+
+                        <div class="section-title">
+                            Área
+                        </div>
+
+                        <!--- Select dinámico --->
+                        <select class="form-input-general" id="areaSeleccionada">
+                            <!--- Opción para todas las áreas --->
+                            <option value="">-- Seleciona un área --</option>
+                                
+                            <!--- Consultar áreas según el rol del usuario --->
+                            <cfif ListFindNoCase("Admin,RecursosHumanos,Autorizacion,Expediente", session.rol)>
+                                <!--- Estos roles pueden ver todas las áreas --->
+                                <cfquery name="getAreas" datasource="Autorizacion">
+                                    SELECT id_area, nombre
+                                    FROM area_adscripcion
+                                </cfquery>
+                            <cfelse>
+                                <!--- Otros roles solo pueden ver su propia área --->
+                                <cfquery name="getAreas" datasource="Autorizacion">
+                                    SELECT id_area, nombre
+                                    FROM area_adscripcion
+                                    WHERE id_area = <cfqueryparam value="#session.id_area#" cfsqltype="cf_sql_integer">
+                                </cfquery>
+                            </cfif>
+
+                            <!--- Iterar sobre la consulta --->
+                            <cfoutput query="getAreas">
+                                <option value="#id_area#">#nombre#</option>
+                            </cfoutput>
+                        </select>
                     </div>
-                    <h1>📊 Metricas de Permisos y Pases de Salida</h1>
+                        
+                    <div class="submit-section">
+                        <div class="field-group triple">
+                            <a href="menu.cfm" class="submit-btn-menu submit-btn-menu-text">
+                                Menu
+                            </a>
+
+                            <button class="submit-btn-actualizar" id="btnActualizar">
+                                🔍 Actualizar
+                            </button>
+
+                            <a href="cerrarSesion.cfm" class="submit-btn-cerrarSesion submit-btn-cerrarSesion-text">
+                                Cerrar Sesion
+                            </a>
+                        </div>
+                    </div>
+                </div>   
+                    
+                <!-- KPIs -->
+                <div class="section">
+                    <div class="field-group">
+                        <div class="kpi-header-totalSolicitudes kpi-card">
+                            <div class="kpi-info">
+                                <div class="kpi-title">Total Solicitudes</div>
+                                <div class="kpi-value" id="totalSolicitudes">0</div>
+                                <div class="kpi-subtitle">Este período</div>
+                            </div> 
+                            <div class="kpi-chart">
+                                <canvas id="graficoTotalSolicitudes" width="200" height="80"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="kpi-header-aprovadas kpi-card">
+                            <div class="kpi-info">
+                                <div class="kpi-title">Aprobadas</div>
+                                <div class="kpi-value" id="solicitudesAprobadas">0</div>
+                                <div class="kpi-subtitle" id="solicitudesAprobadasPct">0% de aprobación</div>
+                            </div>
+                            <div class="kpi-chart">
+                                <canvas id="graficoAprobadas" width="200" height="80"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="kpi-header-pendientes kpi-card">
+                            <div class="kpi-info">
+                                <div class="kpi-title">Pendientes</div>
+                                <div class="kpi-value" id="solicitudesPendientes">0</div>
+                                <div class="kpi-subtitle" id="solicitudesPendientesPct">0% de aprobación</div>
+                            </div>
+                            <div class="kpi-chart">
+                                <canvas id="graficoPendientes" width="200" height="80"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="kpi-header-rechazadas kpi-card">
+                            <div class="kpi-info">
+                                <div class="kpi-title">Rechazadas</div>
+                                <div class="kpi-value" id="solicitudesRechazadas">0</div>
+                                <div class="kpi-subtitle" id="solicitudesRechazadasPct">0% de rechazo</div>
+                            </div>
+                            <div class="kpi-chart">
+                                <canvas id="graficoRechazadas" width="200" height="80"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="kpi-header-tiempoPromedio kpi-card">
+                            <div class="kpi-info">
+                                <div class="kpi-title">Tiempo Promedio</div>
+                                <div class="kpi-value" id="tiempoPromedio">0 días</div>
+                                <div class="kpi-subtitle">Hasta aprobación final</div>
+                            </div>
+                            <div class="kpi-chart">
+                                <canvas id="graficoTiempo" width="200" height="80"></canvas>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Filtros -->
-                <div class="form-container">
-                    <div class="section">
-                        <div class="field-group single">
-                            <div class="section-title">
-                                Rango de Fechas
+                <!-- KPI Cards -->
+                <div class="section">
+                    <div class="field-group">
+                        <div class="kpi-header">
+                            <div class="chart-title">
+                                Estado de solicitudes
                             </div>
-                            <select class="form-input-general" id="rangoFechas">
-                                <option value="30" selected>Últimos 30 días</option>
-                                <option value="60">Últimos 60 días</option>
-                                <option value="90">Últimos 90 días</option>
-                            </select>
-
-                            <div class="section-title">
-                                Área
-                            </div>
-
-                            <!--- Select dinámico --->
-                            <select class="form-input-general" id="areaSeleccionada">
-                                <!--- Opción para todas las áreas --->
-                                <option value="">-- Seleciona un área --</option>
                                 
-                                <!--- Consultar áreas según el rol del usuario --->
-                                <cfif ListFindNoCase("Admin,RecursosHumanos,Autorizacion,Expediente", session.rol)>
-                                    <!--- Estos roles pueden ver todas las áreas --->
-                                    <cfquery name="getAreas" datasource="Autorizacion">
-                                        SELECT id_area, nombre
-                                        FROM area_adscripcion
-                                    </cfquery>
-                                <cfelse>
-                                    <!--- Otros roles solo pueden ver su propia área --->
-                                    <cfquery name="getAreas" datasource="Autorizacion">
-                                        SELECT id_area, nombre
-                                        FROM area_adscripcion
-                                        WHERE id_area = <cfqueryparam value="#session.id_area#" cfsqltype="cf_sql_integer">
-                                    </cfquery>
-                                </cfif>
+                            <canvas id="chartEstados" height="250"></canvas>
 
-                                <!--- Iterar sobre la consulta --->
-                                <cfoutput query="getAreas">
-                                    <option value="#id_area#">#nombre#</option>
-                                </cfoutput>
-                            </select>
-                        </div>
-                        <div class="submit-section">
-                            <div class="field-group triple">
-                                <a href="menu.cfm" class="submit-btn-menu submit-btn-menu-text">
-                                    Menu
-                                </a>
-
-                                <button class="submit-btn-actualizar" id="btnActualizar">
-                                    🔍 Actualizar
-                                </button>
-
-                                <a href="cerrarSesion.cfm" class="submit-btn-cerrarSesion submit-btn-cerrarSesion-text">
-                                    Cerrar Sesion
-                                </a>
+                            <!-- Overlay solo para este canvas -->
+                            <div class="canvasOverlay">
+                                ¡A punto de revelar las estadísticas!
                             </div>
                         </div>
-                    </div>   
-                    
-                    <!-- KPIs -->
-                    <div class="section">
-                        <div class="field-group">
-                            <div class="kpi-header-totalSolicitudes kpi-card">
-                                <div class="kpi-info">
-                                    <div class="kpi-title">Total Solicitudes</div>
-                                    <div class="kpi-value" id="totalSolicitudes">0</div>
-                                    <div class="kpi-subtitle">Este período</div>
-                                </div> 
-                                <div class="kpi-chart">
-                                    <canvas id="graficoTotalSolicitudes" width="200" height="80"></canvas>
-                                </div>
+
+                        <div class="kpi-header">
+                            <div class="chart-title">
+                                Etapa de Firma
                             </div>
 
-                            <div class="kpi-header-aprovadas kpi-card">
-                                <div class="kpi-info">
-                                    <div class="kpi-title">Aprobadas</div>
-                                    <div class="kpi-value" id="solicitudesAprobadas">0</div>
-                                    <div class="kpi-subtitle" id="solicitudesAprobadasPct">0% de aprobación</div>
-                                </div>
-                                <div class="kpi-chart">
-                                    <canvas id="graficoAprobadas" width="200" height="80"></canvas>
-                                </div>
-                            </div>
-
-                            <div class="kpi-header-pendientes kpi-card">
-                                <div class="kpi-info">
-                                    <div class="kpi-title">Pendientes</div>
-                                    <div class="kpi-value" id="solicitudesPendientes">0</div>
-                                    <div class="kpi-subtitle" id="solicitudesPendientesPct">0% de aprobación</div>
-                                </div>
-                                <div class="kpi-chart">
-                                    <canvas id="graficoPendientes" width="200" height="80"></canvas>
-                                </div>
-                            </div>
-
-                            <div class="kpi-header-rechazadas kpi-card">
-                                <div class="kpi-info">
-                                    <div class="kpi-title">Rechazadas</div>
-                                    <div class="kpi-value" id="solicitudesRechazadas">0</div>
-                                    <div class="kpi-subtitle" id="solicitudesRechazadasPct">0% de rechazo</div>
-                                </div>
-                                <div class="kpi-chart">
-                                    <canvas id="graficoRechazadas" width="200" height="80"></canvas>
-                                </div>
-                            </div>
-
-                            <div class="kpi-header-tiempoPromedio kpi-card">
-                                <div class="kpi-info">
-                                    <div class="kpi-title">Tiempo Promedio</div>
-                                    <div class="kpi-value" id="tiempoPromedio">0 días</div>
-                                    <div class="kpi-subtitle">Hasta aprobación final</div>
-                                </div>
-                                <div class="kpi-chart">
-                                    <canvas id="graficoTiempo" width="200" height="80"></canvas>
-                                </div>
+                            <canvas id="chartEtapas" height="250"></canvas>
+                            <!-- Overlay solo para este canvas -->
+                            <div class="canvasOverlay">
+                                ¡A punto de revelar las estadísticas!
                             </div>
                         </div>
-                    </div>
-
-                    <!-- KPI Cards -->
-                    <div class="section">
-                        <div class="field-group">
-                            <div class="kpi-header">
-                                <div class="chart-title">Estado de solicitudes</div>
-                                <canvas id="chartEstados" height="250"></canvas>
-
-                                <!-- Overlay solo para este canvas -->
-                                <div class="canvasOverlay">
-                                    ¡A punto de revelar las estadísticas!
-                                </div>
-                            </div>
-
-                            <div class="kpi-header">
-                                <div class="chart-title">Etapa de Firma</div>
-                                <canvas id="chartEtapas" height="250"></canvas>
-                                <!-- Overlay solo para este canvas -->
-                                <div class="canvasOverlay">
-                                    ¡A punto de revelar las estadísticas!
-                                </div>
-                            </div>
                             
-                            <div class="kpi-header">
-                                <div class="chart-title">Tendencia de Solicitudes (Por periodo)</div>
-                                <canvas id="chartTendencia" height="250"></canvas>
-                                <!-- Overlay solo para este canvas -->
-                                <div class="canvasOverlay">
-                                    ¡A punto de revelar las estadísticas!
-                                </div>
+                        <div class="kpi-header">
+                            <div class="chart-title">
+                                Tendencia de Solicitudes (Por periodo)
                             </div>
 
-                            <div class="kpi-header">
-                                <div class="chart-title">Solicitudes por Área seleccionada</div>
-                                <canvas id="chartAreas" height="250"></canvas>
-                                <!-- Overlay solo para este canvas -->
-                                <div class="canvasOverlay">
-                                    ¡A punto de revelar las estadísticas!
-                                </div>
+                            <canvas id="chartTendencia" height="250"></canvas>
+                            <!-- Overlay solo para este canvas -->
+                            <div class="canvasOverlay">
+                                ¡A punto de revelar las estadísticas!
+                            </div>
+                        </div>
+
+                        <div class="kpi-header">
+                            <div class="chart-title">
+                                Solicitudes por Área seleccionada
                             </div>
 
-                            <div class="kpi-header">
-                                <div class="chart-title">Tipos de Permiso por Área seleccionada</div>
-                                <canvas id="chartTipoPermiso" height="250"></canvas>
-                                <!-- Overlay solo para este canvas -->
-                                <div class="canvasOverlay">
-                                    ¡A punto de revelar las estadísticas!
-                                </div>
+                            <canvas id="chartAreas" height="250"></canvas>
+                            <!-- Overlay solo para este canvas -->
+                            <div class="canvasOverlay">
+                                ¡A punto de revelar las estadísticas!
+                            </div>
+                        </div>
+
+                        <div class="kpi-header">
+                            <div class="chart-title">
+                                Tipos de Permiso por Área seleccionada
                             </div>
 
-                            <div class="kpi-header">
-                                <div class="chart-title">Personal vs Oficial por Area Seleccionada</div>
-                                <canvas id="chartTipoSolicitud" height="250"></canvas>
-                                <!-- Overlay solo para este canvas -->
-                                <div class="canvasOverlay">
-                                    ¡A punto de revelar las estadísticas!
-                                </div>
+                            <canvas id="chartTipoPermiso" height="250"></canvas>
+                            <!-- Overlay solo para este canvas -->
+                            <div class="canvasOverlay">
+                                ¡A punto de revelar las estadísticas!
+                            </div>
+                        </div>
+
+                        <div class="kpi-header">
+                            <div class="chart-title">
+                                Personal vs Oficial por Area Seleccionada
+                            </div>
+
+                            <canvas id="chartTipoSolicitud" height="250"></canvas>
+                            <!-- Overlay solo para este canvas -->
+                            <div class="canvasOverlay">
+                                ¡A punto de revelar las estadísticas!
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <!-- prediccion a futuro -->
-                    <div class="section">
-                        
-                            <div class="kpi-header">
-                                <div class="chart-title">Predicion a 7 dias por area seleccionada</div>
-                                <canvas id="chartPredicion" height="250"></canvas>
-                                <!-- Overlay solo para este canvas -->
-                                <div class="canvasOverlay">
-                                    ¡A punto de revelar las estadísticas!
-                                </div>
-                            </div>
-                        
+                <!-- prediccion a futuro -->
+                <div class="section">
+                    <div class="kpi-header">
+                        <div class="chart-title">
+                            Predicion a 7 dias por area seleccionada
+                        </div>
+
+                        <canvas id="chartPredicion" class="w-100" height="250"></canvas>
+                        <!-- Overlay solo para este canvas -->
+                        <div class="canvasOverlay">
+                            ¡A punto de revelar las estadísticas!
+                        </div>
                     </div>
+                </div>
 
-                    <!-- Tablas -->
-                    <div class="section">
-                        <div class="field-group">
-                            <div class="kpi-header">
-                                <div class="chart-title">Ranking por Área seleccionada</div>
-                                <div class="table-container">
+                <!-- Tablas -->
+                <div class="section">
+                    <div class="field-group row">
+                        <div class="kpi-header col-12">
+                            <div class="chart-title mb-2">
+                                Ranking por Área seleccionada
+                            </div>
+                            <div class="table-container table-responsive">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Área</th>
+                                            <th>Total</th>
+                                            <th>Aprobadas</th>
+                                            <th>Rechazadas</th>
+                                            <th>Pendientes</th>
+                                            <th>Tasa Aprobación</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tablaAreasBody">
+                                        <tr><td colspan="6" style="text-align: center;">Cargando...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="kpi-header col-12">
+                            <div class="chart-title mb-2">Top 10 Solicitantes por area seleccionada</div>
+                                <div class="table-container table-responsive">
                                     <table>
                                         <thead>
                                             <tr>
-                                                <th>Área</th>
+                                                <th>Firmante</th>
+                                                <th>Rol</th>
                                                 <th>Total</th>
-                                                <th>Aprobadas</th>
+                                                <th>Aprovadas</th>
                                                 <th>Rechazadas</th>
                                                 <th>Pendientes</th>
-                                                <th>Tasa Aprobación</th>
                                             </tr>
                                         </thead>
-                                        <tbody id="tablaAreasBody">
-                                            <tr><td colspan="6" style="text-align: center;">Cargando...</td></tr>
+                                        <tbody id="tablaFirmantesBody">
+                                            <tr><td colspan="5" style="text-align: center;>Cargando...</td></tr>
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
-
-                            <div class="kpi-header">
-                                <div class="chart-title">Top 10 Solicitantes por area seleccionada</div>
-                                    <div class="table-container">
-                                        <table>
-                                            <thead>
-                                                <tr>
-                                                    <th>Firmante</th>
-                                                    <th>Rol</th>
-                                                    <th>Total</th>
-                                                    <th>Aprovadas</th>
-                                                    <th>Rechazadas</th>
-                                                    <th>Pendientes</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="tablaFirmantesBody">
-                                                <tr><td colspan="5" style="text-align: center;>Cargando...</td></tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
-                    </div>
-                </div> 
-            </div>
+                    </div> 
+                </div>
+            </div> 
         </div>
 
         <!--- Carga de jQuery (local o CDN) --->
