@@ -218,19 +218,21 @@
 
                         <!-- Tiempo que se esta solicitando -->
                         <div class="field-group triple">
+                            <!--- Tiempo solicitado --->
                             <div class="form-field">
                                 <label for="tiempo_solicitado" class="form-label">Tiempo Solicitado:</label>
                                 <input type="number"
                                     min="0"
-                                    max="24" 
+                                    max="24"
+                                    step="1"
                                     name="tiempo_solicitado" 
                                     id="tiempo_solicitado" 
                                     class="form-input-general" 
-                                    placeholder="ej: 2 horas"
+                                    placeholder="ej: 2"
                                     required="yes">
                             </div>
 
-                            <!-- Hora que se solicita para salir -->
+                            <!-- Hora de salida -->
                             <div class="form-field">
                                 <label for="hora_salida" class="form-label">Hora de Salida:</label>
                                 <input type="time"
@@ -240,7 +242,7 @@
                                     required="yes">
                             </div>
 
-                            <!-- Hora que se solicita para regresar a labores -->
+                            <!-- Hora de llegada -->
                             <div class="form-field">
                                 <label for="hora_llegada" class="form-label">Hora de llegada:</label>
                                 <input type="time"
