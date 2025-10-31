@@ -1,0 +1,10 @@
+.table-responsive-custom {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch; /* mejora el scroll en iOS */
+}
+
+.table-responsive-custom table {
+  min-width: 600px; /* evita que se deformen columnas pequeñas */
+  border-collapse: collapse;
+}
