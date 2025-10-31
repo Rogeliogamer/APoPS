@@ -64,7 +64,9 @@
 
                                 <!--- Consulta para obtener el nombre completo del usuario logueado --->
                                 <cfquery name="qTiposPermiso" datasource="autorizacion">
-                                    SELECT nombre, apellido_paterno, apellido_materno
+                                    SELECT nombre, 
+                                        apellido_paterno, 
+                                        apellido_materno
                                     FROM datos_usuario
                                     WHERE id_datos = <cfqueryparam value="#session.id_usuario#" cfsqltype="cf_sql_integer">
                                 </cfquery>
@@ -89,7 +91,8 @@
 
                                 <!--- Consulta para obtener el área de adscripción del usuario logueado --->
                                 <cfquery name="qTipoAdscripcion" datasource="autorizacion">
-                                    SELECT aa.nombre AS nombre_area
+                                    SELECT aa.nombre 
+                                        AS nombre_area
                                     FROM datos_usuario du
                                     LEFT JOIN area_adscripcion aa
                                     ON du.id_area = aa.id_area
@@ -200,12 +203,16 @@
                                     Fecha:
                                 </label>
 
+                                <!--- Obtener la fecha actual en formato YYYY-MM-DD --->
+                                <cfset hoy = dateFormat(now(), "yyyy-mm-dd")>
+
                                 <input type="date"
                                     name="fecha" 
                                     id="fecha" 
                                     class="form-input-general" 
                                     required="yes" 
-                                    message="Por favor seleccione una fecha">
+                                    message="Por favor seleccione una fecha"
+                                    min="<cfoutput>#hoy#</cfoutput>">
                             </div>
                         </div>
 
