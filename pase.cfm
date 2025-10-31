@@ -12,13 +12,13 @@
 <!DOCTYPE html>
 <html lang="es">
     <head>
-        <!-- Metadatos y enlaces a estilos -->
+        <!--- Metadatos y enlaces a estilos --->
         <meta charset="UTF-8">
-        <!-- Vista adaptable para dispositivos móviles -->
+        <!--- Vista adaptable para dispositivos móviles --->
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <!-- Título de la página -->
+        <!--- Título de la página --->
         <title>Permiso o Pase de Salida</title>
-        <!-- Enlace a fuentes y hojas de estilo -->
+        <!--- Enlace a fuentes y hojas de estilo --->
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="css/globalForm.css">
         <link rel="stylesheet" href="css/svgFirma.css">
@@ -26,9 +26,14 @@
         <link rel="stylesheet" href="css/botones.css">
     </head>
     <body>
-        <!-- Verificar si el usuario es administrador -->
-        <cfif structKeyExists(session, "rol") AND session.rol EQ "admin">
-            <!-- Redirigir al menú si es administrador -->
+        <!--- Validar que exista un sesión activa --->
+        <cfif NOT structKeyExists(session, "rol") OR len(trim(session.rol)) EQ 0>
+            <!-- No hay sesión activa, redirigir al login -->
+            <cflocation url="login.cfm" addtoken="no">
+        </cfif>
+
+        <!-- Si el usuario es administrador, redirigir al menú principal -->
+        <cfif session.rol EQ "admin">
             <cflocation url="menu.cfm" addtoken="no">
         </cfif>
         
