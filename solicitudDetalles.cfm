@@ -57,6 +57,15 @@
         <link rel="stylesheet" href="css/botones.css">
     </head>
     <body>
+        <!--- Verificación de sesión y rol autorizado --->
+        <cfif NOT structKeyExists(session, "rol") OR len(trim(session.rol)) EQ 0>
+            <!--- No hay sesión activa o rol definido --->
+            <cflocation url="login.cfm" addtoken="no">
+        <cfelseif ListFindNoCase("Solicitante", trim(session.rol)) EQ 0>
+            <!--- Rol no autorizado para esta sección --->
+            <cflocation url="menu.cfm" addtoken="no">
+        </cfif>
+
         <div class="container">
             <div class="header">
                 <div class="logo">
