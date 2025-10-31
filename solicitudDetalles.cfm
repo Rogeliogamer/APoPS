@@ -30,7 +30,10 @@
 </cfquery>
 
 <cfquery name="qFirmas" datasource="autorizacion">
-    SELECT rol, aprobado, fecha_firma, svg
+    SELECT rol, 
+        aprobado, 
+        fecha_firma, 
+        svg
     FROM firmas
     WHERE id_solicitud = <cfqueryparam value="#form.id_solicitud#" cfsqltype="cf_sql_integer">
     ORDER BY FIELD(rol, 'Solicitante','Jefe','RecursosHumanos','Autorizacion','Expediente')
@@ -137,7 +140,7 @@
                                     #rol#
                                 </div>
 
-                                <!-- SVG de la firma -->
+                                <!--- SVG de la firma --->
                                 <div class="signature-svg">
                                     #svg#
                                 </div>
