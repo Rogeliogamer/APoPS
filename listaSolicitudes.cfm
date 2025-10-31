@@ -9,6 +9,7 @@
  * Uso:
  * - Página destinada al seguimiento de solicitudes firmadas por el usuario logueado.
 --->
+
 <!--- Evita errores si no existe form.search --->
 <cfif structKeyExists(form, "search")>
     <cfset searchTerm = trim(form.search)>
@@ -56,44 +57,47 @@
 <!DOCTYPE html>
 <html lang="es">
     <head>
-        <!-- Metadatos y enlaces a estilos -->
+        <!--- Metadatos y enlaces a estilos --->
         <meta charset="UTF-8">
-        <!-- Vista adaptable para dispositivos móviles -->
+        <!--- Vista adaptable para dispositivos móviles --->
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <!-- Título de la página -->
+        <!--- Icono de la pagina --->
+        <link rel="icon" href="elements/icono.ico" type="image/x-icon">
+        <!--- Título de la página --->
         <title>Solicitudes Firmadas</title>
-        <!-- Enlace a fuentes y hojas de estilo -->
+        <!--- Enlace a fuentes y hojas de estilo --->
         <link rel="stylesheet" href="css/globalForm.css">
         <link rel="stylesheet" href="css/tablas.css">
         <link rel="stylesheet" href="css/botones.css">
+        <link rel="stylesheet" href="css/listaSolicitudes.css">
     </head>
     <body>
-        <!-- Verificación de sesión y rol -->
+        <!--- Verificación de sesión y rol --->
         <cfif NOT structKeyExists(session, "rol") 
             OR ListFindNoCase("Expediente,RecursosHumanos,Autorizacion,Jefe,Solicitante", session.rol) EQ 0>
             <cflocation url="menu.cfm" addtoken="no">
         </cfif>
 
-        <!-- Parámetros de URL y formulario -->
-<cfparam name="url.page" default="1">
-<cfparam name="form.search" default="">
+        <!--- Parámetros de URL y formulario --->
+        <cfparam name="url.page" default="1">
+        <cfparam name="form.search" default="">
 
-<!-- Configuración de paginación -->
-<cfset rowsPerPage = 10>
-<cfset currentPage = val(url.page)>
-<cfif currentPage LTE 0><cfset currentPage = 1></cfif>
-<cfset startRow = (currentPage - 1) * rowsPerPage + 1>
+        <!--- Configuración de paginación --->
+        <cfset rowsPerPage = 10>
+        <cfset currentPage = val(url.page)>
+        <cfif currentPage LTE 0><cfset currentPage = 1></cfif>
+        <cfset startRow = (currentPage - 1) * rowsPerPage + 1>
 
-<!-- Calcular totales -->
-<cfset totalRecords = qFirmados.recordCount>
-<cfset totalPages = ceiling(totalRecords / rowsPerPage)>
-<cfset endRow = min(startRow + rowsPerPage - 1, totalRecords)>
+        <!--- Calcular totales --->
+        <cfset totalRecords = qFirmados.recordCount>
+        <cfset totalPages = ceiling(totalRecords / rowsPerPage)>
+        <cfset endRow = min(startRow + rowsPerPage - 1, totalRecords)>
 
-<!-- Subconsulta para mostrar solo las filas de la página actual -->
-<cfquery dbtype="query" name="qPaged">
-    SELECT *
-    FROM qFirmados
-</cfquery>
+        <!--- Subconsulta para mostrar solo las filas de la página actual --->
+        <cfquery dbtype="query" name="qPaged">
+            SELECT *
+            FROM qFirmados
+        </cfquery>
 
         <div class="container">
             <div class="header">
@@ -105,23 +109,23 @@
             </div>
 
             <div class="form-container">
-                <!-- Formulario de búsqueda -->
+                <!--- Formulario de búsqueda --->
                 <form method="post" action="listaSolicitudes.cfm" class="field-group single">
-                    <!-- Campo de búsqueda -->
+                    <!--- Campo de búsqueda --->
                     <div class="form-field">
-                        <!-- Etiqueta y campo de entrada -->
+                        <!--- Etiqueta y campo de entrada --->
                         <label class="form-label">
                             Buscar:
                         </label>
-                        <!-- Campo de texto -->
+                        <!--- Campo de texto --->
                         <cfoutput>
-                            <!-- Mantener el valor ingresado en el campo de búsqueda -->
+                            <!--- Mantener el valor ingresado en el campo de búsqueda --->
                             <input type="text" name="search" value="#encodeForHTMLAttribute(form.search)#" 
                                 class="form-input-general" placeholder="Solicitante, Motivo, Tipo permiso, Status, Rol">
                         </cfoutput>
                     </div>
 
-                    <!-- Botón de búsqueda -->
+                    <!--- Botón de búsqueda --->
                     <button type="submit" class="submit-btn-buscar">
                         Buscar
                     </button>
@@ -130,65 +134,67 @@
                 <div class="section">
                     <h2 class="section-title">Listado de solicitudes</h2>
 
-                    <table class="tabla">
-                        <thead>
-                            <tr class="titulos-tabla">
-                                <th class="titulo-general">ID Solicitud</th>
-                                <th class="titulo-general">Solicitante</th>
-                                <th class="titulo-general">Motivo</th>
-                                <th class="titulo-general">Tipo Permiso</th>
-                                <th class="titulo-general">Fecha Solicitud</th>
-                                <th class="titulo-general">Rol</th>
-                                <th class="titulo-general">Estado Firma</th>
-                                <th class="titulo-general">Fecha Firma</th>
-                                <th class="titulo-general-centrado">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <cfoutput query="qPaged" startrow="#startRow#" maxrows="#rowsPerPage#">
-                                <tr>
-                                    <td class="titulo-general-centrado">#id_solicitud#</td>
-                                    <td>#solicitante#</td>
-                                    <td>#motivo#</td>
-                                    <td>#tipo_permiso#</td>
-                                    <td class="titulo-general-centrado">#DateFormat(fecha,'dd/mm/yyyy')#</td>
-                                    <td>#rol_solicitante#</td>
-                                    <td>
-                                        <cfif status_final EQ "Aprobado">
-                                            <span class="status-aprobado">✔ #status_final#</span>
-                                        <cfelseif status_final EQ "Rechazado">
-                                            <span class="status-rechazado">✘ #status_final#</span>
-                                        <cfelseif status_final EQ "Pendiente">
-                                            <span class="status-pendiente">⏳ #status_final#</span>
-                                        <cfelse>
-                                            <span class="status-desconocido">#status_final#</span>
-                                        </cfif>
-                                    </td>
-                                    <td class="titulo-general-centrado">#DateFormat(fecha_firma,'dd/mm/yyyy')# #TimeFormat(fecha_firma,'HH:mm')#</td>
-                                    <td class="titulo-general-centrado">
-                                        <form action="solicitudDetalles.cfm" method="get">
-                                            <input type="hidden" name="id_solicitud" value="#id_solicitud#">
-                                            <button type="submit" class="submit-btn-verDetalles">Ver Detalles</button>
-                                        </form>
-                                    </td>
+                    <div class="table-responsive-custom">
+                        <table class="tabla">
+                            <thead>
+                                <tr class="titulos-tabla">
+                                    <th class="titulo-general">ID Solicitud</th>
+                                    <th class="titulo-general">Solicitante</th>
+                                    <th class="titulo-general">Motivo</th>
+                                    <th class="titulo-general">Tipo Permiso</th>
+                                    <th class="titulo-general">Fecha Solicitud</th>
+                                    <th class="titulo-general">Rol</th>
+                                    <th class="titulo-general">Estado Firma</th>
+                                    <th class="titulo-general">Fecha Firma</th>
+                                    <th class="titulo-general-centrado">Acciones</th>
                                 </tr>
-                            </cfoutput>
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                <cfoutput query="qPaged" startrow="#startRow#" maxrows="#rowsPerPage#">
+                                    <tr>
+                                        <td class="titulo-general-centrado">#id_solicitud#</td>
+                                        <td>#solicitante#</td>
+                                        <td>#motivo#</td>
+                                        <td>#tipo_permiso#</td>
+                                        <td class="titulo-general-centrado">#DateFormat(fecha,'dd/mm/yyyy')#</td>
+                                        <td>#rol_solicitante#</td>
+                                        <td>
+                                            <cfif status_final EQ "Aprobado">
+                                                <span class="status-aprobado">✔ #status_final#</span>
+                                            <cfelseif status_final EQ "Rechazado">
+                                                <span class="status-rechazado">✘ #status_final#</span>
+                                            <cfelseif status_final EQ "Pendiente">
+                                                <span class="status-pendiente">⏳ #status_final#</span>
+                                            <cfelse>
+                                                <span class="status-desconocido">#status_final#</span>
+                                            </cfif>
+                                        </td>
+                                        <td class="titulo-general-centrado">#DateFormat(fecha_firma,'dd/mm/yyyy')# #TimeFormat(fecha_firma,'HH:mm')#</td>
+                                        <td class="titulo-general-centrado">
+                                            <form action="solicitudDetalles.cfm" method="get">
+                                                <input type="hidden" name="id_solicitud" value="#id_solicitud#">
+                                                <button type="submit" class="submit-btn-verDetalles">Ver Detalles</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                </cfoutput>
+                            </tbody>
+                        </table>
+                    </div>
 
-<!-- Paginación en bloques de 10-->
+                    <!--- Paginación en bloques de 10 --->
                     <div class="submit-section">
-                        <!-- Contenedor de la paginación -->
+                        <!--- Contenedor de la paginación --->
                         <cfif totalPages GT 1>
-                            <!-- Tamaño del bloque de páginas -->
+                            <!--- Tamaño del bloque de páginas --->
                             <cfset blockSize = 10>
-                            <!-- Bloque actual -->
+                            <!--- Bloque actual --->
                             <cfset currentBlock = ceiling(currentPage / blockSize)>
-                            <!-- Página inicial y final del bloque -->
+                            <!--- Página inicial y final del bloque --->
                             <cfset startPage = ((currentBlock - 1) * blockSize) + 1>
                             <cfset endPage = min(startPage + blockSize - 1, totalPages)>
 
-                            <!-- Botón 'Anterior' si hay bloques previos -->
+                            <!--- Botón 'Anterior' si hay bloques previos --->
                             <cfif startPage GT 1>
                                 <cfset prevPage = startPage - 1>
                                 <cfoutput>
@@ -198,15 +204,15 @@
                                 </cfoutput>
                             </cfif>
 
-                            <!-- Números del bloque actual -->
+                            <!--- Números del bloque actual --->
                             <cfloop from="#startPage#" to="#endPage#" index="i">
                                 <cfif i EQ currentPage>
-                                    <!-- Botón deshabilitado para la página actual -->
+                                    <!--- Botón deshabilitado para la página actual --->
                                     <cfoutput>
                                         <button class="submit-btn-paginacion-disabled" disabled>#i#</button>
                                     </cfoutput>
                                 <cfelse>
-                                    <!-- Botón para otras páginas -->
+                                    <!--- Botón para otras páginas --->
                                     <cfoutput>
                                         <a href="listaSolicitudes.cfm?page=#i#&search=#urlEncodedFormat(form.search)#" 
                                             class="submit-btn-paginacion" style="text-decoration:none">#i#</a>
@@ -214,7 +220,7 @@
                                 </cfif>
                             </cfloop>
 
-                            <!-- Botón 'Siguiente' si hay más bloques -->
+                            <!--- Botón 'Siguiente' si hay más bloques --->
                             <cfif endPage LT totalPages>
                                 <cfset nextPage = endPage + 1>
                                 <cfoutput>
@@ -225,7 +231,6 @@
                             </cfif>
                         </cfif>
                     </div>
-
                 </div>
 
                 <div class="submit-section">
