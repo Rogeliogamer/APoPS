@@ -39,13 +39,15 @@
 <!DOCTYPE html>
 <html lang="es">
     <head>
-        <!-- Metadatos y enlaces a estilos -->
+        <!--- Metadatos y enlaces a estilos --->
         <meta charset="UTF-8">
-        <!-- Vista adaptable para dispositivos móviles -->
+        <!--- Vista adaptable para dispositivos móviles --->
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <!-- Título de la página -->
+        <!--- Icono de la pagina --->
+        <link rel="icon" href="elements/icono.ico" type="image/x-icon">
+        <!--- Título de la página --->
         <title>Detalle de Solicitud</title>
-        <!-- Enlace a fuentes y hojas de estilo -->
+        <!--- Enlace a fuentes y hojas de estilo --->
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="css/globalForm.css">
         <link rel="stylesheet" href="css/solicitudDetalles.css">
@@ -60,55 +62,65 @@
                 </div>
                 <h1>Solicitud <cfoutput>#qSolicitud.id_solicitud#</cfoutput></h1>
             </div>
+
             <div class="form-container">
                 <div class="section">
                     <div class="section-title">
                         Información de la Solicitud
                     </div>
+
                     <div class="field-group">
                         <cfoutput>
-                        <div class="form-field">
-                            <label class="form-label">Solicitante</label>
-                            <input type="text" class="form-input-general" value="#qSolicitud.solicitante#" readonly>
-                        </div>
-                        <div class="form-field">
-                            <label class="form-label">Tipo de Solicitud</label>
-                            <input type="text" class="form-input-general" value="#qSolicitud.tipo_solicitud#" readonly>
-                        </div>
-                        <div class="form-field">
-                            <label class="form-label">Motivo</label>
-                            <input type="text" class="form-input-general" value="#qSolicitud.motivo#" readonly>
-                        </div>
-                        <div class="form-field">
-                            <label class="form-label">Tipo de Permiso</label>
-                            <input type="text" class="form-input-general" value="#qSolicitud.tipo_permiso#" readonly>
-                        </div>
-                        <div class="form-field">
-                            <label class="form-label">Fecha</label>
-                            <input type="text" class="form-input-general" value="#DateFormat(qSolicitud.fecha,'dd/mm/yyyy')#" readonly>
-                        </div>
-                        <div class="form-field">
-                            <label class="form-label">Hora de Salida</label>
-                            <input type="text" class="form-input-general" value="#TimeFormat(qSolicitud.hora_salida,'HH:mm')#" readonly>
-                        </div>
-                        <div class="form-field">
-                            <label class="form-label">Hora de Llegada</label>
-                            <input type="text" class="form-input-general" value="#TimeFormat(qSolicitud.hora_llegada,'HH:mm')#" readonly>
-                        </div>
-                        <div class="form-field">
-                            <label class="form-label">Tiempo Solicitado</label>
-                            <input type="text" class="form-input-general" value="#qSolicitud.tiempo_solicitado#" readonly>
-                        </div>
-                        <div class="form-field">
-                            <label class="form-label">Status Final</label>
-                            <cfif #qSolicitud.status_final# EQ "Aprobado">
-                                <input type="text" class="form-input-aprovado" value="#qSolicitud.status_final#" readonly>
-                            <cfelseif #qSolicitud.status_final# EQ "Rechazado">
-                                <input type="text" class="form-input-rechazado" value="#qSolicitud.status_final#" readonly>
-                            <cfelse>
-                                <input type="text" class="form-input-pendiente" value="#qSolicitud.status_final#" readonly>
-                            </cfif>
-                        </div>
+                            <div class="form-field">
+                                <label class="form-label">Solicitante</label>
+                                <input type="text" class="form-input-general" value="#qSolicitud.solicitante#" readonly>
+                            </div>
+
+                            <div class="form-field">
+                                <label class="form-label">Tipo de Solicitud</label>
+                                <input type="text" class="form-input-general" value="#qSolicitud.tipo_solicitud#" readonly>
+                            </div>
+
+                            <div class="form-field">
+                                <label class="form-label">Motivo</label>
+                                <input type="text" class="form-input-general" value="#qSolicitud.motivo#" readonly>
+                            </div>
+
+                            <div class="form-field">
+                                <label class="form-label">Tipo de Permiso</label>
+                                <input type="text" class="form-input-general" value="#qSolicitud.tipo_permiso#" readonly>
+                            </div>
+
+                            <div class="form-field">
+                                <label class="form-label">Fecha</label>
+                                <input type="text" class="form-input-general" value="#DateFormat(qSolicitud.fecha,'dd/mm/yyyy')#" readonly>
+                            </div>
+
+                            <div class="form-field">
+                                <label class="form-label">Hora de Salida</label>
+                                <input type="text" class="form-input-general" value="#TimeFormat(qSolicitud.hora_salida,'HH:mm')#" readonly>
+                            </div>
+
+                            <div class="form-field">
+                                <label class="form-label">Hora de Llegada</label>
+                                <input type="text" class="form-input-general" value="#TimeFormat(qSolicitud.hora_llegada,'HH:mm')#" readonly>
+                            </div>
+
+                            <div class="form-field">
+                                <label class="form-label">Tiempo Solicitado</label>
+                                <input type="text" class="form-input-general" value="#qSolicitud.tiempo_solicitado#" readonly>
+                            </div>
+
+                            <div class="form-field">
+                                <label class="form-label">Status Final</label>
+                                <cfif #qSolicitud.status_final# EQ "Aprobado">
+                                    <input type="text" class="form-input-aprovado" value="#qSolicitud.status_final#" readonly>
+                                <cfelseif #qSolicitud.status_final# EQ "Rechazado">
+                                    <input type="text" class="form-input-rechazado" value="#qSolicitud.status_final#" readonly>
+                                <cfelse>
+                                    <input type="text" class="form-input-pendiente" value="#qSolicitud.status_final#" readonly>
+                                </cfif>
+                            </div>
                         </cfoutput>
                     </div>
                 </div>
@@ -117,21 +129,26 @@
                     <div class="section-title">
                         Firmas
                     </div>
+
                     <div class="signature-section">
                         <cfoutput query="qFirmas">
                             <div class="signature-field">
                                 <div class="signature-label">
                                     #rol#
                                 </div>
+
                                 <!-- SVG de la firma -->
                                 <div class="signature-svg">
                                     #svg#
                                 </div>
+
                                 <div class="signature-line">
                                 </div>
+
                                 <div>
                                     #aprobado#
                                 </div>
+
                                 <div>
                                     #DateFormat(fecha_firma,'dd/mm/yyyy')# #TimeFormat(fecha_firma,'HH:mm')#
                                 </div>
@@ -159,15 +176,15 @@
         </div>
 
         <script>
-            // Capturamos el botón
+            <!--- Capturamos el botón --->
             const btnRegresar = document.getElementById('btnRegresar');
 
             btnRegresar.addEventListener('click', function() {
                 if (document.referrer) {
-                    // Va a la página desde donde llegó
+                    <!--- Va a la página desde donde llegó --->
                     window.location.href = document.referrer;
                 } else {
-                    // Si no hay referrer, va a una página por defecto
+                    <!--- Si no hay referrer, va a una página por defecto --->
                     window.location.href = 'firmados.cfm';
                 }
             });
