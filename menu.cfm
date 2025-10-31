@@ -21,7 +21,7 @@
             "Admin": ["registrarUsuarios.cfm", "listaUsuarios.cfm", "metricas.cfm"]
         };
 
-        // Validar si el rol existe en el struct
+        <!--- Validar si el rol existe en el struct --->
         if (structKeyExists(accesos, rol)) {
             return arrayFind(accesos[rol], pagina) > 0;
         } else {
@@ -37,6 +37,8 @@
         <meta charset="UTF-8">
         <!-- Vista adaptable para dispositivos móviles -->
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!--- Icono de la pagina --->
+        <link rel="icon" href="elements/icono.ico" type="image/x-icon">
         <!-- Título de la página -->
         <title>Menú Principal</title>
         <!-- Enlace a fuentes y hojas de estilo -->
@@ -51,7 +53,7 @@
         <cfoutput>#barra#</cfoutput>
         
         <div class="menu-container">
-            <!-- 1. pase.cfm -->
+            <!--- 1. pase.cfm --->
             <div class="menu-card">
                 <h2>Permiso o Pase de salida</h2>
                 <p>Solicitar un permiso o pase de salida</p>
@@ -62,7 +64,7 @@
                 </cfif>
             </div>
 
-            <!-- 2. registrarUsuarios.cfm -->
+            <!--- 2. registrarUsuarios.cfm --->
             <div class="menu-card">
                 <h2>Registrar usuarios</h2>
                 <p>Registra usuarios en el sistema</p>
@@ -73,7 +75,7 @@
                 </cfif>
             </div>
 
-            <!-- 3. listaUsuarios.cfm -->
+            <!--- 3. listaUsuarios.cfm --->
             <div class="menu-card">
                 <h2>Ver usuarios</h2>
                 <p>Lista de usuarios</p>
@@ -84,7 +86,7 @@
                 </cfif>
             </div>
 
-            <!-- 4. pendientesFirmar.cfm -->
+            <!--- 4. pendientesFirmar.cfm --->
             <div class="menu-card">
                 <h2>Solicitudes pendientes de firma</h2>
                 <p>Revisar y firmar solicitudes pendientes</p>
@@ -95,7 +97,7 @@
                 </cfif>
             </div>
 
-            <!-- 5. firmados.cfm -->
+            <!--- 5. firmados.cfm --->
             <div class="menu-card">
                 <h2>Solicitudes ya firmados</h2>
                 <p>Ver solicitudes que ya han sido firmados</p>
@@ -106,7 +108,7 @@
                 </cfif>
             </div>
 
-            <!-- 6. listaSolicitudes.cfm -->
+            <!--- 6. listaSolicitudes.cfm --->
             <div class="menu-card">
                 <h2>Ver Pase Completo</h2>
                 <p>Ver detalles completos de un pase</p>
@@ -117,7 +119,7 @@
                 </cfif>
             </div>
 
-            <!-- 7. metricas.cfm -->
+            <!--- 7. metricas.cfm --->
             <div class="menu-card">
                 <h2>Metricas</h2>
                 <p>Ver graficas</p>
