@@ -48,6 +48,14 @@
         <link rel="stylesheet" href="css/botones.css">
     </head>
     <body>
+        <!--- Verificar si existe un usuario logeado --->
+        <cfif structKeyExists(session, "rol") AND len(trim(session.usuario))>
+            <!--- El usuario está logeado, puede continuar --->
+        <cfelse>
+            <!--- No hay sesión, redirigir al login --->
+            <cflocation url="login.cfm" addtoken="no">
+        </cfif>
+
         <!--- barra superior --->
         <cfset barra = createObject("component", "componentes/usuarioConectadoBarra").render()>
         <cfoutput>#barra#</cfoutput>
