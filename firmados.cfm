@@ -154,6 +154,7 @@
                 <div class="section">
                     <h2 class="section-title">Listado de solicitudes con firma</h2>
 
+                    <div class="table-responsive-custom">
                     <table class="tabla">
                         <thead>
                             <tr class="titulos-tabla">
@@ -199,6 +200,7 @@
                             </cfoutput>
                         </tbody>
                     </table>
+                    </div>
 
                     <!--- Paginación en bloques de 10 --->
                     <div class="submit-section">
