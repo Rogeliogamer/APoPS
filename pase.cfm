@@ -16,6 +16,8 @@
         <meta charset="UTF-8">
         <!--- Vista adaptable para dispositivos móviles --->
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!--- Icono de la pagina --->
+        <link rel="icon" href="elements/icono.ico" type="image/x-icon">
         <!--- Título de la página --->
         <title>Permiso o Pase de Salida</title>
         <!--- Enlace a fuentes y hojas de estilo --->
