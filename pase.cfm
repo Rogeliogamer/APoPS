@@ -30,11 +30,11 @@
     <body>
         <!--- Validar que exista un sesión activa --->
         <cfif NOT structKeyExists(session, "rol") OR len(trim(session.rol)) EQ 0>
-            <!-- No hay sesión activa, redirigir al login -->
+            <!--- No hay sesión activa, redirigir al login --->
             <cflocation url="login.cfm" addtoken="no">
         </cfif>
 
-        <!-- Si el usuario es administrador, redirigir al menú principal -->
+        <!--- Si el usuario es administrador, redirigir al menú principal --->
         <cfif session.rol EQ "admin">
             <cflocation url="menu.cfm" addtoken="no">
         </cfif>
@@ -48,12 +48,12 @@
                 <h1>AUTORIZACIÓN DE PERMISO O PASE DE SALIDA</h1>
             </div>
 
-            <!-- Contenedor del formulario -->
+            <!--- Contenedor del formulario --->
             <div class="form-container">
                 <!--- Formulario de Solicitud de Permiso o Pase de Salida --->
                 <form action="procesar_permiso.cfm" method="post" name="permisoForm">
                     
-                    <!-- Datos del Solicitante -->
+                    <!--- Datos del Solicitante --->
                     <div class="section">
                         <!--- Título de la sección --->
                         <div class="section-title">Datos del Solicitante</div>
@@ -118,14 +118,14 @@
                         </div>
                     </div>
 
-                    <!-- Descripción de la Solicitud -->
+                    <!--- Descripción de la Solicitud --->
                     <div class="section">
                         <div class="section-title">
                             Descripción de la Solicitud
                         </div>
                         
                         <div class="form-field">
-                            <!-- Seleccion del tipo de motivo -->
+                            <!--- Seleccion del tipo de motivo --->
                             <label class="form-label">
                                 Motivo:
                             </label>
@@ -153,7 +153,7 @@
 
                         <div class="field-group">
                             <div class="form-field">
-                                <!-- Selecion del tipo de permiso -->
+                                <!--- Selecion del tipo de permiso --->
                                 <label class="form-label">
                                     Tipo de permiso:
                                 </label>
@@ -197,7 +197,7 @@
                                 </div>
                             </div>
 
-                            <!-- Fecha que se esta solicitando -->
+                            <!--- Fecha que se esta solicitando --->
                             <div class="form-field">
                                 <label for="fecha" class="form-label">
                                     Fecha:
@@ -216,7 +216,7 @@
                             </div>
                         </div>
 
-                        <!-- Tiempo que se esta solicitando -->
+                        <!--- Tiempo que se esta solicitando --->
                         <div class="field-group triple">
                             <!--- Tiempo solicitado --->
                             <div class="form-field">
@@ -232,7 +232,7 @@
                                     required="yes">
                             </div>
 
-                            <!-- Hora de salida -->
+                            <!--- Hora de salida --->
                             <div class="form-field">
                                 <label for="hora_salida" class="form-label">Hora de Salida:</label>
                                 <input type="time"
@@ -242,7 +242,7 @@
                                     required="yes">
                             </div>
 
-                            <!-- Hora de llegada -->
+                            <!--- Hora de llegada --->
                             <div class="form-field">
                                 <label for="hora_llegada" class="form-label">Hora de llegada:</label>
                                 <input type="time"
@@ -254,17 +254,20 @@
                         </div>
                     </div>
 
-                    <!-- Firmas -->
+                    <!--- Firmas --->
                     <div class="section">
                         <div class="section-title">
                             Firmas de Autorización
                         </div>
-                            <div class="signature-section">
-                                <!-- Solicitud - Firmante (solo solicitante firma en esta versión) -->
-                                <div class="signature-field">
-                                <div class="signature-label">Solicitante</div>
+                        
+                        <div class="signature-section">
+                            <!--- Solicitud - Firmante (solo solicitante firma en esta versión) --->
+                            <div class="signature-field">
+                                <div class="signature-label">
+                                    Solicitante
+                                </div>
 
-                                <!-- Área de firma -->
+                                <!--- Área de firma --->
                                 <div id="signature-wrapper-solicitante" class="signature-wrapper" role="application" aria-label="Área de firma">
                                     <svg id="signature-svg-solicitante" class="signature-svg"
                                         xmlns="http://www.w3.org/2000/svg" width="100%" height="100%"
@@ -272,75 +275,103 @@
                                 </div>
 
                                 <div class="signature-controls">
-                                    <button id="clearBtn-solicitante" type="button" class="submit-btn-limpiar">Limpiar</button>
+                                    <button id="clearBtn-solicitante" type="button" class="submit-btn-limpiar">
+                                        Limpiar
+                                    </button>
                                 </div>
 
-                                <!-- CAMPO OCULTO: debe estar dentro del form para que ColdFusion lo reciba -->
+                                <!--- CAMPO OCULTO: debe estar dentro del form para que ColdFusion lo reciba --->
                                 <input type="hidden" name="firma_svg" id="firma_svg">
                             </div>
 
-                            <!-- Firmara la solicitud el jefe de area -->
+                            <!--- Firmara la solicitud el jefe de area --->
                             <div class="signature-field">
-                                <div class="signature-label">Firma del Jefe Inmediato</div>
-                                <!-- Área de firma -->
+                                <div class="signature-label">
+                                    Firma del Jefe Inmediato
+                                </div>
+
+                                <!--- Área de firma --->
                                 <div id="signature-wrapper" class="signature-wrapper" role="application" aria-label="Área de firma">
                                     <svg id="signature-svg" class="signature-svg" xmlns="http://www.w3.org/2000/svg" width="100%" height="200" viewBox="0 0 1000 200" preserveAspectRatio="xMidYMid meet"></svg>
                                 </div>
-                                <!-- Borra la firma -->
+
+                                <!--- Borra la firma --->
                                 <div class="signature-controls">
-                                    <button id="clearBtn" type="button" class="submit-btn-limpiar-disabled" disabled>Limpiar</button>
+                                    <button id="clearBtn" type="button" class="submit-btn-limpiar-disabled" disabled>
+                                        Limpiar
+                                    </button>
                                 </div>
                             </div>
 
-                            <!-- Firmara la solicitud los de Recusos Humanos -->
+                            <!--- Firmara la solicitud los de Recusos Humanos --->
                             <div class="signature-field">
-                                <div class="signature-label">Firma Dirección de Recursos Humanos</div>
-                                <!-- Área de firma -->
+                                <div class="signature-label">
+                                    Firma Dirección de Recursos Humanos
+                                </div>
+
+                                <!--- Área de firma --->
                                 <div id="signature-wrapper" class="signature-wrapper" role="application" aria-label="Área de firma">
                                     <svg id="signature-svg" class="signature-svg" xmlns="http://www.w3.org/2000/svg" width="100%" height="200" viewBox="0 0 1000 200" preserveAspectRatio="xMidYMid meet"></svg>
                                 </div>
-                                <!-- Borra la firma -->
+
+                                <!--- Borra la firma --->
                                 <div class="signature-controls">
-                                    <button id="clearBtn" type="button" class="submit-btn-limpiar-disabled" disabled>Limpiar</button>
+                                    <button id="clearBtn" type="button" class="submit-btn-limpiar-disabled" disabled>
+                                        Limpiar
+                                    </button>
                                 </div>
                             </div>
 
-                            <!-- Firmara la solicitud para los de autorizacion -->
+                            <!--- Firmara la solicitud para los de autorizacion --->
                             <div class="signature-field">
-                                <div class="signature-label">Firma de Autorización</div>
-                                <!-- Área de firma -->
+                                <div class="signature-label">
+                                    Firma de Autorización
+                                </div>
+
+                                <!--- Área de firma --->
                                 <div id="signature-wrapper" class="signature-wrapper" role="application" aria-label="Área de firma">
                                     <svg id="signature-svg" class="signature-svg" xmlns="http://www.w3.org/2000/svg" width="100%" height="200" viewBox="0 0 1000 200" preserveAspectRatio="xMidYMid meet"></svg>
                                 </div>
-                                <!-- Borra la firma -->
+
+                                <!--- Borra la firma --->
                                 <div class="signature-controls">
-                                    <button id="clearBtn" type="button" class="submit-btn-limpiar-disabled" disabled>Limpiar</button>
+                                    <button id="clearBtn" type="button" class="submit-btn-limpiar-disabled" disabled>
+                                        Limpiar
+                                    </button>
                                 </div>
                             </div>
 
-                            <!-- Firmara la solicitud para los de expediente -->
+                            <!--- Firmara la solicitud para los de expediente --->
                             <div class="signature-field">
-                                <div class="signature-label">Para Expediente y Control de Asistencia</div>
-                                <!-- Área de firma -->
+                                <div class="signature-label">
+                                    Para Expediente y Control de Asistencia
+                                </div>
+
+                                <!--- Área de firma --->
                                 <div id="signature-wrapper" class="signature-wrapper" role="application" aria-label="Área de firma">
                                     <svg id="signature-svg" class="signature-svg" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1000 200" preserveAspectRatio="none"></svg>
                                 </div>
-                                <!-- Borra la firma -->
+
+                                <!--- Borra la firma --->
                                 <div class="signature-controls">
-                                    <button id="clearBtn" type="button" class="submit-btn-limpiar-disabled" disabled>Limpiar</button>
+                                    <button id="clearBtn" type="button" class="submit-btn-limpiar-disabled" disabled>
+                                        Limpiar
+                                    </button>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Botón de Envío -->
+                    <!--- Botón de Envío --->
                     <div class="submit-section">
-                        <button type="submit" name="submit" class="submit-btn-enviar">Enviar Solicitud</button>
+                        <button type="submit" name="submit" class="submit-btn-enviar">
+                            Enviar Solicitud
+                        </button>
                     </div>
                 </form>
 
                 <div class="submit-section">
-                    <!-- Enlace para regresar al menú principal -->
+                    <!--- Enlace para regresar al menú principal --->
                     <div class="field-group">
                         <a href="menu.cfm" class="submit-btn-menu submit-btn-menu-text">
                             Menu
