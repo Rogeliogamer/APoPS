@@ -1,8 +1,15 @@
 <!DOCTYPE html>
 <html lang="es">
     <head>
+        <!--- Metadatos y enlaces a estilos --->
+        <meta charset="UTF-8">
+        <!--- Vista adaptable para dispositivos móviles --->
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!--- Icono de la pagina --->
+        <link rel="icon" href="elements/icono.ico" type="image/x-icon">
+        <!--- Título de la página --->
         <title>Editar Usuario</title>
+        <!--- Enlace a fuentes y hojas de estilo --->
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="css/globalForm.css">
         <link rel="stylesheet" href="css/botones.css">

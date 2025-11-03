@@ -8,17 +8,18 @@
  * Uso:
  * - Página destinada al proceso de validación y firma de solicitudes por las autoridades correspondientes.
 --->
+
 <!-- Consulta de Solicitud -->
-                    <cfquery name="qSolicitud" datasource="autorizacion">
-                        SELECT s.*, du.nombre, du.apellido_paterno, du.apellido_materno,
-                            aa.nombre AS area_nombre,
-                            f.svg AS firma_solicitante
-                        FROM solicitudes s
-                        LEFT JOIN datos_usuario du ON s.id_solicitante = du.id_datos
-                        LEFT JOIN area_adscripcion aa ON du.id_area = aa.id_area
-                        LEFT JOIN firmas f ON s.id_solicitud = f.id_solicitud AND f.rol='Solicitante'
-                        WHERE s.id_solicitud = <cfqueryparam value="#url.id_solicitud#" cfsqltype="cf_sql_integer">
-                    </cfquery>
+<cfquery name="qSolicitud" datasource="autorizacion">
+    SELECT s.*, du.nombre, du.apellido_paterno, du.apellido_materno,
+        aa.nombre AS area_nombre,
+        f.svg AS firma_solicitante
+    FROM solicitudes s
+    LEFT JOIN datos_usuario du ON s.id_solicitante = du.id_datos
+    LEFT JOIN area_adscripcion aa ON du.id_area = aa.id_area
+    LEFT JOIN firmas f ON s.id_solicitud = f.id_solicitud AND f.rol='Solicitante'
+    WHERE s.id_solicitud = <cfqueryparam value="#url.id_solicitud#" cfsqltype="cf_sql_integer">
+</cfquery>
 
 <!DOCTYPE html>
 <html lang="es">
@@ -27,6 +28,8 @@
         <meta charset="UTF-8">
         <!-- Vista adaptable para dispositivos móviles -->
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!--- Icono de la pagina --->
+        <link rel="icon" href="elements/icono.ico" type="image/x-icon">
         <!-- Título de la página -->
         <title>Firmar Solicitud</title>
         <!-- Enlace a fuentes y hojas de estilo -->

@@ -11,25 +11,26 @@
 <!DOCTYPE html>
 <html lang="es">
     <head>
+        <!--- Metadatos y enlaces a estilos --->
         <meta charset="UTF-8">
+        <!--- Vista adaptable para dispositivos móviles --->
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!--- Icono de la pagina --->
+        <link rel="icon" href="elements/icono.ico" type="image/x-icon">
+        <!--- Título de la página --->
         <title>Dashboard - Sistema de Permisos</title>
-
         <!-- Carga de jQuery (local) -->
         <script src="js/jquery-3.6.0.min.js"></script>
-
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
         <!-- Scripts del sistema -->
         <script src="js/graficasKPI.js"></script>
         <script src="js/metricas.js"></script>
-
-        
+        <!--- Enlace a fuentes y hojas de estilo --->
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="css/globalForm.css">
         <link rel="stylesheet" href="css/metricas.css">
         <link rel="stylesheet" href="css/botones.css">
         <link rel="stylesheet" href="css/temp.css">
-        
     </head>
     <body>
         <!-- Verificación de sesión y rol -->
