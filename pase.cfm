@@ -56,7 +56,9 @@
                     <!--- Datos del Solicitante --->
                     <div class="section">
                         <!--- Título de la sección --->
-                        <div class="section-title">Datos del Solicitante</div>
+                        <div class="section-title">
+                            Datos del Solicitante
+                        </div>
 
                         <!--- Nombre Completo y Área de Adscripción --->
                         <div class="field-group">

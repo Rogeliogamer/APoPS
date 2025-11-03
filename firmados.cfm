@@ -156,51 +156,51 @@
                     <h2 class="section-title">Listado de solicitudes con firma</h2>
 
                     <div class="table-responsive-custom">
-                    <table class="tabla">
-                        <thead>
-                            <tr class="titulos-tabla">
-                                <th class="titulo-general">ID Solicitud</th>
-                                <th class="titulo-general">Solicitante</th>
-                                <th class="titulo-general">Motivo</th>
-                                <th class="titulo-general">Tipo Permiso</th>
-                                <th class="titulo-general">Fecha Solicitud</th>
-                                <th class="titulo-general-centrado">Rol</th>
-                                <th class="titulo-general">Estado</th>
-                                <th class="titulo-general">Fecha Firma</th>
-                                <th class="titulo-general-centrado">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <cfoutput query="qPaged" startrow="#startRow#" maxrows="#rowsPerPage#">
-                                <tr>
-                                    <td class="titulo-general-centrado">#id_solicitud#</td>
-                                    <td>#solicitante#</td>
-                                    <td>#motivo#</td>
-                                    <td>#tipo_permiso#</td>
-                                    <td class="titulo-general-centrado">#DateFormat(fecha,'dd/mm/yyyy')#</td>
-                                    <td>#rol_solicitante#</td>
-                                    <td>
-                                        <cfif status_final EQ "Aprobado">
-                                            <span class="status-aprobado">✔ #status_final#</span>
-                                        <cfelseif status_final EQ "Rechazado">
-                                            <span class="status-rechazado">✘ #status_final#</span>
-                                        <cfelseif status_final EQ "Pendiente">
-                                            <span class="status-pendiente">⏳ #status_final#</span>
-                                        <cfelse>
-                                            <span class="status-desconocido">#status_final#</span>
-                                        </cfif>
-                                    </td>
-                                    <td class="titulo-general-centrado">#DateFormat(fecha_firma,'dd/mm/yyyy')#</td>
-                                    <td style="text-align:center;">
-                                        <form action="solicitudDetalles.cfm" method="post">
-                                            <input type="hidden" name="id_solicitud" value="#id_solicitud#">
-                                            <button type="submit" class="submit-btn-verDetalles">Ver Detalles</button>
-                                        </form>
-                                    </td>
+                        <table class="tabla">
+                            <thead>
+                                <tr class="titulos-tabla">
+                                    <th class="titulo-general">ID Solicitud</th>
+                                    <th class="titulo-general">Solicitante</th>
+                                    <th class="titulo-general">Motivo</th>
+                                    <th class="titulo-general">Tipo Permiso</th>
+                                    <th class="titulo-general">Fecha Solicitud</th>
+                                    <th class="titulo-general-centrado">Rol</th>
+                                    <th class="titulo-general">Estado</th>
+                                    <th class="titulo-general">Fecha Firma</th>
+                                    <th class="titulo-general-centrado">Acciones</th>
                                 </tr>
-                            </cfoutput>
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                <cfoutput query="qPaged" startrow="#startRow#" maxrows="#rowsPerPage#">
+                                    <tr>
+                                        <td class="titulo-general-centrado">#id_solicitud#</td>
+                                        <td>#solicitante#</td>
+                                        <td>#motivo#</td>
+                                        <td>#tipo_permiso#</td>
+                                        <td class="titulo-general-centrado">#DateFormat(fecha,'dd/mm/yyyy')#</td>
+                                        <td>#rol_solicitante#</td>
+                                        <td>
+                                            <cfif status_final EQ "Aprobado">
+                                                <span class="status-aprobado">✔ #status_final#</span>
+                                            <cfelseif status_final EQ "Rechazado">
+                                                <span class="status-rechazado">✘ #status_final#</span>
+                                            <cfelseif status_final EQ "Pendiente">
+                                                <span class="status-pendiente">⏳ #status_final#</span>
+                                            <cfelse>
+                                                <span class="status-desconocido">#status_final#</span>
+                                            </cfif>
+                                        </td>
+                                        <td class="titulo-general-centrado">#DateFormat(fecha_firma,'dd/mm/yyyy')#</td>
+                                        <td style="text-align:center;">
+                                            <form action="solicitudDetalles.cfm" method="post">
+                                                <input type="hidden" name="id_solicitud" value="#id_solicitud#">
+                                                <button type="submit" class="submit-btn-verDetalles">Ver Detalles</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                </cfoutput>
+                            </tbody>
+                        </table>
                     </div>
 
                     <!--- Paginación en bloques de 10 --->

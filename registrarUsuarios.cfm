@@ -239,7 +239,7 @@
                                 <!-- Etiqueta para el campo Contraseña -->
                                 <label class="form-label" for="contrasena">
                                     Contraseña
-                                    </label>
+                                </label>
                                 <!-- Input de tipo password para la Contraseña -->
                                 <input type="password"
                                     id="contrasena"

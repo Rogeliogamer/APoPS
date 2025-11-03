@@ -20,8 +20,15 @@
 
         <!-- Obtener datos del usuario -->
         <cfquery name="qUsuario" datasource="autorizacion">
-            SELECT u.id_usuario, u.usuario, u.rol, u.activo,
-                d.id_datos, d.nombre, d.apellido_paterno, d.apellido_materno, d.id_area
+            SELECT u.id_usuario, 
+                u.usuario, 
+                u.rol, 
+                u.activo,
+                d.id_datos, 
+                d.nombre, 
+                d.apellido_paterno, 
+                d.apellido_materno, 
+                d.id_area
             FROM usuarios u
             INNER JOIN datos_usuario d ON u.id_datos = d.id_datos
             WHERE u.id_usuario = <cfqueryparam value="#url.id#" cfsqltype="cf_sql_integer">
@@ -37,13 +44,15 @@
 
         <!-- Obtener lista de áreas -->
         <cfquery name="qAreas" datasource="autorizacion">
-            SELECT id_area, nombre
+            SELECT id_area, 
+                nombre
             FROM area_adscripcion
         </cfquery>
 
         <!-- Obtener lista de roles (valores ENUM) -->
         <cfquery name="qRol" datasource="autorizacion">
-            SHOW COLUMNS FROM usuarios LIKE 'rol'
+            SHOW COLUMNS 
+            FROM usuarios LIKE 'rol'
         </cfquery>
 
         <!-- Procesar valores ENUM -->
@@ -198,10 +207,12 @@
                                 <a class="submit-btn-regresar submit-btn-regresar-text" id="btnRegresar">
                                     Regresar
                                 </a>
+
                                 <!-- Enlace para regresar al menú principal -->
                                 <a href="menu.cfm" class="submit-btn-menu" style="text-decoration: none">
                                     Menu
                                 </a>
+                                
                                 <a href="cerrarSesion.cfm" class="submit-btn-cerrarSesion submit-btn-cerrarSesion-text">
                                     Cerrar Sesion
                                 </a>

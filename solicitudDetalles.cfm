@@ -10,6 +10,7 @@
  * - Página destinada a revisar el detalle completo y el historial de firmas de una solicitud.
 --->
 <cfparam name="form.id_solicitud" default="0">
+<cfparam name="url.generarPDF" default="false">
 
 <cfquery name="qSolicitud" datasource="autorizacion">
     SELECT 
@@ -182,6 +183,11 @@
                         <a href="cerrarSesion.cfm" class="submit-btn-cerrarSesion submit-btn-cerrarSesion-text">
                             Cerrar Sesion
                         </a>
+
+                        <!-- Usa JavaScript para abrir el generador en una nueva ventana -->
+        <button onclick="generarPDF(<cfoutput>#form.id_solicitud#</cfoutput>)" class="submit-btn-pdf submit-btn-regresar-text">
+                        Generar PDF
+        </button>
                     </div>
                 </div>
             </div>
@@ -201,5 +207,13 @@
                 }
             });
         </script>
+
+        <script>
+    function generarPDF(idSolicitud) {
+        // Abre el script generadorPDF_backend.cfm en una nueva pestaña/ventana
+        // Esto le permite al navegador manejar la descarga sin recargar la página actual
+        window.open('generarPDF.cfm?id_solicitud=' + idSolicitud, '_blank');
+    }
+</script>
     </body>
 </html>

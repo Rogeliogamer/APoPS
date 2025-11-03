@@ -220,52 +220,51 @@
                         <div class="submit-section">
                             <!--- Contenedor de la paginación --->
                             <cfif totalPages GT 1>
-                            <!--- Tamaño del bloque de páginas --->
-                            <cfset blockSize = 10>
-                            <!--- Bloque actual --->
-                            <cfset currentBlock = ceiling(currentPage / blockSize)>
-                            <!--- Página inicial y final del bloque --->
-                            <cfset startPage = ((currentBlock - 1) * blockSize) + 1>
-                            <cfset endPage = min(startPage + blockSize - 1, totalPages)>
+                                <!--- Tamaño del bloque de páginas --->
+                                <cfset blockSize = 10>
+                                <!--- Bloque actual --->
+                                <cfset currentBlock = ceiling(currentPage / blockSize)>
+                                <!--- Página inicial y final del bloque --->
+                                <cfset startPage = ((currentBlock - 1) * blockSize) + 1>
+                                <cfset endPage = min(startPage + blockSize - 1, totalPages)>
 
-                            <!--- Botón 'Anterior' si hay bloques previos --->
-                            <cfif startPage GT 1>
-                                <cfset prevPage = startPage - 1>
-                                <cfoutput>
-                                    <a href="pendientesFirmar.cfm?page=#prevPage#&search=#urlEncodedFormat(form.search)#"
-                                        class="submit-btn-anterior"
-                                        style="text-decoration:none">&laquo; Anterior</a>
-                                </cfoutput>
-                            </cfif>
-
-                            <!--- Números del bloque actual --->
-                            <cfloop from="#startPage#" to="#endPage#" index="i">
-                                <cfif i EQ currentPage>
-                                    <!--- Botón deshabilitado para la página actual --->
+                                <!--- Botón 'Anterior' si hay bloques previos --->
+                                <cfif startPage GT 1>
+                                    <cfset prevPage = startPage - 1>
                                     <cfoutput>
-                                        <button class="submit-btn-paginacion-disabled" disabled>#i#</button>
-                                    </cfoutput>
-                                <cfelse>
-                                    <!--- Botón para otras páginas --->
-                                    <cfoutput>
-                                        <a href="pendientesFirmar.cfm?page=#i#&search=#urlEncodedFormat(form.search)#" 
-                                            class="submit-btn-paginacion" style="text-decoration:none">#i#</a>
+                                        <a href="pendientesFirmar.cfm?page=#prevPage#&search=#urlEncodedFormat(form.search)#"
+                                            class="submit-btn-anterior"
+                                            style="text-decoration:none">&laquo; Anterior</a>
                                     </cfoutput>
                                 </cfif>
-                            </cfloop>
 
-                            <!--- Botón 'Siguiente' si hay más bloques --->
-                            <cfif endPage LT totalPages>
-                                <cfset nextPage = endPage + 1>
-                                <cfoutput>
-                                    <a href="pendientesFirmar.cfm?page=#nextPage#&search=#urlEncodedFormat(form.search)#"
-                                        class="submit-btn-siguiente"
-                                        style="text-decoration:none">Siguiente &raquo;</a>
-                                </cfoutput>
+                                <!--- Números del bloque actual --->
+                                <cfloop from="#startPage#" to="#endPage#" index="i">
+                                    <cfif i EQ currentPage>
+                                        <!--- Botón deshabilitado para la página actual --->
+                                        <cfoutput>
+                                            <button class="submit-btn-paginacion-disabled" disabled>#i#</button>
+                                        </cfoutput>
+                                    <cfelse>
+                                        <!--- Botón para otras páginas --->
+                                        <cfoutput>
+                                            <a href="pendientesFirmar.cfm?page=#i#&search=#urlEncodedFormat(form.search)#" 
+                                                class="submit-btn-paginacion" style="text-decoration:none">#i#</a>
+                                        </cfoutput>
+                                    </cfif>
+                                </cfloop>
+
+                                <!--- Botón 'Siguiente' si hay más bloques --->
+                                <cfif endPage LT totalPages>
+                                    <cfset nextPage = endPage + 1>
+                                    <cfoutput>
+                                        <a href="pendientesFirmar.cfm?page=#nextPage#&search=#urlEncodedFormat(form.search)#"
+                                            class="submit-btn-siguiente"
+                                            style="text-decoration:none">Siguiente &raquo;</a>
+                                    </cfoutput>
+                                </cfif>
                             </cfif>
-                        </cfif>
-                    </div>
-
+                        </div>
                     </div>
                 </cfif>
 

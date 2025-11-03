@@ -82,13 +82,15 @@
                             <cfif ListFindNoCase("Admin,RecursosHumanos,Autorizacion,Expediente", session.rol)>
                                 <!--- Estos roles pueden ver todas las áreas --->
                                 <cfquery name="getAreas" datasource="Autorizacion">
-                                    SELECT id_area, nombre
+                                    SELECT id_area, 
+                                        nombre
                                     FROM area_adscripcion
                                 </cfquery>
                             <cfelse>
                                 <!--- Otros roles solo pueden ver su propia área --->
                                 <cfquery name="getAreas" datasource="Autorizacion">
-                                    SELECT id_area, nombre
+                                    SELECT id_area, 
+                                        nombre
                                     FROM area_adscripcion
                                     WHERE id_area = <cfqueryparam value="#session.id_area#" cfsqltype="cf_sql_integer">
                                 </cfquery>
@@ -185,11 +187,11 @@
                             <div class="chart-title text-center text-md-start">
                                 Estado de solicitudes
                             </div>
-                                <canvas id="chartEstados" height="250"></canvas>
-                                <!-- Overlay solo para este canvas -->
-                                <div class="canvasOverlay">
-                                    ¡A punto de revelar las estadísticas!
-                                </div>
+                            <canvas id="chartEstados" height="250"></canvas>
+                            <!-- Overlay solo para este canvas -->
+                            <div class="canvasOverlay">
+                                ¡A punto de revelar las estadísticas!
+                            </div>
                         </div>
 
                         <div class="kpi-header">
@@ -245,7 +247,6 @@
                         <div class="chart-title text-center mb-2">
                             Predicion a 7 dias por area seleccionada
                         </div>
-
                         <canvas id="chartPredicion" class="w-100" height="250"></canvas>
                         <!-- Overlay solo para este canvas -->
                         <div class="canvasOverlay">
@@ -312,7 +313,7 @@
         <!--- 
             Seccion 2
             Actuliza el contador del estado de las solicitudes y el tiempo promedio de aprobacion 
-            --->
+        --->
         <script>
             $(document).ready(function() {
 
@@ -331,7 +332,10 @@
                     $.ajax({
                         url: "obtenerMetricas.cfm",
                         method: "POST",
-                        data: { rango: dias, area: area },
+                        data: { 
+                            rango: dias, 
+                            area: area 
+                        },
                         options: {
                             responsive: true,
                             maintainAspectRatio: false
@@ -358,13 +362,13 @@
                             $("#tiempoPromedio").text(response.tiempoPromedio + " días");
 
                             // ✅ Llamar a las mini gráficas
-    actualizarGraficasKPI(response);
+                            actualizarGraficasKPI(response);
                         },
                         error: function(xhr, status, error) {
                             console.error("Error al obtener métricas:", error);
                             alert("Hubo un error al cargar las métricas.");
                         },
-                        complete: function(){
+                        complete: function() {
                             $("#loadingOverlay").removeClass("active");
                         }
                     });
@@ -380,81 +384,80 @@
             });
         </script>
 
-<script>
-let graficosKPI = {}; // Guardamos las instancias para poder actualizarlas
+        <script>
+        let graficosKPI = {}; // Guardamos las instancias para poder actualizarlas
 
-function actualizarGraficasKPI(datos) {
-    console.log("🎨 Actualizando gráficas con:", datos);
+        function actualizarGraficasKPI(datos) {
+            console.log("🎨 Actualizando gráficas con:", datos);
 
-    const configuraciones = [
-        { id: 'graficoTotalSolicitudes', valor: datos.totalSolicitudes, color: '#007bff', etiqueta: 'Total' },
-        { id: 'graficoAprobadas', valor: datos.solicitudesAprobadas, color: '#28a745', etiqueta: 'Aprobadas' },
-        { id: 'graficoPendientes', valor: datos.solicitudesPendientes, color: '#ffc107', etiqueta: 'Pendientes' },
-        { id: 'graficoRechazadas', valor: datos.solicitudesRechazadas, color: '#dc3545', etiqueta: 'Rechazadas' },
-        { id: 'graficoTiempo', valor: datos.tiempoPromedio, color: '#6f42c1', etiqueta: 'Tiempo Promedio' }
-    ];
+            const configuraciones = [
+                { id: 'graficoTotalSolicitudes', valor: datos.totalSolicitudes, color: '#007bff', etiqueta: 'Total' },
+                { id: 'graficoAprobadas', valor: datos.solicitudesAprobadas, color: '#28a745', etiqueta: 'Aprobadas' },
+                { id: 'graficoPendientes', valor: datos.solicitudesPendientes, color: '#ffc107', etiqueta: 'Pendientes' },
+                { id: 'graficoRechazadas', valor: datos.solicitudesRechazadas, color: '#dc3545', etiqueta: 'Rechazadas' },
+                { id: 'graficoTiempo', valor: datos.tiempoPromedio, color: '#6f42c1', etiqueta: 'Tiempo Promedio' }
+            ];
 
-    configuraciones.forEach(cfg => {
-        const ctx = document.getElementById(cfg.id);
-        if (!ctx) {
-            console.warn(`⚠️ No se encontró el canvas con id ${cfg.id}`);
-            return;
-        }
-
-        // Si ya existe una gráfica previa, la destruimos antes de crear una nueva
-        if (graficosKPI[cfg.id]) {
-            graficosKPI[cfg.id].destroy();
-        }
-
-        graficosKPI[cfg.id] = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['Semana 1', 'Semana 2', 'Semana 3', 'Semana 4'],
-                datasets: [{
-                    label: cfg.etiqueta,
-                    data: generarDatosHistoricos(cfg.valor),
-                    borderColor: cfg.color,
-                    backgroundColor: cfg.color + '33', // versión transparente del color
-                    tension: 0.4,
-                    fill: true,
-                    borderWidth: 2,
-                    pointRadius: 0
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    x: { display: false },
-                    y: { display: false }
-                },
-                elements: {
-                    line: { borderJoinStyle: 'round' }
+            configuraciones.forEach(cfg => {
+                const ctx = document.getElementById(cfg.id);
+                if (!ctx) {
+                    console.warn(`⚠️ No se encontró el canvas con id ${cfg.id}`);
+                    return;
                 }
-            }
-        });
-    });
-}
 
-// Genera valores simulados para dar efecto de tendencia
-function generarDatosHistoricos(valorActual) {
-    const variacion = Math.max(1, Math.round(valorActual * 0.1)); // 10% de variación
-    return [
-        Math.max(0, valorActual - variacion * 2),
-        Math.max(0, valorActual - variacion),
-        valorActual,
-        Math.max(0, valorActual + variacion)
-    ];
-}
-</script>
+                // Si ya existe una gráfica previa, la destruimos antes de crear una nueva
+                if (graficosKPI[cfg.id]) {
+                    graficosKPI[cfg.id].destroy();
+                }
+
+                graficosKPI[cfg.id] = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Semana 1', 'Semana 2', 'Semana 3', 'Semana 4'],
+                        datasets: [{
+                            label: cfg.etiqueta,
+                            data: generarDatosHistoricos(cfg.valor),
+                            borderColor: cfg.color,
+                            backgroundColor: cfg.color + '33', // versión transparente del color
+                            tension: 0.4,
+                            fill: true,
+                            borderWidth: 2,
+                            pointRadius: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            x: { display: false },
+                            y: { display: false }
+                        },
+                        elements: {
+                            line: { borderJoinStyle: 'round' }
+                        }
+                    }
+                });
+            });
+        }
+
+        // Genera valores simulados para dar efecto de tendencia
+        function generarDatosHistoricos(valorActual) {
+            const variacion = Math.max(1, Math.round(valorActual * 0.1)); // 10% de variación
+            return [
+                Math.max(0, valorActual - variacion * 2),
+                Math.max(0, valorActual - variacion),
+                valorActual,
+                Math.max(0, valorActual + variacion)
+            ];
+        }
+        </script>
 
         <!---
             Seccion -> 3
             Grafica -> 1
             Grafica -> Estado de solicitudes
         --->
-
         <script>
             $(document).ready(function() {
 
@@ -464,7 +467,10 @@ function generarDatosHistoricos(valorActual) {
                     $.ajax({
                         url: "obtenerEstadoSolicitudes.cfm",
                         method: "POST",
-                        data: { rango: dias, area: area },
+                        data: { 
+                            rango: dias, 
+                            area: area 
+                        },
                         dataType: "json",
                         success: function(response) {
                             // Datos para el pie chart usando status_final
@@ -533,9 +539,6 @@ function generarDatosHistoricos(valorActual) {
                     }
                     actualizarGraficaEstados(area, dias);
                 });
-
-                // Opcional: generar gráfico al cargar la página con valores por defecto
-                // actualizarGraficaEstados($("#areaSeleccionada").val(), $("#rangoFechas").val());
             });
         </script>
 
@@ -544,7 +547,6 @@ function generarDatosHistoricos(valorActual) {
             Grafica -> 2
             Grafica -> Etapa de Firma
         --->
-
         <script>
             $('#btnActualizar').on('click', function(e) {
                 e.preventDefault();
@@ -744,7 +746,6 @@ function generarDatosHistoricos(valorActual) {
             Grafica -> 4
             Grafica -> Solicitudes por Área Selecionada
         --->
-
         <script>
         // Variable global para la gráfica
         let chartFirmantes = null;
@@ -854,7 +855,6 @@ function generarDatosHistoricos(valorActual) {
             Grafica -> 5
             Grafica -> Tipos de Permiso por Área Seleccionada
         --->
-
         <script>
             document.getElementById("btnActualizar").addEventListener("click", function () {
                 const idArea = document.getElementById("areaSeleccionada").value;
@@ -928,7 +928,6 @@ function generarDatosHistoricos(valorActual) {
             Grafica -> 6
             Grafica -> Personal VS Oficial por Área Seleccionada
         --->
-
         <script>
             $('#btnActualizar').on('click', function(e) {
                 e.preventDefault();
@@ -996,7 +995,6 @@ function generarDatosHistoricos(valorActual) {
             Grafica -> 1, 2, 3, 4, 5, 6, 7
             Quita los overlays de las graficas
         --->
-
         <script>
             $('#btnActualizar').click(function() {
                 // Oculta todos los overlays
@@ -1009,7 +1007,6 @@ function generarDatosHistoricos(valorActual) {
             Grafica -> 7
             Grafica -> Predicion a 7 dias por area selecionada
         --->
-
         <script>
             $(document).ready(function() {
                 $('#btnActualizar').click(function() {
@@ -1169,7 +1166,6 @@ function generarDatosHistoricos(valorActual) {
             Tabla -> 1
             Tabla -> Ranking por Área
         --->
-
         <script>
             document.getElementById("btnActualizar").addEventListener("click", function(e) {
                 e.preventDefault();
@@ -1207,7 +1203,6 @@ function generarDatosHistoricos(valorActual) {
             Tabla -> 2
             Tabla -> Top 10 Solicitantes
         --->
-
         <script>
             function actualizarTopFirmantes() {
                 const areaSeleccionada = document.getElementById("areaSeleccionada").value;
@@ -1245,12 +1240,12 @@ function generarDatosHistoricos(valorActual) {
         </script>
 
         <!-- Chart.js -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<!-- Tu script de métricas (ya existente) -->
-<script src="js/metricas.js"></script>
+        <!-- Tu script de métricas (ya existente) -->
+        <script src="js/metricas.js"></script>
 
-<!-- Nuevo script de gráficas -->
-<script src="js/graficasKPI.js"></script>
+        <!-- Nuevo script de gráficas -->
+        <script src="js/graficasKPI.js"></script>
     </body>
 </html>
