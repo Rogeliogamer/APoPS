@@ -61,7 +61,7 @@
         <cfif NOT structKeyExists(session, "rol") OR len(trim(session.rol)) EQ 0>
             <!--- No hay sesión activa o rol definido --->
             <cflocation url="login.cfm" addtoken="no">
-        <cfelseif ListFindNoCase("Solicitante", trim(session.rol)) EQ 0>
+        <cfelseif ListFindNoCase("Solicitante,Jefe,RecursosHumanos,Autorizacion,Expediente", trim(session.rol)) EQ 0>
             <!--- Rol no autorizado para esta sección --->
             <cflocation url="menu.cfm" addtoken="no">
         </cfif>
