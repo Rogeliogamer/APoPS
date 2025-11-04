@@ -73,9 +73,10 @@
         color: white;
         padding: 10px 15px;
         font-weight: bold;
-        margin: 25px 0 15px 0;
+        margin: 10px 0 15px 0;
         border-radius: 5px;
         font-size: 12px;
+        text-align: center;
     }
     
     .field-group {
@@ -84,7 +85,7 @@
     }
     
     .form-field {
-        margin-bottom: 12px;
+        margin-bottom: 0px;
         page-break-inside: avoid;
         padding: 6px 0;
         border-bottom: 1px dotted #eee;
@@ -113,7 +114,7 @@
         width: 100%;
         margin-top: 30px;
         border-top: 2px solid #ccc;
-        padding-top: 20px;
+        padding-top: 10px;
     }
     
     /* ESTILOS PARA TABLA HORIZONTAL */
@@ -144,11 +145,11 @@
     
     .signature-role {
         font-weight: bold;
-        font-size: 10px;
+        font-size: 11px;
         color: #000080;
         text-transform: uppercase;
         margin-bottom: 8px;
-        min-height: 30px;
+        min-height: 10px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -209,7 +210,7 @@
     }
     
     .footer {
-        margin-top: 40px;
+        margin-top: 10px;
         padding: 15px;
         border-top: 2px solid #ccc;
         text-align: center;
@@ -221,7 +222,7 @@
     
     .estado-general {
         text-align: center;
-        margin: 15px 0;
+        margin: 10px 0;
         padding: 10px;
         border-radius: 5px;
         font-weight: bold;
@@ -258,7 +259,7 @@
     </div>
     
     <cfoutput>
-        <div style="text-align: center; font-size: 15px; margin: 15px 0; padding: 10px; background-color: ##e3f2fd; border-radius: 5px;">
+        <div style="text-align: center; font-size: 15px; margin: 0px 0; padding: 10px; background-color: ##e3f2fd; border-radius: 5px;">
             <strong>Número de Solicitud:</strong> #qSolicitud.id_solicitud# | 
             <strong>Fecha de Generación:</strong> #DateFormat(now(), 'dd/mm/yyyy')# #TimeFormat(now(), 'HH:mm')#
         </div>
@@ -383,7 +384,7 @@
         <cfoutput>
             <div><strong>Documento generado automáticamente</strong></div>
             <div>Sistema de Autorización de Permisos | #DateFormat(now(), 'dd/mm/yyyy')# #TimeFormat(now(), 'HH:mm:ss')#</div>
-            <div style="margin-top: 8px; color: ##999;">
+            <div style="margin-top: 4px; color: ##999;">
                 Este documento tiene validez oficial una vez completado el proceso de firmas correspondiente.
             </div>
         </cfoutput>
