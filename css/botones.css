@@ -590,3 +590,47 @@ a.submit-btn-regresar-text{
     transform: translateY(0);
     box-shadow: 0 3px 8px #998115;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.submit-btn-pdf {
+    background: linear-gradient(135deg, #E53935 0%, #E53935 100%);
+    color: white;
+    padding: 15px 40px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px #E53935;
+    text-decoration: none;
+    display: inline-block; /* importante para los <a> */
+}
+
+.submit-btn-pdf:hover {
+    background: linear-gradient(135deg, #1ac6ca 0%, #1ac6ca 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px #1ac6ca;
+}
+
+.submit-btn-pdf:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 8px #1ac6ca;
+}
+
+a.submit-btn-pdf-text{
+    color: white;
+    text-decoration: none;
+}

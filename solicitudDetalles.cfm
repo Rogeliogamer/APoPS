@@ -171,7 +171,7 @@
                 </div>
 
                 <div class="submit-section">
-                    <div class="field-group triple">
+                    <div class="field-group">
                         <a class="submit-btn-regresar submit-btn-regresar-text" id="btnRegresar">
                             Regresar
                         </a>
@@ -179,15 +179,17 @@
                         <a href="menu.cfm" class="submit-btn-menu submit-btn-regresar-text">
                             Menu
                         </a>
+                    </div>
 
+                    <div class="field-group">
+                        <!-- Usa JavaScript para abrir el generador en una nueva ventana -->
+                        <a onclick="generarPDF(<cfoutput>#form.id_solicitud#</cfoutput>)" class="submit-btn-pdf submit-btn-pdf-text">
+                            Generar PDF
+                        </a>
+                        
                         <a href="cerrarSesion.cfm" class="submit-btn-cerrarSesion submit-btn-cerrarSesion-text">
                             Cerrar Sesion
                         </a>
-
-                        <!-- Usa JavaScript para abrir el generador en una nueva ventana -->
-        <button onclick="generarPDF(<cfoutput>#form.id_solicitud#</cfoutput>)" class="submit-btn-pdf submit-btn-regresar-text">
-                        Generar PDF
-        </button>
                     </div>
                 </div>
             </div>
