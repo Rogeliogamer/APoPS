@@ -8,9 +8,8 @@
 
     <!--- Validar que se envió la firma --->
     <cfif len(trim(svg_firma)) eq 0>
-        <cfoutput>
-            <p>Error: No se recibió la firma.</p>
-        </cfoutput>
+        <!--- Mostrar mensaje de error en la misma página --->
+        <cflocation url="firmarSolicitud.cfm?id_solicitud=#id_solicitud#&error=1" addtoken="no">
         <cfabort>
     </cfif>
 
@@ -47,11 +46,11 @@
     </cfif>
 
     <!--- Redirigir a la página de solicitud firmada --->
-    <cflocation url="menu.cfm" addtoken="no">
+    <cflocation url="pendientesFirmar.cfm" addtoken="no">
 
 <cfcatch type="any">
     <cfoutput>
-        <p>Error al guardar la firma: #cfcatch.message#</p>
+        <p>Error: #cfcatch.message#</p>
     </cfoutput>
 </cfcatch>
 </cftry>

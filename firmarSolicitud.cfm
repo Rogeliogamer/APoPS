@@ -40,6 +40,13 @@
         <link rel="stylesheet" href="css/botones.css">
     </head>
     <body>
+        <cfif structKeyExists(url, "error") AND url.error eq 1>
+        <div style="            background-color:#ffdddd;            color:#b30000;            border:1px solid #ff6666;            padding:10px;            margin:10px 0;            border-radius:5px;            text-align:center;            font-weight:bold;">
+            ⚠️ Debes firmar antes de enviar la solicitud.
+        </div>
+    </cfif>
+
+
         <div class="container">
             <div class="header">
                 <div class="logo">
@@ -356,18 +363,10 @@
         </script>
 
         <script>
-            // Capturamos el botón
-            const btnRegresar = document.getElementById('btnRegresar');
-
-            btnRegresar.addEventListener('click', function() {
-                if (document.referrer) {
-                    // Va a la página desde donde llegó
-                    window.location.href = document.referrer;
-                } else {
-                    // Si no hay referrer, va a una página por defecto
-                    window.location.href = 'firmados.cfm';
-                }
-            });
+            document.getElementById("btnRegresar").addEventListener("click", function() {
+    // Redirige siempre a pendientesFirmar.cfm sin importar si hay error o no
+    window.location.href = "pendientesFirmar.cfm";
+});
         </script>
     </body>
 </html>

@@ -13,7 +13,7 @@
         FROM firmas f
         INNER JOIN usuarios u ON f.id_usuario = u.id_usuario
         INNER JOIN solicitudes s ON f.id_solicitud = s.id_solicitud
-        WHERE f.fecha_firma BETWEEN
+        WHERE fecha BETWEEN
             <cfqueryparam cfsqltype="cf_sql_date" value="#fechaInicio#">
             AND 
             <cfqueryparam cfsqltype="cf_sql_date" value="#fechaFin#">

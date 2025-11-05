@@ -25,10 +25,10 @@
             solicitudes s
         WHERE 
             s.id_area = <cfqueryparam value="#url.id_area#" cfsqltype="cf_sql_integer">
-            AND s.fecha_creacion BETWEEN 
-                <cfqueryparam value="#fechaInicio#" cfsqltype="cf_sql_date">
+            AND fecha BETWEEN 
+                <cfqueryparam value="#dateFormat(fechaInicio, 'yyyy-mm-dd')#" cfsqltype="cf_sql_date">
                 AND 
-                <cfqueryparam value="#fechaFin#" cfsqltype="cf_sql_date">
+                <cfqueryparam value="#dateFormat(fechaFin, 'yyyy-mm-dd')#" cfsqltype="cf_sql_date">
         GROUP BY 
             s.tipo_permiso
         ORDER BY 

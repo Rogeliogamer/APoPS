@@ -753,6 +753,7 @@
         $(document).ready(function() {
             $("#btnActualizar").click(function() {
                 const areaSeleccionada = $("#areaSeleccionada").val();
+                var rango = $("#rangoFechas").val();
                 
                 if (!areaSeleccionada) {
                     alert("Selecciona un área primero.");
@@ -763,7 +764,8 @@
                     url: "obtenerSolicitudesAreaSeleccionada.cfm",
                     method: "POST",
                     data: { 
-                        area: areaSeleccionada 
+                        area: areaSeleccionada,
+                        rango: rango
                     },
                     dataType: "json",
                     success: function(response) {
