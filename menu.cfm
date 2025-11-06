@@ -9,9 +9,14 @@
  * Uso:
  * - Incluir esta página como interfaz de navegación principal para usuarios logueados.
 --->
+
+<!--- Función para verificar acceso basado en rol --->
 <cfscript>
+    <!--- Retorna true si el rol tiene acceso a la página dada --->
     function tieneAcceso(pagina) {
+        <!--- Obtener el rol del usuario desde la sesión --->
         var rol = session.rol;
+        <!--- Definir los accesos por rol --->
         var accesos = {
             "Solicitante": ["pase.cfm", "firmados.cfm", "listaSolicitudes.cfm", "metricas.cfm"],
             "Jefe": ["pase.cfm", "listaUsuarios.cfm", "pendientesFirmar.cfm", "firmados.cfm", "listaSolicitudes.cfm", "metricas.cfm"],
@@ -23,8 +28,11 @@
 
         <!--- Validar si el rol existe en el struct --->
         if (structKeyExists(accesos, rol)) {
+            <!--- Verificar si la página está en la lista de accesos del rol --->
             return arrayFind(accesos[rol], pagina) > 0;
+            <!--- Retorna true si se encuentra, false si no --->
         } else {
+            <!--- Rol no reconocido, negar acceso --->
             return false;
         }
     }
@@ -56,83 +64,120 @@
             <cflocation url="login.cfm" addtoken="no">
         </cfif>
 
-        <!--- barra superior --->
+        <!--- Incluye la barra de usuario conectado --->
         <cfset barra = createObject("component", "componentes/usuarioConectadoBarra").render()>
+        <!--- Mostrar la barra --->
         <cfoutput>#barra#</cfoutput>
-        
+
+        <!--- Contenedor del menú --->
         <div class="menu-container">
             <!--- 1. pase.cfm --->
+            <!--- Tarjeta de menú para solicitar permiso o pase de salida --->
             <div class="menu-card">
+                <!--- Título y descripción --->
                 <h2>Permiso o Pase de salida</h2>
                 <p>Solicitar un permiso o pase de salida</p>
+                <!--- Verificar si el usuario tiene acceso a esta página --->
                 <cfif tieneAcceso("pase.cfm")>
+                    <!--- Enlace habilitado --->
                     <a href="pase.cfm" class="submit-btn-menu-original">Solicitar</a>
+                <!--- Enlace deshabilitado --->
                 <cfelse>
                     <a href="##" class="disabled">Solicitar</a>
                 </cfif>
             </div>
 
             <!--- 2. registrarUsuarios.cfm --->
+            <!--- Tarjeta de menú para registrar nuevos usuarios --->
             <div class="menu-card">
+                <!--- Título y descripción --->
                 <h2>Registrar usuarios</h2>
                 <p>Registra usuarios en el sistema</p>
+                <!--- Verificar si el usuario tiene acceso a esta página --->
                 <cfif tieneAcceso("registrarUsuarios.cfm")>
+                    <!--- Enlace habilitado --->
                     <a href="registrarUsuarios.cfm" class="submit-btn-menu-original">Registrar</a>
+                <!--- Enlace deshabilitado --->
                 <cfelse>
                     <a href="##" class="disabled">Registrar</a>
                 </cfif>
             </div>
 
             <!--- 3. listaUsuarios.cfm --->
+            <!--- Tarjeta de menú para ver la lista de usuarios --->
             <div class="menu-card">
+                <!--- Título y descripción --->
                 <h2>Ver usuarios</h2>
                 <p>Lista de usuarios</p>
+                <!--- Verificar si el usuario tiene acceso a esta página --->
                 <cfif tieneAcceso("listaUsuarios.cfm")>
+                    <!--- Enlace habilitado --->
                     <a href="listaUsuarios.cfm" class="submit-btn-menu-original">Ver</a>
+                <!--- Enlace deshabilitado --->
                 <cfelse>
                     <a href="##" class="disabled">Ver</a>
                 </cfif>
             </div>
 
             <!--- 4. pendientesFirmar.cfm --->
+            <!--- Tarjeta de menú para ver solicitudes pendientes de firma --->
             <div class="menu-card">
+                <!--- Título y descripción --->
                 <h2>Solicitudes pendientes de firma</h2>
                 <p>Revisar y firmar solicitudes pendientes</p>
+                <!--- Verificar si el usuario tiene acceso a esta página --->
                 <cfif tieneAcceso("pendientesFirmar.cfm")>
+                    <!--- Enlace habilitado --->
                     <a href="pendientesFirmar.cfm" class="submit-btn-menu-original">Pendientes</a>
+                <!--- Enlace deshabilitado --->
                 <cfelse>
                     <a href="##" class="disabled">Pendientes</a>
                 </cfif>
             </div>
 
             <!--- 5. firmados.cfm --->
+            <!--- Tarjeta de menú para ver solicitudes ya firmadas --->
             <div class="menu-card">
+                <!--- Título y descripción --->
                 <h2>Solicitudes ya firmados</h2>
                 <p>Ver solicitudes que ya han sido firmados</p>
+                <!--- Verificar si el usuario tiene acceso a esta página --->
                 <cfif tieneAcceso("firmados.cfm")>
+                    <!--- Enlace habilitado --->
                     <a href="firmados.cfm" class="submit-btn-menu-original">Firmados</a>
+                <!--- Enlace deshabilitado --->
                 <cfelse>
                     <a href="##" class="disabled">Firmados</a>
                 </cfif>
             </div>
 
             <!--- 6. listaSolicitudes.cfm --->
+            <!--- Tarjeta de menú para ver el pase completo --->
             <div class="menu-card">
+                <!--- Título y descripción --->
                 <h2>Ver Pase Completo</h2>
                 <p>Ver detalles completos de un pase</p>
+                <!--- Verificar si el usuario tiene acceso a esta página --->
                 <cfif tieneAcceso("listaSolicitudes.cfm")>
+                    <!--- Enlace habilitado --->
                     <a href="listaSolicitudes.cfm" class="submit-btn-menu-original">Detalles</a>
+                <!--- Enlace deshabilitado --->
                 <cfelse>
                     <a href="##" class="disabled">Detalles</a>
                 </cfif>
             </div>
 
             <!--- 7. metricas.cfm --->
+            <!--- Tarjeta de menú para ver métricas y gráficos --->
             <div class="menu-card">
+                <!--- Título y descripción --->
                 <h2>Metricas</h2>
                 <p>Ver graficas</p>
+                <!--- Verificar si el usuario tiene acceso a esta página --->
                 <cfif tieneAcceso("metricas.cfm")>
+                    <!--- Enlace habilitado --->
                     <a href="metricas.cfm" class="submit-btn-menu-original">Detalles</a>
+                <!--- Enlace deshabilitado --->
                 <cfelse>
                     <a href="##" class="disabled">Detalles</a>
                 </cfif>
