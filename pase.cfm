@@ -36,15 +36,20 @@
 
         <!--- Si el usuario es administrador, redirigir al menú principal --->
         <cfif session.rol EQ "admin">
+            <!--- Redirigir al menú principal --->
             <cflocation url="menu.cfm" addtoken="no">
         </cfif>
-        
+
+        <!--- Contenedor principal --->
         <div class="container">
+            <!--- Encabezado de la página --->
             <div class="header">
+                <!--- Logo y título --->
                 <div class="logo">
                     <cfset usuarioRol = createObject("component", "componentes/usuarioConectadoS").render()>
                     <cfoutput>#usuarioRol#</cfoutput>
                 </div>
+                <!--- Título de la página --->
                 <h1>AUTORIZACIÓN DE PERMISO O PASE DE SALIDA</h1>
             </div>
 
@@ -62,8 +67,8 @@
 
                         <!--- Nombre Completo y Área de Adscripción --->
                         <div class="field-group">
+                            <!--- Nombre Completo --->
                             <div class="form-field">
-
                                 <!--- Consulta para obtener el nombre completo del usuario logueado --->
                                 <cfquery name="qTiposPermiso" datasource="autorizacion">
                                     SELECT nombre, 
@@ -76,21 +81,20 @@
                                 <!--- Nombre Completo --->
                                 <label for="nombre" class="form-label">Nombre:</label>
                                 <cfoutput>
-                                <input type="text" 
-                                    name="nombre" 
-                                    id="nombre" 
-                                    class="form-input-general" 
-                                    required="yes" 
-                                    message="Por favor ingrese el nombre completo"
-                                    maxlength="100"
-                                    value="#qTiposPermiso.nombre# #qTiposPermiso.apellido_paterno# #qTiposPermiso.apellido_materno#"
-                                    readonly>
+                                    <input type="text" 
+                                        name="nombre" 
+                                        id="nombre" 
+                                        class="form-input-general" 
+                                        required="yes" 
+                                        message="Por favor ingrese el nombre completo"
+                                        maxlength="100"
+                                        value="#qTiposPermiso.nombre# #qTiposPermiso.apellido_paterno# #qTiposPermiso.apellido_materno#"
+                                        readonly>
                                 </cfoutput>
                             </div>
                             
                             <!--- Área de Adscripción --->
                             <div class="form-field">
-
                                 <!--- Consulta para obtener el área de adscripción del usuario logueado --->
                                 <cfquery name="qTipoAdscripcion" datasource="autorizacion">
                                     SELECT aa.nombre 
@@ -103,7 +107,6 @@
 
                                 <!--- Etiqueta y campo de Área de Adscripción --->
                                 <label for="area_adscripcion" class="form-label">Área de Adscripción:</label>
-                                
                                 <!--- Área de Adscripción --->
                                 <cfoutput>
                                     <input type="text" 
@@ -122,17 +125,21 @@
 
                     <!--- Descripción de la Solicitud --->
                     <div class="section">
+                        <!--- Título de la sección --->
                         <div class="section-title">
                             Descripción de la Solicitud
                         </div>
-                        
+
+                        <!--- Grupo de campos para motivo, tipo de permiso, fecha y tiempo solicitado --->
                         <div class="form-field">
                             <!--- Seleccion del tipo de motivo --->
                             <label class="form-label">
                                 Motivo:
                             </label>
 
+                            <!--- Grupo de checkboxes para motivo --->
                             <div class="checkbox-group">
+                                <!--- Motivo Personal --->
                                 <div class="checkbox-item">
                                     <input type="checkbox" 
                                         name="motivo" 
@@ -141,7 +148,7 @@
                                         class="checkbox-input">
                                     <label for="motivo_personal" class="checkbox-label">Personal</label>
                                 </div>
-
+                                <!--- Motivo Oficial --->
                                 <div class="checkbox-item">
                                     <input type="checkbox" 
                                         name="motivo" 
@@ -153,14 +160,18 @@
                             </div>
                         </div>
 
+                        <!--- Grupo de campos para tipo de permiso, fecha y tiempo solicitado --->
                         <div class="field-group">
+                            <!--- Tipo de permiso --->
                             <div class="form-field">
                                 <!--- Selecion del tipo de permiso --->
                                 <label class="form-label">
                                     Tipo de permiso:
                                 </label>
 
+                                <!--- Grupo de checkboxes para tipo de permiso --->
                                 <div class="checkbox-group">
+                                    <!--- Tipo de permiso Pase de Salida --->
                                     <div class="checkbox-item">
                                         <input type="checkbox" 
                                             name="tipo_permiso" 
@@ -170,6 +181,7 @@
                                         <label for="pase_salida" class="checkbox-label">Pase de Salida</label>
                                     </div>
 
+                                    <!--- Tipo de permiso Llegar Tarde --->
                                     <div class="checkbox-item">
                                         <input type="checkbox" 
                                             name="tipo_permiso" 
@@ -179,6 +191,7 @@
                                         <label for="llegar_tarde" class="checkbox-label">Llegar Tarde</label>
                                     </div>
 
+                                    <!--- Tipo de permiso Salir Temprano --->
                                     <div class="checkbox-item">
                                         <input type="checkbox" 
                                             name="tipo_permiso" 
@@ -188,6 +201,7 @@
                                         <label for="dia_completo" class="checkbox-label">Por día completo</label>
                                     </div>
 
+                                    <!--- Tipo de permiso Salida Temprano --->
                                     <div class="checkbox-item">
                                         <input type="checkbox" 
                                             name="tipo_permiso" 
@@ -199,15 +213,15 @@
                                 </div>
                             </div>
 
-                            <!--- Fecha que se esta solicitando --->
+                            <!--- Fecha del permiso --->
                             <div class="form-field">
+                                <!--- Etiqueta y campo de Fecha --->
                                 <label for="fecha" class="form-label">
                                     Fecha:
                                 </label>
 
                                 <!--- Obtener la fecha actual en formato YYYY-MM-DD --->
                                 <cfset hoy = dateFormat(now(), "yyyy-mm-dd")>
-
                                 <input type="date"
                                     name="fecha" 
                                     id="fecha" 
@@ -256,87 +270,102 @@
                         </div>
                     </div>
 
-                    <!--- Firmas --->
+                    <!--- Sección de Firmas --->
                     <div class="section">
+                        <!--- Título de la sección --->
                         <div class="section-title">
                             Firmas de Autorización
                         </div>
                         
+                        <!--- Área de firmas --->
                         <div class="signature-section">
-                            <!--- Solicitud - Firmante (solo solicitante firma en esta versión) --->
+                            <!--- Firmara la solicitud el solicitante --->
                             <div class="signature-field">
+                                <!--- Etiqueta de la firma --->
                                 <div class="signature-label">
                                     Solicitante
                                 </div>
 
                                 <!--- Área de firma --->
                                 <div id="signature-wrapper-solicitante" class="signature-wrapper" role="application" aria-label="Área de firma">
+                                    <!--- SVG para la firma del solicitante --->
                                     <svg id="signature-svg-solicitante" class="signature-svg"
                                         xmlns="http://www.w3.org/2000/svg" width="100%" height="100%"
                                         viewBox="0 0 1000 200" preserveAspectRatio="none"></svg>
                                 </div>
 
+                                <!--- Borra la firma --->
                                 <div class="signature-controls">
+                                    <!--- Botón para limpiar la firma del solicitante --->
                                     <button id="clearBtn-solicitante" type="button" class="submit-btn-limpiar">
                                         Limpiar
                                     </button>
                                 </div>
 
-                                <!--- CAMPO OCULTO: debe estar dentro del form para que ColdFusion lo reciba --->
+                                <!--- Campo oculto para almacenar la firma en formato SVG --->
                                 <input type="hidden" name="firma_svg" id="firma_svg">
                             </div>
 
-                            <!--- Firmara la solicitud el jefe de area --->
+                            <!--- Firmara la solicitud el Jefe Inmediato --->
                             <div class="signature-field">
+                                <!--- Etiqueta de la firma --->
                                 <div class="signature-label">
                                     Firma del Jefe Inmediato
                                 </div>
 
                                 <!--- Área de firma --->
                                 <div id="signature-wrapper" class="signature-wrapper" role="application" aria-label="Área de firma">
+                                    <!--- SVG para la firma del Jefe Inmediato --->
                                     <svg id="signature-svg" class="signature-svg" xmlns="http://www.w3.org/2000/svg" width="100%" height="200" viewBox="0 0 1000 200" preserveAspectRatio="xMidYMid meet"></svg>
                                 </div>
 
                                 <!--- Borra la firma --->
                                 <div class="signature-controls">
+                                    <!--- Botón para limpiar la firma del Jefe Inmediato --->
                                     <button id="clearBtn" type="button" class="submit-btn-limpiar-disabled" disabled>
                                         Limpiar
                                     </button>
                                 </div>
                             </div>
 
-                            <!--- Firmara la solicitud los de Recusos Humanos --->
+                            <!--- Firmara la solicitud para los de Recursos Humanos --->
                             <div class="signature-field">
+                                <!--- Etiqueta de la firma --->
                                 <div class="signature-label">
                                     Firma Dirección de Recursos Humanos
                                 </div>
 
                                 <!--- Área de firma --->
                                 <div id="signature-wrapper" class="signature-wrapper" role="application" aria-label="Área de firma">
+                                    <!--- SVG para la firma de Recursos Humanos --->
                                     <svg id="signature-svg" class="signature-svg" xmlns="http://www.w3.org/2000/svg" width="100%" height="200" viewBox="0 0 1000 200" preserveAspectRatio="xMidYMid meet"></svg>
                                 </div>
 
                                 <!--- Borra la firma --->
                                 <div class="signature-controls">
+                                    <!--- Botón para limpiar la firma de Recursos Humanos --->
                                     <button id="clearBtn" type="button" class="submit-btn-limpiar-disabled" disabled>
                                         Limpiar
                                     </button>
                                 </div>
                             </div>
 
-                            <!--- Firmara la solicitud para los de autorizacion --->
+                            <!--- Firmara la solicitud para los de Autorización --->
                             <div class="signature-field">
+                                <!--- Etiqueta de la firma --->
                                 <div class="signature-label">
                                     Firma de Autorización
                                 </div>
 
                                 <!--- Área de firma --->
                                 <div id="signature-wrapper" class="signature-wrapper" role="application" aria-label="Área de firma">
+                                    <!--- SVG para la firma de Autorización --->
                                     <svg id="signature-svg" class="signature-svg" xmlns="http://www.w3.org/2000/svg" width="100%" height="200" viewBox="0 0 1000 200" preserveAspectRatio="xMidYMid meet"></svg>
                                 </div>
 
                                 <!--- Borra la firma --->
                                 <div class="signature-controls">
+                                    <!--- Botón para limpiar la firma de Autorización --->
                                     <button id="clearBtn" type="button" class="submit-btn-limpiar-disabled" disabled>
                                         Limpiar
                                     </button>
@@ -345,17 +374,20 @@
 
                             <!--- Firmara la solicitud para los de expediente --->
                             <div class="signature-field">
+                                <!--- Etiqueta de la firma --->
                                 <div class="signature-label">
                                     Para Expediente y Control de Asistencia
                                 </div>
 
                                 <!--- Área de firma --->
                                 <div id="signature-wrapper" class="signature-wrapper" role="application" aria-label="Área de firma">
+                                    <!--- SVG para la firma de Expediente y Control de Asistencia --->
                                     <svg id="signature-svg" class="signature-svg" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1000 200" preserveAspectRatio="none"></svg>
                                 </div>
 
                                 <!--- Borra la firma --->
                                 <div class="signature-controls">
+                                    <!--- Botón para limpiar la firma de Expediente --->
                                     <button id="clearBtn" type="button" class="submit-btn-limpiar-disabled" disabled>
                                         Limpiar
                                     </button>
@@ -366,27 +398,32 @@
 
                     <!--- Botón de Envío --->
                     <div class="submit-section">
+                        <!--- Botón para enviar la solicitud --->
                         <button type="submit" name="submit" class="submit-btn-enviar">
                             Enviar Solicitud
                         </button>
                     </div>
                 </form>
 
+                <!--- Sección de botones para menú y cerrar sesión --->
                 <div class="submit-section">
-                    <!--- Enlace para regresar al menú principal --->
+                    <!---- Grupo de botones --->
                     <div class="field-group">
+                        <!--- Botón para ir al menú principal --->
                         <a href="menu.cfm" class="submit-btn-menu submit-btn-menu-text">
                             Menu
                         </a>
-                    
+                        
+                        <!--- Botón para cerrar sesión --->
                         <a href="cerrarSesion.cfm" class="submit-btn-cerrarSesion submit-btn-cerrarSesion-text">
-                        Cerrar Sesion
+                            Cerrar Sesion
                         </a>
                     </div>
                 </div>
             </div>
         </div>
 
+        <!--- Enlace a scripts de validación y firma SVG --->
         <script src="js/validacionForm.js"></script>
 
         <script src="js/svgFirma.js"></script>
