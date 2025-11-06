@@ -214,7 +214,7 @@
                                     class="form-input-general" 
                                     required="yes" 
                                     message="Por favor seleccione una fecha"
-                                    <!---min="<cfoutput>#hoy#</cfoutput>"--->>
+                                    min="<cfoutput>#hoy#</cfoutput>">
                             </div>
                         </div>
 
