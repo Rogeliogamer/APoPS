@@ -56,6 +56,7 @@
                             <label class="form-label" for="usuario">
                                 Usuario:
                             </label>
+                            <!--- Input para el nombre de usuario --->
                             <input type="text" id="usuario" name="usuario" placeholder="Username" class="form-input-general" required>
                         </div>
 
@@ -64,10 +65,12 @@
                             <label class="form-label" for="contrasena">
                                 Contraseña:
                             </label>
+                            <!--- Input para la contraseña --->
                             <input type="password" id="contrasena" name="contrasena" placeholder="password" class="form-input-general" required>
                         </div>
                     </div>
 
+                    <!--- Sección de envío del formulario --->
                     <div class="submit-section">
                         <!--- Botón para enviar el formulario --->
                         <button type="submit" class="submit-btn-entrar">
@@ -100,14 +103,20 @@
 
             <!--- Verificar si se encontró un usuario con las credenciales proporcionadas --->
             <cfif qLogin.recordCount EQ 1>
+                <!--- Almacenar información del usuario en la sesión --->
                 <cfset session.id_usuario = qLogin.id_usuario>
                 <cfset session.usuario = qLogin.usuario>
                 <cfset session.rol = qLogin.rol>
                 <cfset session.id_area = qLogin.id_area>
 
+                <!--- Redirigir al menú principal después del inicio de sesión exitoso --->
                 <cflocation url="menu.cfm">
+                
+            <!--- Si las credenciales son incorrectas, mostrar mensaje de error --->
             <cfelse>
+                <!--- Almacenar mensaje de error en la sesión --->
                 <cfset session.mensajeLogin = "Usuario o contraseña incorrectos.">
+                <!--- Redirigir de nuevo a la página de login --->
                 <cflocation url="login.cfm" addtoken="no">
             </cfif>
         </cfif>
