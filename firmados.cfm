@@ -31,8 +31,7 @@
 
 <!--- Consulta para obtener las solicitudes firmadas por el usuario en sesión --->
 <cfquery name="qFirmados" datasource="autorizacion">
-    SELECT 
-        s.id_solicitud,
+    SELECT s.id_solicitud,
         CONCAT(d.nombre, ' ', d.apellido_paterno, ' ', d.apellido_materno) AS solicitante,
         s.tipo_solicitud,
         s.motivo,
@@ -130,10 +129,12 @@
                 <div class="logo">
                     <!--- Incluir el logo de la aplicación --->
                     <cfset usuarioRol = createObject("component", "componentes/usuarioConectadoS").render()>
+                    <!--- Mostrar el rol del usuario --->
                     <cfoutput>
                         #usuarioRol#
                     </cfoutput>
                 </div>
+
                 <!--- Título de la página --->
                 <h1>Solicitudes ya firmadas</h1>
             </div>
@@ -288,12 +289,12 @@
                 <div class="submit-section">
                     <!--- Grupo de botones --->
                     <div class="field-group">
-                        <!--- Enlace para regresar al menú principal --->
+                        <!--- botón para regresar al menú --->
                         <a href="menu.cfm" class="submit-btn-menu submit-btn-menu-text">
                             Menu
                         </a>
                     
-                        <!--- Enlace para cerrar sesión --->
+                        <!--- botón para cerrar sesión --->
                         <a href="cerrarSesion.cfm" class="submit-btn-cerrarSesion submit-btn-cerrarSesion-text">
                             Cerrar Sesion
                         </a>
