@@ -18,7 +18,7 @@
     LEFT JOIN datos_usuario du ON s.id_solicitante = du.id_datos
     LEFT JOIN area_adscripcion aa ON du.id_area = aa.id_area
     LEFT JOIN firmas f ON s.id_solicitud = f.id_solicitud AND f.rol='Solicitante'
-    WHERE s.id_solicitud = <cfqueryparam value="#url.id_solicitud#" cfsqltype="cf_sql_integer">
+    WHERE s.id_solicitud = <cfqueryparam value="#form.id_solicitud#" cfsqltype="cf_sql_integer">
 </cfquery>
 
 <!DOCTYPE html>
@@ -211,7 +211,7 @@
 
                         <!-- Campos ocultos -->
                         <cfoutput>
-                            <input type="hidden" name="id_solicitud" value="#url.id_solicitud#">
+                            <input type="hidden" name="id_solicitud" value="#form.id_solicitud#">
                             <input type="hidden" name="rol" value="#session.rol#">
                         </cfoutput>
                     </div>

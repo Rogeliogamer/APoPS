@@ -13,23 +13,24 @@
 
 <!--- Evitar error si form.search no existe --->
 <cfif structKeyExists(form, "search")>
+    <!--- Asignar el valor de búsqueda si existe --->
     <cfset searchTerm = trim(form.search)>
 <cfelse>
+    <!--- Asignar cadena vacía si no existe --->
     <cfset searchTerm = "">
 </cfif>
 
 <!-- Determinar el filtro según el rol -->
 <cfset filtroRol = "">
 
+<!--- Definir filtros específicos para cada rol --->
 <cfif session.rol EQ "Jefe">
-<cfset filtroRol = "AND du.id_area = " & session.id_area>
+    <!--- El rol "Jefe" solo puede ver solicitudes de su área de adscripción --->
+    <cfset filtroRol = "AND du.id_area = " & session.id_area>
 
+<!--- Si el rol es "RecursosHumanos", "Autorizacion" o "Expediente", no se aplica filtro adicional --->
 <cfelseif session.rol EQ "RecursosHumanos">
-    <!--- 
-        El rol "RecursosHumanos" es un rol de firmante especial (no es Jefe ni Solicitante)
-        Este usuario puede ver TODAS las solicitudes que ya fueron aprobadas por los Jefes de área
-        Independientemente de su área de adscripción
-    --->
+    <!--- El rol "RecursosHumanos" solo puede ver solicitudes que ya hayan sido aprobadas por el "Jefe" --->
     <cfset filtroRol = "
         AND EXISTS (
             SELECT 1 FROM firmas f2
@@ -38,7 +39,9 @@
             AND f2.aprobado = 'Aprobado'
         )">
 
+<!--- El rol "Autorizacion" solo puede ver solicitudes que ya hayan sido aprobadas por "RecursosHumanos" --->
 <cfelseif session.rol EQ "Autorizacion">
+    <!--- Filtrar solicitudes aprobadas por "RecursosHumanos" --->
     <cfset filtroRol = "
         AND EXISTS (
             SELECT 1 FROM firmas f3
@@ -47,7 +50,9 @@
             AND f3.aprobado = 'Aprobado'
         )">
 
+<!--- El rol "Expediente" solo puede ver solicitudes que ya hayan sido aprobadas por "Autorizacion" --->
 <cfelseif session.rol EQ "Expediente">
+    <!--- Filtrar solicitudes aprobadas por "Autorizacion" --->
     <cfset filtroRol = "
         AND EXISTS (
             SELECT 1 FROM firmas f4
@@ -56,17 +61,25 @@
             AND f4.aprobado = 'Aprobado'
         )">
 
+<!--- El rol "Solicitante" no debe ver ninguna solicitud en esta página --->
 <cfelseif session.rol EQ "Solicitante">
+    <!--- No mostrar ninguna solicitud para el rol "Solicitante" --->
     <cfset filtroRol = "AND 1=0">
 </cfif>
 
+<!--- Parámetros de URL y formulario --->
 <cfparam name="form.search" default="">
 
-<!-- Consulta principal -->
+<!--- Consulta para obtener las solicitudes pendientes de firma según el rol del usuario --->
 <cfquery name="qPendientes" datasource="autorizacion">
-    SELECT s.id_solicitud, s.motivo, s.tipo_permiso, s.fecha,
-           du.nombre, du.apellido_paterno, du.apellido_materno,
-           aa.nombre AS area_nombre
+    SELECT s.id_solicitud, 
+        s.motivo, 
+        s.tipo_permiso, 
+        s.fecha,
+        du.nombre, 
+        du.apellido_paterno, 
+        du.apellido_materno,
+        aa.nombre AS area_nombre
     FROM solicitudes s
     INNER JOIN datos_usuario du ON s.id_solicitante = du.id_datos
     INNER JOIN usuarios u ON s.id_solicitante = u.id_usuario
@@ -74,7 +87,7 @@
     LEFT JOIN firmas f ON s.id_solicitud = f.id_solicitud 
         AND f.rol = <cfqueryparam value="#session.rol#" cfsqltype="cf_sql_varchar">
     WHERE u.activo = 1
-    AND (f.id_firma IS NULL OR f.aprobado = 'Pendiente')
+        AND (f.id_firma IS NULL OR f.aprobado = 'Pendiente')
     #PreserveSingleQuotes(filtroRol)#
     
     <cfif len(trim(form.search))>
@@ -125,13 +138,18 @@
 
         <!--- Configuración de paginación --->
         <cfset rowsPerPage = 10>
+        <!--- Calcular la página actual y los índices de fila --->
         <cfset currentPage = val(url.page)>
+        <!--- Asegurarse de que la página actual sea al menos 1 --->
         <cfif currentPage LTE 0><cfset currentPage = 1></cfif>
+        <!--- Calcular la fila de inicio --->
         <cfset startRow = (currentPage - 1) * rowsPerPage + 1>
 
-        <!--- Calcular totales --->
+        <!--- Calcular total de registros y páginas --->
         <cfset totalRecords = qPendientes.recordCount>
+        <!--- Calcular el total de páginas --->
         <cfset totalPages = ceiling(totalRecords / rowsPerPage)>
+        <!--- Calcular la fila de fin --->
         <cfset endRow = min(startRow + rowsPerPage - 1, totalRecords)>
 
         <!--- Subconsulta para mostrar solo las filas de la página actual --->
@@ -140,15 +158,20 @@
             FROM qPendientes
         </cfquery>
 
+        <!--- Contenido de la página --->
         <div class="container">
+            <!--- Encabezado de la página --->
             <div class="header">
+                <!--- Logo y título --->
                 <div class="logo">
                     <cfset usuarioRol = createObject("component", "componentes/usuarioConectadoS").render()>
                     <cfoutput>#usuarioRol#</cfoutput>
                 </div>
+                <!--- Título principal --->
                 <h1>Solicitudes Pendientes de Firma</h1>
             </div>
 
+            <!--- Contenedor del formulario y la tabla --->
             <div class="form-container">
                 <!--- Formulario de búsqueda --->
                 <form method="post" action="pendientesFirmar.cfm" class="field-group single">
@@ -172,20 +195,30 @@
                     </button>
                 </form>
 
+                <!--- Verificar si hay solicitudes pendientes --->
                 <cfif qPendientes.recordcount eq 0>
+                    <!--- Mensaje si no hay solicitudes pendientes --->
                     <div class="section">
                         <p>No tienes solicitudes pendientes de firma.</p>
                     </div>
+
+                <!--- Mostrar tabla de solicitudes pendientes --->
                 <cfelse>
+                    <!--- Sección de la tabla --->
                     <div class="section">
+                        <!--- Título de la sección --->
                         <div class="section-title">
                             Listado de Solicitudes
                         </div>
-
+                        <!--- Tabla responsiva --->
                         <div class="table-responsive-custom">
+                            <!--- Tabla de solicitudes --->
                             <table class="tabla">
+                                <!---| Encabezado de la tabla --->
                                 <thead>
+                                    <!--- Fila de títulos --->
                                     <tr class="titulos-tabla">
+                                        <!--- Títulos de las columnas --->
                                         <th class="titulo-general-centrado">ID Solicitud</th>
                                         <th class="titulo-general">Solicitante</th>
                                         <th class="titulo-general">Área</th>
@@ -195,9 +228,13 @@
                                         <th class="titulo-general-centrado">Acción</th>
                                     </tr>
                                 </thead>
+                                <!--- Cuerpo de la tabla --->
                                 <tbody>
+                                    <!--- Iterar sobre las solicitudes paginadas --->
                                     <cfoutput query="qPaged" startrow="#startRow#" maxrows="#rowsPerPage#">
+                                        <!--- Fila de datos de la solicitud --->
                                         <tr>
+                                            <!--- Datos de cada columna --->
                                             <td class="titulo-general-centrado">#id_solicitud#</td>
                                             <td>#nombre# #apellido_paterno# #apellido_materno#</td>
                                             <td>#area_nombre#</td>
@@ -205,7 +242,8 @@
                                             <td>#tipo_permiso#</td>
                                             <td class="titulo-general-centrado">#DateFormat(fecha,'yyyy-mm-dd')#</td>
                                             <td class="titulo-general-centrado">
-                                                <form method="get" action="firmarSolicitud.cfm">
+                                                <!--- Botón para firmar la solicitud --->
+                                                <form method="post" action="firmarSolicitud.cfm">
                                                     <input type="hidden" name="id_solicitud" value="#id_solicitud#">
                                                     <button type="submit" class="submit-btn-firmar">Firmar</button>
                                                 </form>
@@ -230,7 +268,9 @@
 
                                 <!--- Botón 'Anterior' si hay bloques previos --->
                                 <cfif startPage GT 1>
+                                    <!---| Calcular la página anterior --->
                                     <cfset prevPage = startPage - 1>
+                                    <!--- Enlace al bloque anterior --->
                                     <cfoutput>
                                         <a href="pendientesFirmar.cfm?page=#prevPage#&search=#urlEncodedFormat(form.search)#"
                                             class="submit-btn-anterior"
@@ -240,13 +280,15 @@
 
                                 <!--- Números del bloque actual --->
                                 <cfloop from="#startPage#" to="#endPage#" index="i">
+                                    <!--- Verificar si es la página actual --->
                                     <cfif i EQ currentPage>
                                         <!--- Botón deshabilitado para la página actual --->
                                         <cfoutput>
                                             <button class="submit-btn-paginacion-disabled" disabled>#i#</button>
                                         </cfoutput>
+                                    <!---- Botón para otras páginas --->
                                     <cfelse>
-                                        <!--- Botón para otras páginas --->
+                                        <!--- Enlace a la página correspondiente --->
                                         <cfoutput>
                                             <a href="pendientesFirmar.cfm?page=#i#&search=#urlEncodedFormat(form.search)#" 
                                                 class="submit-btn-paginacion" style="text-decoration:none">#i#</a>
@@ -256,7 +298,9 @@
 
                                 <!--- Botón 'Siguiente' si hay más bloques --->
                                 <cfif endPage LT totalPages>
+                                    <!--- Calcular la siguiente página --->
                                     <cfset nextPage = endPage + 1>
+                                    <!--- Enlace al siguiente bloque --->
                                     <cfoutput>
                                         <a href="pendientesFirmar.cfm?page=#nextPage#&search=#urlEncodedFormat(form.search)#"
                                             class="submit-btn-siguiente"
@@ -268,13 +312,16 @@
                     </div>
                 </cfif>
 
+                <!--- Sección de botones de menú y cerrar sesión --->
                 <div class="submit-section">
+                    <!--- Contenedor de los botones --->    
                     <div class="field-group">
                         <!--- Enlace para regresar al menú principal --->
                         <a href="menu.cfm" class="submit-btn-menu submit-btn-menu-text">
                             Menu
                         </a>
-                    
+                        
+                        <!--- Enlace para cerrar sesión --->
                         <a href="cerrarSesion.cfm" class="submit-btn-cerrarSesion submit-btn-cerrarSesion-text">
                                 Cerrar Sesion
                         </a>
