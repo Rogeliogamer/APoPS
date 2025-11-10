@@ -17,6 +17,7 @@
     <cfset searchTerm = "">
 </cfif>
 
+<!--- Filtro de área según el rol del usuario en sesión --->
 <cfif session.rol EQ "Solicitante">
     <!--- Los Solicitantes solo ven sus propias solicitudes --->
     <cfset filtroArea = "AND s.id_solicitante = " & session.id_usuario>
@@ -28,6 +29,7 @@
     <cfset filtroArea = "">
 </cfif>
 
+<!--- Consulta para obtener las solicitudes firmadas por el usuario en sesión --->
 <cfquery name="qFirmados" datasource="autorizacion">
     SELECT 
         s.id_solicitud,
@@ -100,13 +102,18 @@
 
         <!--- Configuración de paginación --->
         <cfset rowsPerPage = 10>
+        <!--- Página actual y cálculo de filas --->
         <cfset currentPage = val(url.page)>
+        <!--- Asegurar que la página actual sea al menos 1 --->
         <cfif currentPage LTE 0><cfset currentPage = 1></cfif>
+        <!--- Calcular la fila inicial para la consulta --->
         <cfset startRow = (currentPage - 1) * rowsPerPage + 1>
 
         <!--- Calcular totales --->
         <cfset totalRecords = qFirmados.recordCount>
+        <!--- Calcular total de páginas --->
         <cfset totalPages = ceiling(totalRecords / rowsPerPage)>
+        <!--- Calcular fila final --->
         <cfset endRow = min(startRow + rowsPerPage - 1, totalRecords)>
 
         <!--- Subconsulta para mostrar solo las filas de la página actual --->
@@ -115,19 +122,25 @@
             FROM qFirmados
         </cfquery>
 
+        <!--- Contenido de la página --->
         <div class="container">
+            <!--- Encabezado con logo y título --->
             <div class="header">
+                <!--- Logo y rol del usuario --->
                 <div class="logo">
+                    <!--- Incluir el logo de la aplicación --->
                     <cfset usuarioRol = createObject("component", "componentes/usuarioConectadoS").render()>
                     <cfoutput>
                         #usuarioRol#
                     </cfoutput>
                 </div>
+                <!--- Título de la página --->
                 <h1>Solicitudes ya firmadas</h1>
             </div>
 
+            <!--- Contenedor del formulario y tabla --->
             <div class="form-container">
-            <!--- Formulario de búsqueda --->
+                <!--- Formulario de búsqueda --->
                 <form method="post" action="firmados.cfm" class="field-group single">
                     <!--- Campo de búsqueda --->
                     <div class="form-field">
@@ -135,9 +148,7 @@
                         <label class="form-label">
                             Buscar:
                         </label>
-                        <!--- Campo de texto --->
                         <cfoutput>
-                            <!--- Mantener el valor ingresado en el campo de búsqueda --->
                             <input type="text" 
                                 name="search" 
                                 value="#encodeForHTMLAttribute(form.search)#" 
@@ -152,13 +163,20 @@
                     </button>
                 </form>
 
+                <!--- Sección de la tabla de solicitudes firmadas --->
                 <div class="section">
+                    <!--- Título de la sección --->
                     <h2 class="section-title">Listado de solicitudes con firma</h2>
 
+                    <!--- Tabla de solicitudes firmadas --->
                     <div class="table-responsive-custom">
+                        <!--- Tabla con estilos personalizados --->
                         <table class="tabla">
+                            <!--- Encabezado de la tabla --->
                             <thead>
+                                <!--- Fila de títulos --->
                                 <tr class="titulos-tabla">
+                                    <!--- Títulos de las columnas --->
                                     <th class="titulo-general">ID Solicitud</th>
                                     <th class="titulo-general">Solicitante</th>
                                     <th class="titulo-general">Motivo</th>
@@ -170,9 +188,13 @@
                                     <th class="titulo-general-centrado">Acciones</th>
                                 </tr>
                             </thead>
+                            <!--- Cuerpo de la tabla --->
                             <tbody>
+                                <!--- Recorrer las filas paginadas --->
                                 <cfoutput query="qPaged" startrow="#startRow#" maxrows="#rowsPerPage#">
+                                    <!--- Fila de datos --->
                                     <tr>
+                                        <!--- Datos de cada columna --->
                                         <td class="titulo-general-centrado">#id_solicitud#</td>
                                         <td>#solicitante#</td>
                                         <td>#motivo#</td>
@@ -180,6 +202,7 @@
                                         <td class="titulo-general-centrado">#DateFormat(fecha,'dd/mm/yyyy')#</td>
                                         <td>#rol_solicitante#</td>
                                         <td>
+                                            <!--- Mostrar el estado con estilos según su valor --->
                                             <cfif status_final EQ "Aprobado">
                                                 <span class="status-aprobado">✔ #status_final#</span>
                                             <cfelseif status_final EQ "Rechazado">
@@ -192,6 +215,7 @@
                                         </td>
                                         <td class="titulo-general-centrado">#DateFormat(fecha_firma,'dd/mm/yyyy')#</td>
                                         <td style="text-align:center;">
+                                            <!--- Formulario para ver detalles de la solicitud --->
                                             <form action="solicitudDetalles.cfm" method="post">
                                                 <input type="hidden" name="id_solicitud" value="#id_solicitud#">
                                                 <button type="submit" class="submit-btn-verDetalles">Ver Detalles</button>
@@ -213,11 +237,14 @@
                             <cfset currentBlock = ceiling(currentPage / blockSize)>
                             <!--- Página inicial y final del bloque --->
                             <cfset startPage = ((currentBlock - 1) * blockSize) + 1>
+                            <!--- Asegurar que la página final no exceda el total de páginas --->
                             <cfset endPage = min(startPage + blockSize - 1, totalPages)>
 
                             <!--- Botón 'Anterior' si hay bloques previos --->
                             <cfif startPage GT 1>
+                                <!--- Calcular la página anterior --->
                                 <cfset prevPage = startPage - 1>
+                                <!--- Enlace al bloque anterior --->
                                 <cfoutput>
                                     <a href="firmados.cfm?page=#prevPage#&search=#urlEncodedFormat(form.search)#"
                                         class="submit-btn-anterior"
@@ -227,6 +254,7 @@
 
                             <!--- Números del bloque actual --->
                             <cfloop from="#startPage#" to="#endPage#" index="i">
+                                <!--- Resaltar la página actual --->
                                 <cfif i EQ currentPage>
                                     <!--- Botón deshabilitado para la página actual --->
                                     <cfoutput>
@@ -243,7 +271,9 @@
 
                             <!--- Botón 'Siguiente' si hay más bloques --->
                             <cfif endPage LT totalPages>
+                                <!--- Calcular la siguiente página --->
                                 <cfset nextPage = endPage + 1>
+                                <!--- Enlace al siguiente bloque --->
                                 <cfoutput>
                                     <a href="firmados.cfm?page=#nextPage#&search=#urlEncodedFormat(form.search)#"
                                         class="submit-btn-siguiente"
@@ -254,13 +284,16 @@
                     </div>
                 </div>
 
+                <!--- Sección de botones de menú y cerrar sesión --->
                 <div class="submit-section">
+                    <!--- Grupo de botones --->
                     <div class="field-group">
                         <!--- Enlace para regresar al menú principal --->
                         <a href="menu.cfm" class="submit-btn-menu submit-btn-menu-text">
                             Menu
                         </a>
                     
+                        <!--- Enlace para cerrar sesión --->
                         <a href="cerrarSesion.cfm" class="submit-btn-cerrarSesion submit-btn-cerrarSesion-text">
                             Cerrar Sesion
                         </a>
