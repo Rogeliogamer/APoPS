@@ -8,7 +8,17 @@
 </cfif>
 
 <!--- Obtener el ID de la solicitud desde la URL --->
-<cfparam name="url.id_solicitud" default="0">
+<cfif structKeyExists(form, "id_solicitud")>
+    <cfset id_solicitud = form.id_solicitud>
+<cfelseif structKeyExists(url, "id_solicitud")>
+    <!--- Solo en caso extremo de prueba o acceso directo, puedes mantener esto como respaldo --->
+    <cfset id_solicitud = url.id_solicitud>
+<cfelse>
+    <cfoutput>
+        <p style="color:red; text-align:center;">Error: No se recibió el identificador de solicitud.</p>
+    </cfoutput>
+    <cfabort>
+</cfif>
 
 <!--- Obtener los datos de la solicitud --->
 <cfquery name="qSolicitud" datasource="autorizacion">
@@ -25,7 +35,7 @@
     FROM solicitudes s
     INNER JOIN usuarios u ON s.id_solicitante = u.id_usuario
     INNER JOIN datos_usuario d ON u.id_datos = d.id_datos
-    WHERE s.id_solicitud = <cfqueryparam value="#url.id_solicitud#" cfsqltype="cf_sql_integer">
+    WHERE s.id_solicitud = <cfqueryparam value="#id_solicitud#" cfsqltype="cf_sql_integer">
 </cfquery>
 
 <!--- Obtener las firmas asociadas a la solicitud --->
@@ -36,7 +46,7 @@
         fecha_firma, 
         svg
     FROM firmas
-    WHERE id_solicitud = <cfqueryparam value="#url.id_solicitud#" cfsqltype="cf_sql_integer">
+    WHERE id_solicitud = <cfqueryparam value="#id_solicitud#" cfsqltype="cf_sql_integer">
     ORDER BY FIELD(rol, 'Solicitante','Jefe','RecursosHumanos','Autorizacion','Expediente')
 </cfquery>
 
@@ -364,7 +374,7 @@
 
         <!--- Mostrar las firmas en una tabla horizontal --->
         <div class="signature-section">
-            <!-- TABLA CON UNA SOLA FILA PARA TODAS LAS FIRMAS EN HORIZONTAL -->
+            <!--- TABLA CON UNA SOLA FILA PARA TODAS LAS FIRMAS EN HORIZONTAL --->
             <table class="signatures-table">
                 <!--- fila de firmas --->
                 <tr>
@@ -417,7 +427,7 @@
                                     <cfif isDate(fecha_firma)>
                                         #DateFormat(fecha_firma, "dd/mm/yyyy")#<br>
                                         #TimeFormat(fecha_firma, "HH:mm")#
-                                    <!---- Si no hay fecha, mostrar mensaje --->
+                                    <!--- Si no hay fecha, mostrar mensaje --->
                                     <cfelse>
                                         Sin fecha
                                     </cfif>
