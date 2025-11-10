@@ -78,7 +78,7 @@
             <!--- Formulario de firma --->
             <div class="form-container">
                 <!--- Formulario para enviar la firma --->
-                <form id="formFirma" method="post" action="guardar_firma.cfm">
+                <form id="formFirma" method="post" action="guardarFirma.cfm">
                     <!--- Datos del Solicitante --->
                     <div class="section">
                         <!--- Título de la sección --->
