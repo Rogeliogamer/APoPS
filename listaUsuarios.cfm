@@ -201,10 +201,12 @@
 
                                         <!--- Botón Eliminar --->
                                         <td class="submit-btn-eliminar-separacion">
-                                            <!--- Enlace al script de eliminación --->
-                                            <a href="eliminarUsuario.cfm?id=#id_usuario#" class="submit-btn-eliminar" onclick="desactivarUsuario(#id_usuario#)">
-                                                Eliminar
-                                            </a>
+                                            <form action="eliminarUsuario.cfm" method="post">
+                                                <input type="hidden" name="id" value="#id_usuario#">
+                                                <button type="submit" class="submit-btn-eliminar">Eliminar</button>
+                                            </form>
+
+                                            
                                         </td>
                                     </cfif>
                                 </tr>
