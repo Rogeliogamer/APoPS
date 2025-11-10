@@ -17,9 +17,9 @@
     <cfset searchTerm = "">
 </cfif>
 
+<!--- Consulta para obtener las solicitudes firmadas por el usuario en sesión --->
 <cfquery name="qFirmados" datasource="autorizacion">
-    SELECT 
-        s.id_solicitud,
+    SELECT s.id_solicitud,
         CONCAT(d.nombre, ' ', d.apellido_paterno, ' ', d.apellido_materno) AS solicitante,
         s.tipo_solicitud,
         s.motivo,
@@ -85,13 +85,18 @@
 
         <!--- Configuración de paginación --->
         <cfset rowsPerPage = 10>
+        <!--- Calcular la página actual y los índices de fila --->
         <cfset currentPage = val(url.page)>
+        <!--- Asegurar que la página actual sea al menos 1 --->
         <cfif currentPage LTE 0><cfset currentPage = 1></cfif>
+        <!--- Calcular el índice de la primera fila de la página actual --->
         <cfset startRow = (currentPage - 1) * rowsPerPage + 1>
 
-        <!--- Calcular totales --->
+        <!--- Calcular total de registros y páginas --->
         <cfset totalRecords = qFirmados.recordCount>
+        <!--- Calcular el total de páginas --->
         <cfset totalPages = ceiling(totalRecords / rowsPerPage)>
+        <!--- Calcular el índice de la última fila de la página actual --->
         <cfset endRow = min(startRow + rowsPerPage - 1, totalRecords)>
 
         <!--- Subconsulta para mostrar solo las filas de la página actual --->
@@ -100,15 +105,20 @@
             FROM qFirmados
         </cfquery>
 
+        <!--- Contenido de la página --->
         <div class="container">
+            <!--- Encabezado con logo y título --->
             <div class="header">
+                <!--- Logo con el rol del usuario --->
                 <div class="logo">
                     <cfset usuarioRol = createObject("component", "componentes/usuarioConectadoS").render()>
                     <cfoutput>#usuarioRol#</cfoutput>
                 </div>
+                <!--- Título de la página --->
                 <h1>Solicitudes firmadas por ti</h1>
             </div>
 
+            <!--- Contenedor principal --->
             <div class="form-container">
                 <!--- Formulario de búsqueda --->
                 <form method="post" action="listaSolicitudes.cfm" class="field-group single">
@@ -132,13 +142,20 @@
                     </button>
                 </form>
 
+                <!--- Sección de listado de solicitudes --->
                 <div class="section">
+                    <!--- Título de la sección --->
                     <h2 class="section-title">Listado de solicitudes</h2>
 
+                    <!--- Contenedor de la tabla --->
                     <div class="table-responsive-custom">
+                        <!--- Tabla de solicitudes --->
                         <table class="tabla">
+                            <!--- Encabezado de la tabla --->
                             <thead>
+                                <!--- Fila de títulos --->
                                 <tr class="titulos-tabla">
+                                    <!--- Títulos de las columnas --->
                                     <th class="titulo-general">ID Solicitud</th>
                                     <th class="titulo-general">Solicitante</th>
                                     <th class="titulo-general">Motivo</th>
@@ -150,9 +167,13 @@
                                     <th class="titulo-general-centrado">Acciones</th>
                                 </tr>
                             </thead>
+                            <!--- Cuerpo de la tabla --->
                             <tbody>
+                                <!--- Iterar sobre las filas paginadas --->
                                 <cfoutput query="qPaged" startrow="#startRow#" maxrows="#rowsPerPage#">
+                                    <!--- Fila de datos --->
                                     <tr>
+                                        <!--- Datos de cada columna --->
                                         <td class="titulo-general-centrado">#id_solicitud#</td>
                                         <td>#solicitante#</td>
                                         <td>#motivo#</td>
@@ -160,6 +181,7 @@
                                         <td class="titulo-general-centrado">#DateFormat(fecha,'dd/mm/yyyy')#</td>
                                         <td>#rol_solicitante#</td>
                                         <td>
+                                            <!--- Mostrar el estado de la firma con íconos y estilos --->
                                             <cfif status_final EQ "Aprobado">
                                                 <span class="status-aprobado">✔ #status_final#</span>
                                             <cfelseif status_final EQ "Rechazado">
@@ -172,6 +194,7 @@
                                         </td>
                                         <td class="titulo-general-centrado">#DateFormat(fecha_firma,'dd/mm/yyyy')# #TimeFormat(fecha_firma,'HH:mm')#</td>
                                         <td class="titulo-general-centrado">
+                                            <!--- Botón para ver detalles de la solicitud --->
                                             <form action="solicitudDetalles.cfm" method="post">
                                                 <input type="hidden" name="id_solicitud" value="#id_solicitud#">
                                                 <button type="submit" class="submit-btn-verDetalles">Ver Detalles</button>
@@ -193,11 +216,14 @@
                             <cfset currentBlock = ceiling(currentPage / blockSize)>
                             <!--- Página inicial y final del bloque --->
                             <cfset startPage = ((currentBlock - 1) * blockSize) + 1>
+                            <!--- Asegurar que la página final no exceda el total de páginas --->
                             <cfset endPage = min(startPage + blockSize - 1, totalPages)>
 
                             <!--- Botón 'Anterior' si hay bloques previos --->
                             <cfif startPage GT 1>
+                                <!--- Página anterior al bloque actual --->
                                 <cfset prevPage = startPage - 1>
+                                <!---- Enlace al bloque anterior --->
                                 <cfoutput>
                                     <a href="listaSolicitudes.cfm?page=#prevPage#&search=#urlEncodedFormat(form.search)#"
                                         class="submit-btn-anterior"
@@ -207,13 +233,15 @@
 
                             <!--- Números del bloque actual --->
                             <cfloop from="#startPage#" to="#endPage#" index="i">
+                                <!--- Verificar si es la página actual --->
                                 <cfif i EQ currentPage>
                                     <!--- Botón deshabilitado para la página actual --->
                                     <cfoutput>
                                         <button class="submit-btn-paginacion-disabled" disabled>#i#</button>
                                     </cfoutput>
+                                <!---- Botón para otras páginas --->
                                 <cfelse>
-                                    <!--- Botón para otras páginas --->
+                                    <!--- Enlace a la página correspondiente --->
                                     <cfoutput>
                                         <a href="listaSolicitudes.cfm?page=#i#&search=#urlEncodedFormat(form.search)#" 
                                             class="submit-btn-paginacion" style="text-decoration:none">#i#</a>
@@ -223,7 +251,9 @@
 
                             <!--- Botón 'Siguiente' si hay más bloques --->
                             <cfif endPage LT totalPages>
+                                <!--- Página siguiente al bloque actual --->
                                 <cfset nextPage = endPage + 1>
+                                <!--- Enlace al siguiente bloque --->
                                 <cfoutput>
                                     <a href="listaSolicitudes.cfm?page=#nextPage#&search=#urlEncodedFormat(form.search)#"
                                         class="submit-btn-siguiente"
@@ -234,12 +264,16 @@
                     </div>
                 </div>
 
+                <!--- Sección de botones de navegación --->
                 <div class="submit-section">
+                    <!--- Botón para regresar al menú principal --->
                     <div class="field-group">
+                        <!--- Botón de menú --->
                         <a href="menu.cfm" class="submit-btn-menu submit-btn-menu-text">
                             Menú
                         </a>
-                    
+                        
+                        <!--- Botón para cerrar sesión --->
                         <a href="cerrarSesion.cfm" class="submit-btn-cerrarSesion submit-btn-cerrarSesion-text">
                             Cerrar Sesion
                         </a>
