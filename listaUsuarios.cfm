@@ -193,10 +193,10 @@
                                     <cfif structKeyExists(session, "usuario") AND session.rol EQ "admin">
                                         <!--- Botón Editar --->
                                         <td class="submit-btn-editar-separacion">
-                                            <!--- Enlace al formulario de edición --->
-                                            <a href="editarUsuario.cfm?id=#id_usuario#" class="submit-btn-editar">
-                                                Editar
-                                            </a>
+                                            <form action="editarUsuario.cfm" method="post">
+                                                <input type="hidden" name="id" value="#id_usuario#">
+                                                <button type="submit" class="submit-btn-editar">Editar</button>
+                                            </form>
                                         </td>
 
                                         <!--- Botón Eliminar --->
