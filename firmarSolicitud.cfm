@@ -126,14 +126,14 @@
 
                         <!--- Campos de descripción de la solicitud --->
                         <div class="field-group">
-                            <!--- Motivo --->
+                            <!--- Tipo de solicitud --->
                             <div class="form-field">
                                 <label class="form-label">
-                                    Motivo:
+                                    Tipo de solicitud:
                                 </label>
                                 <cfoutput>
                                     <input type="text"
-                                        value="#qSolicitud.motivo#"
+                                        value="#qSolicitud.tipo_solicitud#"
                                         class="form-input-general"
                                         readonly>
                                 </cfoutput>

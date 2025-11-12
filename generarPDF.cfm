@@ -26,7 +26,6 @@
         CONCAT(d.nombre, ' ', d.apellido_paterno, ' ', d.apellido_materno) AS solicitante,
         a.nombre AS nombre_area,
         s.tipo_solicitud,
-        s.motivo,
         s.tipo_permiso,
         s.fecha,
         s.tiempo_solicitado,
@@ -331,10 +330,10 @@
                     <span class="form-value tamaño_letra">#qSolicitud.nombre_area#</span>
                 </div>
 
-                <!--- Campo: Motivo --->
+                <!--- Campo: Tipo de solicitud --->
                 <div class="form-field">
-                    <span class="form-label tamaño_letra">Motivo:</span>
-                    <span class="form-value tamaño_letra">#qSolicitud.motivo#</span>
+                    <span class="form-label tamaño_letra">Tipo de solicitud:</span>
+                    <span class="form-value tamaño_letra">#qSolicitud.tipo_solicitud#</span>
                 </div>
 
                 <!--- Campo: Tipo de Permiso --->

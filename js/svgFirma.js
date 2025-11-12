@@ -99,10 +99,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Al enviar el formulario: serializar SVG y colocarlo en input oculto
   form.addEventListener('submit', function(e){
-    // primero las validaciones que ya tenías (motivo/tipo_permiso)
-    const motivoChecked = document.querySelectorAll('input[name="motivo"]:checked').length > 0;
+    // primero las validaciones que ya tenías (tipo_solicitud/tipo_permiso)
+    const tipoSolicitudChecked = document.querySelectorAll('input[name="solicitud"]:checked').length > 0;
     const tipoPermisoChecked = document.querySelectorAll('input[name="tipo_permiso"]:checked').length > 0;
-    if (!motivoChecked) { alert('Por favor seleccione un motivo para la solicitud.'); e.preventDefault(); return false; }
+    if (!tipoSolicitudChecked) { alert('Por favor seleccione un tipo de solicitud para la solicitud.'); e.preventDefault(); return false; }
     if (!tipoPermisoChecked) { alert('Por favor seleccione al menos un tipo de permiso.'); e.preventDefault(); return false; }
 
     // serializamos SVG; si está vacío, prevenimos envío (si quieres obligarlo)

@@ -20,7 +20,6 @@
         s.id_solicitud,
         CONCAT(d.nombre, ' ', d.apellido_paterno, ' ', d.apellido_materno) AS solicitante,
         s.tipo_solicitud,
-        s.motivo,
         s.tipo_permiso,
         s.fecha,
         s.tiempo_solicitado,
@@ -125,10 +124,10 @@
                                 <input type="text" class="form-input-general" value="#qSolicitud.tipo_solicitud#" readonly>
                             </div> 
 
-                            <!--- Campo: Motivo --->
+                            <!--- Campo: Tipo de solicitud --->
                             <div class="form-field">
-                                <label class="form-label">Motivo</label>
-                                <input type="text" class="form-input-general" value="#qSolicitud.motivo#" readonly>
+                                <label class="form-label">Tipo de solicitud</label>
+                                <input type="text" class="form-input-general" value="#qSolicitud.tipo_solicitud#" readonly>
                             </div>
 
                             <!--- Campo: Tipo de Permiso --->

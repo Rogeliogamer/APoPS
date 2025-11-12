@@ -130,32 +130,32 @@
                             Descripción de la Solicitud
                         </div>
 
-                        <!--- Grupo de campos para motivo, tipo de permiso, fecha y tiempo solicitado --->
+                        <!--- Grupo de campos para tipo de solicitud, tipo de permiso, fecha y tiempo solicitado --->
                         <div class="form-field">
-                            <!--- Seleccion del tipo de motivo --->
+                            <!--- Seleccion del tipo de solicitud --->
                             <label class="form-label">
-                                Motivo:
+                                Tipo de solicitud:
                             </label>
 
-                            <!--- Grupo de checkboxes para motivo --->
+                            <!--- Grupo de checkboxes para tipo de solicitud --->
                             <div class="checkbox-group">
-                                <!--- Motivo Personal --->
+                                <!--- Solicitud Personal --->
                                 <div class="checkbox-item">
                                     <input type="checkbox" 
-                                        name="motivo" 
+                                        name="solicitud" 
                                         value="Personal" 
-                                        id="motivo_personal" 
+                                        id="solicitud_personal" 
                                         class="checkbox-input">
-                                    <label for="motivo_personal" class="checkbox-label">Personal</label>
+                                    <label for="solicitud_personal" class="checkbox-label">Personal</label>
                                 </div>
-                                <!--- Motivo Oficial --->
+                                <!--- Solicitud Oficial --->
                                 <div class="checkbox-item">
                                     <input type="checkbox" 
-                                        name="motivo" 
+                                        name="solicitud" 
                                         value="Oficial" 
-                                        id="motivo_oficial" 
+                                        id="Solicitud_oficial" 
                                         class="checkbox-input">
-                                    <label for="motivo_oficial" class="checkbox-label">Oficial</label>
+                                    <label for="Solicitud_oficial" class="checkbox-label">Oficial</label>
                                 </div>
                             </div>
                         </div>

@@ -11,13 +11,12 @@
 <!--- Ahora insertar con seguridad --->
 <cfquery datasource="autorizacion" name="qInsertSolicitud">
   INSERT INTO Solicitudes (
-    id_solicitante, id_area, tipo_solicitud, motivo, tipo_permiso, fecha,
+    id_solicitante, id_area, tipo_solicitud, tipo_permiso, fecha,
     tiempo_solicitado, hora_salida, hora_llegada, status_final, fecha_creacion
   ) VALUES (
     <cfqueryparam value="#session.id_usuario#" cfsqltype="cf_sql_integer">,
     (SELECT id_area FROM datos_usuario WHERE id_datos = <cfqueryparam value="#session.id_usuario#" cfsqltype="cf_sql_integer">),
-    <cfqueryparam value="#FORM.motivo#" cfsqltype="cf_sql_varchar">,
-    <cfqueryparam value="#FORM.motivo#" cfsqltype="cf_sql_varchar">,
+    <cfqueryparam value="#FORM.solicitud#" cfsqltype="cf_sql_varchar">,
     <cfqueryparam value="#FORM.tipo_permiso#" cfsqltype="cf_sql_varchar">,
     <cfqueryparam value="#FORM.fecha#" cfsqltype="cf_sql_date">,
     <cfqueryparam value="#FORM.tiempo_solicitado#" cfsqltype="cf_sql_integer">,

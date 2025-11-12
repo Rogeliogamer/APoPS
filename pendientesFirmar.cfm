@@ -51,7 +51,7 @@
 <!--- Consulta para obtener las solicitudes pendientes de firma según el rol del usuario --->
 <cfquery name="qPendientes" datasource="autorizacion">
     SELECT s.id_solicitud, 
-        s.motivo, 
+        s.tipo_solicitud, 
         s.tipo_permiso, 
         s.fecha,
         du.nombre, 
@@ -74,7 +74,7 @@
             OR du.apellido_paterno LIKE <cfqueryparam value="%#form.search#%" cfsqltype="cf_sql_varchar">
             OR du.apellido_materno LIKE <cfqueryparam value="%#form.search#%" cfsqltype="cf_sql_varchar">
             OR aa.nombre LIKE <cfqueryparam value="%#form.search#%" cfsqltype="cf_sql_varchar">
-            OR s.motivo LIKE <cfqueryparam value="%#form.search#%" cfsqltype="cf_sql_varchar">
+            OR s.tipo_solicitud LIKE <cfqueryparam value="%#form.search#%" cfsqltype="cf_sql_varchar">
             OR s.tipo_permiso LIKE <cfqueryparam value="%#form.search#%" cfsqltype="cf_sql_varchar">
         )
     </cfif>
@@ -163,7 +163,7 @@
                         <cfoutput>
                             <!--- Mantener el valor ingresado en el campo de búsqueda --->
                             <input type="text" name="search" value="#encodeForHTMLAttribute(form.search)#" 
-                                class="form-input-general" placeholder="Solicitante, Area, Motivo, Tipo permiso">
+                                class="form-input-general" placeholder="Solicitante, Area, tipo solicitud, Tipo permiso">
                         </cfoutput>
                     </div>
 
@@ -200,7 +200,7 @@
                                         <th class="titulo-general-centrado">ID Solicitud</th>
                                         <th class="titulo-general">Solicitante</th>
                                         <th class="titulo-general">Área</th>
-                                        <th class="titulo-general">Motivo</th>
+                                        <th class="titulo-general">Tipo de Solicitud</th>
                                         <th class="titulo-general">Tipo de Permiso</th>
                                         <th class="titulo-general-centrado">Fecha</th>
                                         <th class="titulo-general-centrado">Acción</th>
@@ -216,7 +216,7 @@
                                             <td class="titulo-general-centrado">#id_solicitud#</td>
                                             <td>#nombre# #apellido_paterno# #apellido_materno#</td>
                                             <td>#area_nombre#</td>
-                                            <td>#motivo#</td>
+                                            <td>#tipo_solicitud#</td>
                                             <td>#tipo_permiso#</td>
                                             <td class="titulo-general-centrado">#DateFormat(fecha,'yyyy-mm-dd')#</td>
                                             <td class="titulo-general-centrado">

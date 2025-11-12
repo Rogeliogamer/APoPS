@@ -34,7 +34,6 @@
     SELECT s.id_solicitud,
         CONCAT(d.nombre, ' ', d.apellido_paterno, ' ', d.apellido_materno) AS solicitante,
         s.tipo_solicitud,
-        s.motivo,
         s.tipo_permiso,
         s.fecha,
         s.tiempo_solicitado,
@@ -59,7 +58,7 @@
                 OR d.apellido_paterno LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
                 OR d.apellido_materno LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
                 OR s.tipo_permiso LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
-                OR s.motivo LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
+                OR s.tipo_solicitud LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
                 OR u.rol LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
                 OR f.aprobado LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
             )
@@ -154,7 +153,7 @@
                                 name="search" 
                                 value="#encodeForHTMLAttribute(form.search)#" 
                                 class="form-input-general" 
-                                placeholder="Solicitante, Tipo permiso, Motivo, Rol">
+                                placeholder="Solicitante, Tipo permiso, solicitud, Rol">
                         </cfoutput>
                     </div>
 
@@ -180,7 +179,7 @@
                                     <!--- Títulos de las columnas --->
                                     <th class="titulo-general">ID Solicitud</th>
                                     <th class="titulo-general">Solicitante</th>
-                                    <th class="titulo-general">Motivo</th>
+                                    <th class="titulo-general">Tipo Solicitud</th>
                                     <th class="titulo-general">Tipo Permiso</th>
                                     <th class="titulo-general">Fecha Solicitud</th>
                                     <th class="titulo-general-centrado">Rol</th>
@@ -198,7 +197,7 @@
                                         <!--- Datos de cada columna --->
                                         <td class="titulo-general-centrado">#id_solicitud#</td>
                                         <td>#solicitante#</td>
-                                        <td>#motivo#</td>
+                                        <td>#tipo_solicitud#</td>
                                         <td>#tipo_permiso#</td>
                                         <td class="titulo-general-centrado">#DateFormat(fecha,'dd/mm/yyyy')#</td>
                                         <td>#rol_solicitante#</td>

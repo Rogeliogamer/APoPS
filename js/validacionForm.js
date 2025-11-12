@@ -1,8 +1,8 @@
-// Validación de checkboxes mutuamente excluyentes para motivo
-document.querySelectorAll('input[name="motivo"]').forEach(checkbox => {
+// Validación de checkboxes mutuamente excluyentes para solicitud
+document.querySelectorAll('input[name="solicitud"]').forEach(checkbox => {
     checkbox.addEventListener('change', function() {
         if (this.checked) {
-            document.querySelectorAll('input[name="motivo"]').forEach(other => {
+            document.querySelectorAll('input[name="solicitud"]').forEach(other => {
                 if (other !== this) other.checked = false;
             });
         }
@@ -14,11 +14,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const form = document.forms['permisoForm'];
     
     form.addEventListener('submit', function(e) {
-        const motivoChecked = document.querySelectorAll('input[name="motivo"]:checked').length > 0;
+        const tipoSolicitudChecked = document.querySelectorAll('input[name="solicitud"]:checked').length > 0;
         const tipoPermisoChecked = document.querySelectorAll('input[name="tipo_permiso"]:checked').length > 0;
         
-        if (!motivoChecked) {
-            alert('Por favor seleccione un motivo para la solicitud.');
+        if (!tipoSolicitudChecked) {
+            alert('Por favor seleccione un tipo de solictud para la solicitud.');
             e.preventDefault();
             return false;
         }
