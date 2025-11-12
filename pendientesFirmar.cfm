@@ -39,30 +39,8 @@
             AND f2.aprobado = 'Aprobado'
         )">
 
-<!--- El rol "Autorizacion" solo puede ver solicitudes que ya hayan sido aprobadas por "RecursosHumanos" --->
-<cfelseif session.rol EQ "Autorizacion">
-    <!--- Filtrar solicitudes aprobadas por "RecursosHumanos" --->
-    <cfset filtroRol = "
-        AND EXISTS (
-            SELECT 1 FROM firmas f3
-            WHERE f3.id_solicitud = s.id_solicitud
-            AND f3.rol = 'RecursosHumanos'
-            AND f3.aprobado = 'Aprobado'
-        )">
-
-<!--- El rol "Expediente" solo puede ver solicitudes que ya hayan sido aprobadas por "Autorizacion" --->
-<cfelseif session.rol EQ "Expediente">
-    <!--- Filtrar solicitudes aprobadas por "Autorizacion" --->
-    <cfset filtroRol = "
-        AND EXISTS (
-            SELECT 1 FROM firmas f4
-            WHERE f4.id_solicitud = s.id_solicitud
-            AND f4.rol = 'Autorizacion'
-            AND f4.aprobado = 'Aprobado'
-        )">
-
 <!--- El rol "Solicitante" no debe ver ninguna solicitud en esta página --->
-<cfelseif session.rol EQ "Solicitante">
+<cfelseif NOT ListFindNoCase("Jefe,RecursosHumanos", session.rol)>
     <!--- No mostrar ninguna solicitud para el rol "Solicitante" --->
     <cfset filtroRol = "AND 1=0">
 </cfif>
@@ -127,7 +105,7 @@
         <cfif NOT structKeyExists(session, "rol") OR len(trim(session.rol)) EQ 0>
             <!--- No hay sesión activa o el rol no está definido --->
             <cflocation url="login.cfm" addtoken="no">
-        <cfelseif ListFindNoCase("Expediente,RecursosHumanos,Autorizacion,Jefe", trim(session.rol)) EQ 0>
+        <cfelseif ListFindNoCase("RecursosHumanos,Jefe", trim(session.rol)) EQ 0>
                 <!--- El rol no está autorizado para acceder a esta sección --->
             <cflocation url="menu.cfm" addtoken="no">
         </cfif>

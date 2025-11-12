@@ -20,9 +20,9 @@
         var accesos = {
             "Solicitante": ["pase.cfm", "firmados.cfm", "listaSolicitudes.cfm", "metricas.cfm"],
             "Jefe": ["pase.cfm", "listaUsuarios.cfm", "pendientesFirmar.cfm", "firmados.cfm", "listaSolicitudes.cfm", "metricas.cfm"],
-            "RecursosHumanos": ["pase.cfm", "listaUsuarios.cfm", "pendientesFirmar.cfm", "firmados.cfm", "listaSolicitudes.cfm", "metricas.cfm"],
-            "Autorizacion": ["pase.cfm", "pendientesFirmar.cfm", "firmados.cfm", "listaSolicitudes.cfm", "metricas.cfm"],
-            "Expediente": ["pase.cfm", "listaUsuarios.cfm", "pendientesFirmar.cfm", "firmados.cfm", "listaSolicitudes.cfm", "metricas.cfm"],
+            "RecursosHumanos": ["pase.cfm", "listaUsuarios.cfm", "pendientesFirmar.cfm", "firmados.cfm", "listaSolicitudes.cfm", "metricas.cfm", "listaTodasSolicitudes.cfm"],
+            "Autorizacion": ["pase.cfm", "firmados.cfm", "listaSolicitudes.cfm", "metricas.cfm"],
+            "Expediente": ["pase.cfm", "listaUsuarios.cfm", "firmados.cfm", "listaSolicitudes.cfm", "metricas.cfm"],
             "Admin": ["registrarUsuarios.cfm", "listaUsuarios.cfm", "metricas.cfm"]
         };
 
@@ -177,6 +177,22 @@
                 <cfif tieneAcceso("metricas.cfm")>
                     <!--- Enlace habilitado --->
                     <a href="metricas.cfm" class="submit-btn-menu-original">Detalles</a>
+                <!--- Enlace deshabilitado --->
+                <cfelse>
+                    <a href="##" class="disabled">Detalles</a>
+                </cfif>
+            </div>
+
+            <!--- 8. listaTodasSolicitudes.cfm --->
+            <!--- Tarjeta de menú para ver todas las solicitudes --->
+            <div class="menu-card">
+                <!--- Título y descripción --->
+                <h2>Todas las solicitudes</h2>
+                <p>Ver todos los pases solicitados</p>
+                <!--- Verificar si el usuario tiene acceso a esta página --->
+                <cfif tieneAcceso("listaTodasSolicitudes.cfm")>
+                    <!--- Enlace habilitado --->
+                    <a href="listaTodasSolicitudes.cfm" class="submit-btn-menu-original">Detalles</a>
                 <!--- Enlace deshabilitado --->
                 <cfelse>
                     <a href="##" class="disabled">Detalles</a>

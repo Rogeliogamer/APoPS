@@ -238,7 +238,7 @@
                             <div class="form-field">
                                 <label for="tiempo_solicitado" class="form-label">Tiempo Solicitado:</label>
                                 <input type="number"
-                                    min="0"
+                                    min="1"
                                     max="24"
                                     step="1"
                                     name="tiempo_solicitado" 
@@ -348,51 +348,7 @@
                                         Limpiar
                                     </button>
                                 </div>
-                            </div>
-
-                            <!--- Firmara la solicitud para los de Autorización --->
-                            <div class="signature-field">
-                                <!--- Etiqueta de la firma --->
-                                <div class="signature-label">
-                                    Firma de Autorización
-                                </div>
-
-                                <!--- Área de firma --->
-                                <div id="signature-wrapper" class="signature-wrapper" role="application" aria-label="Área de firma">
-                                    <!--- SVG para la firma de Autorización --->
-                                    <svg id="signature-svg" class="signature-svg" xmlns="http://www.w3.org/2000/svg" width="100%" height="200" viewBox="0 0 1000 200" preserveAspectRatio="xMidYMid meet"></svg>
-                                </div>
-
-                                <!--- Borra la firma --->
-                                <div class="signature-controls">
-                                    <!--- Botón para limpiar la firma de Autorización --->
-                                    <button id="clearBtn" type="button" class="submit-btn-limpiar-disabled" disabled>
-                                        Limpiar
-                                    </button>
-                                </div>
-                            </div>
-
-                            <!--- Firmara la solicitud para los de expediente --->
-                            <div class="signature-field">
-                                <!--- Etiqueta de la firma --->
-                                <div class="signature-label">
-                                    Para Expediente y Control de Asistencia
-                                </div>
-
-                                <!--- Área de firma --->
-                                <div id="signature-wrapper" class="signature-wrapper" role="application" aria-label="Área de firma">
-                                    <!--- SVG para la firma de Expediente y Control de Asistencia --->
-                                    <svg id="signature-svg" class="signature-svg" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1000 200" preserveAspectRatio="none"></svg>
-                                </div>
-
-                                <!--- Borra la firma --->
-                                <div class="signature-controls">
-                                    <!--- Botón para limpiar la firma de Expediente --->
-                                    <button id="clearBtn" type="button" class="submit-btn-limpiar-disabled" disabled>
-                                        Limpiar
-                                    </button>
-                                </div>
-                            </div>
+                            </div>                            
                         </div>
                     </div>
 

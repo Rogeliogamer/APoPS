@@ -24,6 +24,7 @@
 <cfquery name="qSolicitud" datasource="autorizacion">
     SELECT s.id_solicitud,
         CONCAT(d.nombre, ' ', d.apellido_paterno, ' ', d.apellido_materno) AS solicitante,
+        a.nombre AS nombre_area,
         s.tipo_solicitud,
         s.motivo,
         s.tipo_permiso,
@@ -35,6 +36,7 @@
     FROM solicitudes s
     INNER JOIN usuarios u ON s.id_solicitante = u.id_usuario
     INNER JOIN datos_usuario d ON u.id_datos = d.id_datos
+    INNER JOIN area_adscripcion a ON s.id_area = a.id_area
     WHERE s.id_solicitud = <cfqueryparam value="#id_solicitud#" cfsqltype="cf_sql_integer">
 </cfquery>
 
@@ -323,10 +325,10 @@
                     <span class="form-value tamaño_letra">#qSolicitud.solicitante#</span>
                 </div>
 
-                <!--- Campo: Tipo de Solicitud --->
+                <!--- Campo: Solicitante --->
                 <div class="form-field">
-                    <span class="form-label tamaño_letra">Tipo de Solicitud:</span>
-                    <span class="form-value tamaño_letra">#qSolicitud.tipo_solicitud#</span>
+                    <span class="form-label tamaño_letra">Area:</span>
+                    <span class="form-value tamaño_letra">#qSolicitud.nombre_area#</span>
                 </div>
 
                 <!--- Campo: Motivo --->
@@ -339,12 +341,18 @@
                 <div class="form-field">
                     <span class="form-label tamaño_letra">Tipo de Permiso:</span>
                     <span class="form-value tamaño_letra">#qSolicitud.tipo_permiso#</span>
-                </div>
+                </div>    
 
                 <!--- Campo: Fecha del Permiso --->
                 <div class="form-field">
                     <span class="form-label tamaño_letra">Fecha del Permiso:</span>
                     <span class="form-value tamaño_letra">#DateFormat(qSolicitud.fecha, 'dd/mm/yyyy')#</span>
+                </div>
+                
+                <!--- Campo: Tiempo Solicitado --->
+                <div class="form-field">
+                    <span class="form-label tamaño_letra">Tiempo Solicitado:</span>
+                    <span class="form-value tamaño_letra">#qSolicitud.tiempo_solicitado#</span>
                 </div>
 
                 <!--- Campo: Hora de Salida --->
@@ -357,12 +365,6 @@
                 <div class="form-field">
                     <span class="form-label tamaño_letra">Hora de Llegada:</span>
                     <span class="form-value tamaño_letra">#TimeFormat(qSolicitud.hora_llegada, 'HH:mm')#</span>
-                </div>
-
-                <!--- Campo: Tiempo Solicitado --->
-                <div class="form-field">
-                    <span class="form-label tamaño_letra">Tiempo Solicitado:</span>
-                    <span class="form-value tamaño_letra">#qSolicitud.tiempo_solicitado#</span>
                 </div>
             </cfoutput>
         </div>
