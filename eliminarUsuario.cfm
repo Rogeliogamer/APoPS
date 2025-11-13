@@ -56,9 +56,11 @@
                 d.nombre, 
                 d.apellido_paterno, 
                 d.apellido_materno, 
-                d.id_area
+                d.id_area,
+                a.nombre AS nombre_area
             FROM usuarios u
             INNER JOIN datos_usuario d ON u.id_datos = d.id_datos
+            INNER JOIN area_adscripcion a ON d.id_area = a.id_area
             WHERE u.id_usuario = <cfqueryparam value="#form.id#" cfsqltype="cf_sql_integer">
         </cfquery>
 
@@ -145,7 +147,7 @@
                                     </label>
 
                                     <!--- Campo de texto para el nombre de usuario --->
-                                    <input type="text" name="usuario" value="#qUsuario.usuario#" required class="form-input-general"><br>
+                                    <input type="text" name="usuario" value="#qUsuario.usuario#" required class="form-input-general" readonly><br>
                                 </div>
 
                                 <!--- Campo de rol --->
@@ -155,14 +157,8 @@
                                         Rol:
                                     </label>
 
-                                    <!--- Lista desplegable para seleccionar el rol --->
-                                    <select name="rol" required class="form-input-general">
-                                        <!--- Iterar sobre los valores ENUM para crear las opciones --->
-                                        <cfloop list="#enumListR#" index="tipo">
-                                            <!--- Marcar la opción seleccionada --->
-                                            <option value="#tipo#" <cfif tipo EQ qUsuario.rol>selected</cfif>>#tipo#</option>
-                                        </cfloop>
-                                    </select>
+                                    <!--- Campo de texto para el rol del usuario --->
+                                    <input type="text" name="rol" value="#qUsuario.rol#" required class="form-input-general" readonly><br>
                                 </div>
 
                                 <!--- Campo de área --->
@@ -172,14 +168,8 @@
                                         Área:
                                     </label>
 
-                                    <!--- Lista desplegable para seleccionar el área --->
-                                    <select name="id_area" required class="form-input-general">
-                                        <!--- Iterar sobre las áreas para crear las opciones --->
-                                        <cfloop query="qAreas">
-                                            <!--- Marcar la opción seleccionada --->
-                                            <option value="#id_area#" <cfif id_area EQ qUsuario.id_area>selected</cfif>>#nombre#</option>
-                                        </cfloop>
-                                    </select>
+                                    <!--- Campo de texto para el nombre de area del usuario --->
+                                    <input type="text" name="area" value="#qUsuario.nombre_area#" required class="form-input-general" readonly><br>
                                 </div>
                             </div>
                         </div>
@@ -201,7 +191,7 @@
                                     </label>
 
                                     <!--- Campo de texto para el nombre --->
-                                    <input type="text" name="nombre" value="#qUsuario.nombre#" required class="form-input-general"><br>
+                                    <input type="text" name="nombre" value="#qUsuario.nombre#" required class="form-input-general" readonly><br>
                                 </div>
 
                                 <!--- Campo de apellido paterno --->
@@ -212,7 +202,7 @@
                                     </label>
 
                                     <!--- Campo de texto para el apellido paterno --->
-                                    <input type="text" name="apellido_paterno" value="#qUsuario.apellido_paterno#" required class="form-input-general"><br>
+                                    <input type="text" name="apellido_paterno" value="#qUsuario.apellido_paterno#" required class="form-input-general" readonly><br>
                                 </div>
 
                                 <!--- Campo de apellido materno --->
@@ -223,7 +213,7 @@
                                     </label>
 
                                     <!--- Campo de texto para el apellido materno --->
-                                    <input type="text" name="apellido_materno" value="#qUsuario.apellido_materno#" required class="form-input-general"><br>
+                                    <input type="text" name="apellido_materno" value="#qUsuario.apellido_materno#" required class="form-input-general" readonly><br>
                                 </div>
                             </div>
                         </div>
