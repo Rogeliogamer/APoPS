@@ -43,5 +43,42 @@
   )
 </cfquery>
 
+<!--- 🔹 Solo verificar límite si la solicitud es de tipo "Personal" --->
+<cfif FORM.solicitud EQ "Personal">
+
+    <!--- Contar solicitudes personales del usuario en el mes actual --->
+    <cfquery name="qContarSolicitudes" datasource="autorizacion">
+        SELECT COUNT(*) AS total
+        FROM Solicitudes
+        WHERE id_solicitante = <cfqueryparam value="#session.id_usuario#" cfsqltype="cf_sql_integer">
+        AND tipo_solicitud = 'Personal'
+        AND MONTH(fecha_creacion) = MONTH(NOW())
+        AND YEAR(fecha_creacion) = YEAR(NOW())
+    </cfquery>
+
+    <cfif qContarSolicitudes.total GT 3>
+        <!--- Obtener nombre completo del usuario --->
+        <cfquery name="qNombreUsuario" datasource="autorizacion">
+            SELECT CONCAT(nombre, ' ', apellido_paterno, ' ', apellido_materno) AS nombre_completo
+            FROM datos_usuario
+            WHERE id_datos = <cfqueryparam value="#session.id_usuario#" cfsqltype="cf_sql_integer">
+        </cfquery>
+
+        <!--- Generar mensajes personalizados --->
+        <cfset numeroSolicitud = qGetID.id_solicitud>
+        <cfset nombreUsuario = qNombreUsuario.nombre_completo>
+
+        <cfset mensajeRegistro = "⚠️ AVISO DEL SISTEMA: El usuario #nombreUsuario# con solicitud personal #qContarSolicitudes.total# ha excedido el límite sugerido de 3 solicitudes personales por mes. Se requiere revisión especial.">
+
+        <!--- Guardar el mensaje en la base de datos --->
+        <cfquery name="qUpdateAlerta" datasource="autorizacion">
+            UPDATE Solicitudes
+            SET alert = <cfqueryparam value="#mensajeRegistro#" cfsqltype="cf_sql_varchar">
+            WHERE id_solicitud = <cfqueryparam value="#numeroSolicitud#" cfsqltype="cf_sql_integer">
+        </cfquery>
+    </cfif>
+</cfif>
+
+
 <!--- Redirige después de guardar --->
 <cflocation url="menu.cfm" addtoken="false">

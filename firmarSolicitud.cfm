@@ -203,7 +203,23 @@
                                         readonly>
                                 </cfoutput>
                             </div>
+
+                            
                         </div>
+
+                        <!--- Mostrar alerta si existe --->
+                        <cfif len(trim(qSolicitud.alert))>
+                            <!---Mostrar alerta si existe--->
+                            <div class="form-field">
+                                <label class="form-label">
+                                    Alerta:
+                                </label>
+                                <input type="text" 
+                                    value="<cfoutput>#qSolicitud.alert#</cfoutput>"
+                                    class="form-input-general forml-input-alert"
+                                    readonly>
+                            </div>
+                        </cfif>
                     </div>
 
                     <!--- Firmas --->

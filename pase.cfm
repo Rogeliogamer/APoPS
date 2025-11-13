@@ -56,7 +56,7 @@
             <!--- Contenedor del formulario --->
             <div class="form-container">
                 <!--- Formulario de Solicitud de Permiso o Pase de Salida --->
-                <form action="procesar_permiso.cfm" method="post" name="permisoForm">
+                <form id="formPermiso" action="procesar_permiso.cfm" method="post" name="permisoForm">
                     
                     <!--- Datos del Solicitante --->
                     <div class="section">
@@ -383,5 +383,88 @@
         <script src="js/validacionForm.js"></script>
 
         <script src="js/svgFirma.js"></script>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                <!--- 1. Localizamos el formulario por su nombre "permisoForm" --->
+                const form = document.forms["permisoForm"];
+    
+                if (!form) return; // Seguridad por si el script carga antes
+
+                form.addEventListener("submit", async function(event) {
+                    <!--- DETENER EL ENVÍO INMEDIATAMENTE --->
+                    event.preventDefault();
+
+                    <!--- 2. Localizamos los elementos SIN usar ID en el botón de envío --->
+                    <!--- Buscamos el botón dentro del formulario por su clase CSS --->
+                    const boton = form.querySelector(".submit-btn-enviar"); 
+                    <!---  Buscamos el checkbox por su ID (ese sí lo tiene) --->
+                    const checkPersonal = document.getElementById("solicitud_personal");
+
+                    <!--- Función segura para enviar el formulario --->
+                    <!--- (Esto evita el error si el botón se llama name="submit") --->
+                    const forzarEnvio = () => {
+                        HTMLFormElement.prototype.submit.call(form);
+                    };
+
+                    <!--- LÓGICA DE NEGOCIO --->
+
+                    <!--- Si el checkbox "Personal" NO existe o NO está marcado: --->
+                    if (!checkPersonal || !checkPersonal.checked) {
+                        <!--- Se va directo, sin preguntas, sin AJAX --->
+                        forzarEnvio(); 
+                        return;
+                    }
+
+                    <!--- Si es PERSONAL, procedemos: --->
+                    if(boton) {
+                        boton.disabled = true; // Deshabilitar visualmente
+                        <!--- Guardamos texto original por si cancela el usuario --->
+                        if(!boton.dataset.textoOriginal) boton.dataset.textoOriginal = boton.innerText;
+                        boton.innerText = "Verificando...";
+                    }
+
+                    try {
+                        <!--- Consulta AJAX para verificar solicitudes personales --->
+                        const response = await fetch("verificarSolicitudes.cfm", {
+                            method: "GET",
+                            headers: { "Cache-Control": "no-cache" }
+                        });
+
+                        const text = await response.text();
+                        let data = {};
+
+                        try {
+                            data = JSON.parse(text);
+                        } catch (e) {
+                            <!--- Si falla el JSON, asumimos que está bien y enviamos --->
+                            forzarEnvio();
+                            return;
+                        }
+
+                        <!--- Verificar límite de solicitudes personales --->
+                        let confirmar = true;
+                        if (data.totalSolicitudes > 3) {
+                            confirmar = confirm(`⚠️ AVISO:\n\nLlevas ${data.totalSolicitudes} solicitudes personales.\nEste número excede el límite sugerido (3).\n\n¿Deseas enviarla de todos modos?`);
+                        }
+
+                        if (confirmar) {
+                            forzarEnvio();
+                        } else {
+                            <!--- CANCELADO POR EL USUARIO --->
+                            if(boton) {
+                                boton.disabled = false;
+                                boton.innerText = boton.dataset.textoOriginal || "Enviar Solicitud";
+                            }
+                        }
+                    } catch (error) {
+                        console.error("Error de red:", error);
+                        <!--- Ante error de red, dejamos pasar la solicitud --->
+                        alert("No se pudo verificar el historial, pero se intentará enviar la solicitud.");
+                        forzarEnvio();
+                    }
+                });
+            });
+        </script>
     </body>
 </html>

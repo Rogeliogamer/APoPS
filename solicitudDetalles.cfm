@@ -25,7 +25,8 @@
         s.tiempo_solicitado,
         s.hora_salida,
         s.hora_llegada,
-        s.status_final
+        s.status_final,
+        s.alert
     FROM solicitudes s
     INNER JOIN usuarios u ON s.id_solicitante = u.id_usuario
     INNER JOIN datos_usuario d ON u.id_datos = d.id_datos
@@ -73,6 +74,19 @@
                 background: inherit; /* mantiene el color o degradado original del contenedor */
                 box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
                 transition: transform 0.2s ease, box-shadow 0.2s ease;
+            }
+
+            .forml-input-alert {
+                padding: 12px 16px;
+                border: 2px solid #e2e8f0;
+                border-radius: 6px;
+                font-size: 14px;
+                transition: all 0.3s ease;
+                background: white;
+                background-color: red;
+                width: auto;
+                min-width:150px;
+                max-width: 100%;
             }
         </style>
     </head>
@@ -173,8 +187,25 @@
                                     <input type="text" class="form-input-pendiente" value="#qSolicitud.status_final#" readonly>
                                 </cfif>
                             </div>
+
+                            
                         </cfoutput>
+                        
                     </div>
+                    
+                    <!--- Mostrar alerta si existe --->
+                    <cfif len(trim(qSolicitud.alert))>
+                        <!---Mostrar alerta si existe--->
+                        <div class="form-field">
+                            <label class="form-label" >
+                                Alerta:
+                            </label>
+                            <input type="text" 
+                                value="<cfoutput>#qSolicitud.alert#</cfoutput>"
+                                class="form-input-general forml-input-alert"
+                                readonly>
+                        </div>
+                    </cfif>
                 </div>
 
                 <!--- Sección de firmas --->
