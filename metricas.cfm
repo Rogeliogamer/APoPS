@@ -247,7 +247,9 @@
                         <div class="chart-title text-center mb-2">
                             Predicion a 7 dias por area seleccionada
                         </div>
-                        <canvas id="chartPredicion" class="w-100" height="250"></canvas>
+                        <div class="chart-wrapper-fixed">
+                            <canvas id="chartPredicion" class="w-100"></canvas>
+                        </div>
                         <!-- Overlay solo para este canvas -->
                         <div class="canvasOverlay">
                             ¡A punto de revelar las estadísticas!
@@ -1037,7 +1039,8 @@
             });
 
             function renderAdvancedChart(data) {
-                const labels = data.map(d => d.fecha);
+                // Usamo fecha y nombre del dia para el eje X
+                const labels = data.map(d => `${d.nombre_dia} ${d.fecha}`);
                 const ctx = document.getElementById('chartPredicion').getContext('2d');
 
                 // Gradientes futuristas
@@ -1053,9 +1056,9 @@
                 gradientRechazados.addColorStop(0,'rgba(255,0,0,0.5)');
                 gradientRechazados.addColorStop(1,'rgba(128,0,0,0.1)');
 
-                const gradientCredibilidad = ctx.createLinearGradient(0,0,0,400);
+                <!---const gradientCredibilidad = ctx.createLinearGradient(0,0,0,400);
                 gradientCredibilidad.addColorStop(0,'rgba(0,128,255,0.5)');
-                gradientCredibilidad.addColorStop(1,'rgba(0,64,128,0.1)');
+                gradientCredibilidad.addColorStop(1,'rgba(0,64,128,0.1)');--->
 
                 // Destruir instancia previa
                 if (window.chartInstance) {
@@ -1069,45 +1072,50 @@
                         datasets: [
                         {
                             label: 'Aprobados',
-                            data: data.map(d => d.aprobados + 0.5),
-                            borderColor: 'green',
+                            data: data.map(d => d.aprobados),
+                            borderColor: '#00cc66', // Verde solido
                             backgroundColor: gradientAprobados,
                             fill: true,
-                            tension: 0.4,
-                            pointRadius: 5,
-                            pointHoverRadius: 8
+                            tension: 0.4, // Curva suave (bezier)
+                            pointRadius: 4,
+                            pointBackgroundColor: '#fff',
+                            pointBorderColor: '#00cc66',
+                            borderWidth: 2
                         },
                         {
                             label: 'Pendientes',
-                            data: data.map(d => d.pendientes + 0.5),
-                            borderColor: 'orange',
+                            data: data.map(d => d.pendientes),
+                            borderColor: '#ffaa00', // Naranja
                             backgroundColor: gradientPendientes,
                             fill: true,
                             tension: 0.4,
-                            pointRadius: 5,
-                            pointHoverRadius: 8,
-                            borderDash: [5,5]
+                            pointRadius: 4,
+                            pointBackgroundColor: '#fff',
+                            pointBorderColor: '#ffaa00',
+                            borderWidth: 2,
+                            borderDash: [5,5] // Linea punteada para indicar incertidumbre
                         },
                         {
                             label: 'Rechazados',
-                            data: data.map(d => d.rechazados + 0.5),
-                            borderColor: 'red',
+                            data: data.map(d => d.rechazados),
+                            borderColor: '#ff4444', // Rojo
                             backgroundColor: gradientRechazados,
                             fill: true,
                             tension: 0.4,
-                            pointRadius: 5,
-                            pointHoverRadius: 8,
-                            borderDash: [10,5]
+                            pointRadius: 4,
+                            pointBackgroundColor: '#fff',
+                            pointBorderColor: '#ff4444',
+                            borderWidth: 2
                         },
                         {
                             label: 'Credibilidad (%)',
                             data: data.map(d => d.credibilidad),
-                            borderColor: 'blue',
-                            backgroundColor: gradientCredibilidad,
-                            fill: true,
-                            tension: 0.4,
-                            pointRadius: 3,
-                            pointHoverRadius: 6,
+                            borderColor: '#3399ff',
+                            backgroundColor: 'rgba(51,153,255,0.1)',
+                            fill: false,
+                            tension: 0, // Linea recta para datos tecnicos
+                            pointRadius: 0, // Ocultar puntos para limpiar ruido visual
+                            borderWidth: 1,
                             yAxisID: 'yCredibilidad',
                             borderDash: [2,3]
                         }
@@ -1115,47 +1123,57 @@
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false, // Permite ajustar mejor la altura
                     interaction: { 
                         mode: 'index', 
                         intersect: false 
                     },
                     plugins: {
                         tooltip: {
+                            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                            titleColor: '#333',
+                            bodyColor: '#666',
+                            borderColor: '#ddd',
+                            borderWidth: 1,
                             callbacks: {
                                 label: function(context) {
-                                    let d = data[context.dataIndex];
-                                    return `${context.dataset.label}: ${Math.round(context.parsed.y)} | Tipo: ${d.tipo_solicitud} | Permiso: ${d.tipo_permiso}`;
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += context.parsed.y;
+                                    }
+                                    return label;
                                 }
                             }
                         },
-                        legend: { labels: { usePointStyle: true, pointStyle: 'rectRounded' } }
+                        legend: { 
+                            labels: { 
+                                usePointStyle: true, 
+                                boxWidth: 10,
+                                font: { family: "'Inter', sans-serif", size: 12}
+                            }
+                        }
                     },
                     scales: {
                         y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(0,0,0,0.05)' },
                             title: { 
                                 display: true, 
-                                text: 'Cantidad de solicitudes' 
-                            },
-                            suggestedMin: 0,
-                            suggestedMax: Math.max(...data.map(d=>Math.max(d.aprobados,d.pendientes,d.rechazados))) + 2
+                                text: 'Solicitudes Estimadas', font: {size:11} 
+                            } 
                         },
                         yCredibilidad: {
                             position: 'right',
                             min: 0,
                             max: 100,
-                            title: { 
-                                display: true, 
-                                text: 'Credibilidad (%)' 
-                            },
-                            grid: { 
-                                drawOnChartArea: false 
-                            }
+                            grid: { display: false },
+                            title: { display: true, text: 'Nivel de confianza (%)', font: {size:11} }, 
                         },
                         x: {
-                            title: { 
-                                display: true, 
-                                text: 'Fecha' 
-                            }
+                            grid: { display: false }
                         }
                     }
                 }

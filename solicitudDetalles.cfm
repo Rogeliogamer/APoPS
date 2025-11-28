@@ -138,12 +138,6 @@
                                 <input type="text" class="form-input-general" value="#qSolicitud.tipo_solicitud#" readonly>
                             </div> 
 
-                            <!--- Campo: Tipo de solicitud --->
-                            <div class="form-field">
-                                <label class="form-label">Tipo de solicitud</label>
-                                <input type="text" class="form-input-general" value="#qSolicitud.tipo_solicitud#" readonly>
-                            </div>
-
                             <!--- Campo: Tipo de Permiso --->
                             <div class="form-field">
                                 <label class="form-label">Tipo de Permiso</label>
@@ -156,22 +150,16 @@
                                 <input type="text" class="form-input-general" value="#DateFormat(qSolicitud.fecha,'dd/mm/yyyy')#" readonly>
                             </div>
 
-                            <!--- Campo: Hora de Salida --->
-                            <div class="form-field">
-                                <label class="form-label">Hora de Salida</label>
-                                <input type="text" class="form-input-general" value="#TimeFormat(qSolicitud.hora_salida,'HH:mm')#" readonly>
-                            </div>
-
-                            <!--- Campo: Hora de Llegada --->
-                            <div class="form-field">
-                                <label class="form-label">Hora de Llegada</label>
-                                <input type="text" class="form-input-general" value="#TimeFormat(qSolicitud.hora_llegada,'HH:mm')#" readonly>
-                            </div>
-
                             <!--- Campo: Tiempo Solicitado --->
                             <div class="form-field">
                                 <label class="form-label">Tiempo Solicitado</label>
                                 <input type="text" class="form-input-general" value="#qSolicitud.tiempo_solicitado#" readonly>
+                            </div>
+
+                            <!--- Campo: Hora de Salida --->
+                            <div class="form-field">
+                                <label class="form-label">Hora de Salida</label>
+                                <input type="text" class="form-input-general" value="#TimeFormat(qSolicitud.hora_salida,'HH:mm')#" readonly>
                             </div>
 
                             <!--- Campo: Status Final --->
@@ -188,9 +176,12 @@
                                 </cfif>
                             </div>
 
-                            
+                            <!--- Campo: Hora de Llegada --->
+                            <div class="form-field">
+                                <label class="form-label">Hora de Llegada</label>
+                                <input type="text" class="form-input-general" value="#TimeFormat(qSolicitud.hora_llegada,'HH:mm')#" readonly>
+                            </div>                            
                         </cfoutput>
-                        
                     </div>
                     
                     <!--- Mostrar alerta si existe --->

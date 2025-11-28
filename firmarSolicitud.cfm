@@ -24,6 +24,37 @@
     WHERE s.id_solicitud = <cfqueryparam value="#id_solicitud#" cfsqltype="cf_sql_integer">
 </cfquery>
 
+<cfquery name="qDatosFirmante" datasource="autorizacion">
+    SELECT d.nombre, d.apellido_paterno, d.apellido_materno
+    FROM usuarios u
+    INNER JOIN datos_usuario d ON u.id_datos = d.id_datos
+    WHERE u.id_usuario = <cfqueryparam value="#session.id_usuario#" cfsqltype="cf_sql_integer">
+</cfquery>
+
+<cfset nombreCompletoFirmante = qDatosFirmante.nombre & " " & qDatosFirmante.apellido_paterno & " " & qDatosFirmante.apellido_materno>
+
+<cfsavecontent variable="svgFirmaGenerada">
+    <svg xmlns="http://www.w3.org/2000/svg" width="1000" height="200" viewBox="0 0 1000 200">
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap');
+            .texto-firma {
+                font-family: 'Great Vibes', cursive; /* Fuente estilo firma */
+                font-size: 70px;
+                fill: #000000;
+            }
+        </style>
+        <rect width="100%" height="100%" fill="white" opacity="0"/>
+        <text x="50%" y="50%" 
+          class="texto-firma" 
+          dominant-baseline="middle" 
+          text-anchor="middle">
+            <cfoutput>#nombreCompletoFirmante#</cfoutput>
+        </text>
+    </svg>
+</cfsavecontent>
+
+<cfset svgFirmaGenerada = trim(svgFirmaGenerada)>
+
 <!DOCTYPE html>
 <html lang="es">
     <head>
@@ -58,7 +89,7 @@
         <!--- Mostrar mensaje de error si no se firmó --->
         <cfif structKeyExists(url, "error") AND url.error eq 1>
             <div style="background-color:#ffdddd; color:#b30000; border:1px solid #ff6666; padding:10px; margin:10px 0; border-radius:5px; text-align:center; font-weight:bold;">
-                ⚠️ Debes firmar antes de enviar la solicitud.
+                ⚠️ Error al procesar la firma.
             </div>
         </cfif>
 
@@ -250,24 +281,17 @@
                                 </div>
                             </cfoutput>
 
-                            <!--- Área de firma SVG --->
-                            <div id="signature-wrapper-superior" class="signature-wrapper" role="application" aria-label="Área de firma">
-                                <!--- SVG para la firma --->
-                                <svg id="signature-svg-superior" class="signature-svg"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="100%" height="100%"
-                                    viewBox="0 0 1000 200"
-                                    preserveAspectRatio="none"></svg>
+                            
+                            <div id="signature-wrapper-superior" class="signature-wrapper">
+                                <cfoutput>
+                                    #svgFirmaGenerada#
+                                </cfoutput>
                             </div>
 
-                            <!--- Controles de la firma --->
-                            <div class="signature-controls">
-                                <!--- Botón para limpiar la firma --->
-                                <button id="clearBtn-superior" type="button" class="submit-btn-limpiar">
-                                    Limpiar
-                                </button>
-                            </div>
-                            <input type="hidden" name="firma_superior_svg" id="firma_superior_svg">
+                            
+                            <cfoutput>
+                                <input type="hidden" name="firma_superior_svg" id="firma_superior_svg" value="#encodeForHTMLAttribute(svgFirmaGenerada)#">
+                            </cfoutput>
                         </div>
 
                         <!--- Campos ocultos --->
@@ -279,18 +303,25 @@
 
                     <!--- Botones de acción --->
                     <div class="submit-section">
-                        <!--- Botones Aceptar y Rechazar --->
-                        <div class="field-group">
-                            <!--- Botón Aceptar --->
-                            <button type="submit" name="submit" value="Aprobado" class="submit-btn-aceptar">
-                                Aceptar
-                            </button>
+                        <cfif session.rol eq "jefe">
+                            <!--- Botones Aceptar y Rechazar --->
+                            <div class="field-group">
+                                <!--- Botón Aceptar --->
+                                <button type="submit" name="submit" value="Aprobado" class="submit-btn-aceptar">
+                                    Aceptar
+                                </button>
 
-                            <!--- Botón Rechazar --->
-                            <button type="submit" name="submit" value="Rechazado" class="submit-btn-rechazar">
-                                Rechazar
+                                <!--- Botón Rechazar --->
+                                <button type="submit" name="submit" value="Rechazado" class="submit-btn-rechazar">
+                                    Rechazar
+                                </button>
+                            </div>
+                        <cfelse>
+                            <!--- Mostrar solo el botón de Aceptar para otros roles --->
+                            <button type="submit" name="submit" value="Aprobado" class="submit-btn-aceptar single-btn">
+                                Enterado
                             </button>
-                        </div>
+                        </cfif>
                     </div>                
                 </form>
                 
@@ -317,173 +348,21 @@
             </div>
         </div>
 
-        <!--- Scripts para la funcionalidad de la firma y navegación --->
+        
         <script>
-            <!--- JS de firma --->
             document.addEventListener('DOMContentLoaded', function () {
-                <!--- Función para inicializar la firma --->
-                function initSignature(wrapperId, svgId, hiddenInputId, clearBtnId) {
-                    <!--- Elementos del DOM --->
-                    const wrapper = document.getElementById(wrapperId);
-                    const svg = document.getElementById(svgId);
-                    const hiddenInput = document.getElementById(hiddenInputId);
-                    const clearBtn = document.getElementById(clearBtnId);
-
-                    <!--- Configuración inicial del SVG --->
-                    const SVG_W = 1000, SVG_H = 200;
-                    svg.setAttribute('viewBox', `0 0 ${SVG_W} ${SVG_H}`);
-
-                    <!--- Variables para el dibujo --->
-                    let drawing = false;
-                    <!--- Puntos actuales del trazo --->
-                    let currentPoints = [];
-
-                    <!--- Almacenar los trazos de la firma --->
-                    const strokes = [];
-
-                    <!--- Funciones para manejar el dibujo --->
-                    function getSvgPoint(evt) {
-                        <!--- Obtener la posición del puntero en coordenadas SVG --->
-                        const rect = wrapper.getBoundingClientRect();
-                        const clientX = (evt.clientX === undefined) ? (evt.touches && evt.touches[0].clientX) : evt.clientX;
-                        const clientY = (evt.clientY === undefined) ? (evt.touches && evt.touches[0].clientY) : evt.clientY;
-                        const x = ((clientX - rect.left) / rect.width) * SVG_W;
-                        const y = ((clientY - rect.top) / rect.height) * SVG_H;
-                        return { x: Math.max(0, Math.min(SVG_W, x)), y: Math.max(0, Math.min(SVG_H, y)) };
-                    }
-
-                    <!--- Actualizar el elemento de ruta SVG con los puntos actuales --->
-                    function updatePathElement(pathElem, pts) {
-                        <!--- Construir el atributo 'd' del path SVG --->
-                        if(pts.length === 0) return;
-                        let d = `M ${pts[0].x.toFixed(2)} ${pts[0].y.toFixed(2)}`;
-                        <!--- Agregar líneas a los puntos siguientes --->
-                        for(let i=1;i<pts.length;i++) d += ` L ${pts[i].x.toFixed(2)} ${pts[i].y.toFixed(2)}`;
-                        <!--- Establecer el atributo 'd' en el elemento path --->
-                        pathElem.setAttribute('d', d);
-                    }
-
-                    <!--- Manejo de eventos de puntero --->
-                    function startStroke(evt) {
-                        <!--- Iniciar el trazo --->
-                        evt.preventDefault();
-                        <!--- Marcar que se está dibujando --->
-                        drawing = true;
-                        <!--- Inicializar los puntos actuales --->
-                        currentPoints = [];
-                        <!--- Obtener el punto inicial --->
-                        const p = getSvgPoint(evt);
-                        <!--- Agregar el punto inicial a los puntos actuales --->
-                        currentPoints.push(p);
-                        <!--- Crear un nuevo elemento path para el trazo --->
-                        const path = document.createElementNS('http://www.w3.org/2000/svg','path');
-                        <!--- Configurar atributos del path --->
-                        path.setAttribute('fill','none');
-                        path.setAttribute('stroke-width','3');
-                        path.setAttribute('stroke-linecap','round');
-                        path.setAttribute('stroke-linejoin','round');
-                        path.setAttribute('stroke','black');
-                        path.dataset.temp = '1';
-                        <!--- Agregar el path al SVG --->
-                        svg.appendChild(path);
-                        <!--- Actualizar el path con el punto inicial --->
-                        updatePathElement(path, currentPoints);
-                    }
-
-                    <!--- Manejar el movimiento del puntero --->
-                    function moveStroke(evt) {
-                        <!--- Agregar puntos al trazo mientras se dibuja --->
-                        if(!drawing) return;
-                        <!--- Obtener el punto actual --->
-                        const p = getSvgPoint(evt);
-                        <!--- Obtener el último punto agregado --->
-                        const last = currentPoints[currentPoints.length-1] || {x:0,y:0};
-                        <!--- Evitar agregar puntos muy cercanos --->
-                        if(Math.hypot(p.x-last.x, p.y-last.y) < 1) return;
-                        <!--- Agregar el nuevo punto a los puntos actuales --->
-                        currentPoints.push(p);
-                        <!--- Actualizar el path con los nuevos puntos --->
-                        const path = svg.querySelector('path[data-temp="1"]');
-                        <!--- Actualizar el path con los puntos actuales --->
-                        if(path) updatePathElement(path, currentPoints);
-                    }
-
-                    <!--- Manejar el fin del trazo --->
-                    function endStroke(evt) {
-                        <!--- Finalizar el trazo --->
-                        if(!drawing) return;
-                        <!--- Marcar que ya no se está dibujando --->
-                        drawing = false;
-                        <!--- Obtener el path actual --->
-                        const path = svg.querySelector('path[data-temp="1"]');
-                        <!--- Actualizar el path con los puntos finales --->
-                        if(path){
-                            <!--- Quitar el atributo temporal --->
-                            path.removeAttribute('data-temp');
-                            <!--- Guardar el trazo en el array de trazos --->
-                            strokes.push(path.getAttribute('d'));
-                        }
-                        <!--- Limpiar los puntos actuales --->
-                        currentPoints = [];
-                    }
-
-                    <!--- Exportar la firma como SVG --->
-                    function exportSVG() {
-                        <!--- Construir el SVG completo a partir de los trazos --->
-                        if(strokes.length === 0) return '';
-                        <!--- Construir el SVG completo a partir de los trazos --->
-                        const header = `<svg xmlns="http://www.w3.org/2000/svg" width="${SVG_W}" height="${SVG_H}" viewBox="0 0 ${SVG_W} ${SVG_H}">`;
-                        const paths = strokes.map(d => `<path d="${d}" fill="none" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`).join('');
-                        <!--- Retornar el SVG completo --->
-                        return header + paths + `</svg>`;
-                    }
-
-                    <!--- Limpiar la firma --->
-                    function clearSignature() {
-                        <!--- Limpiar los trazos y el SVG --->
-                        strokes.length = 0;
-                        <!--- Limpiar los elementos SVG --->
-                        while (svg.firstChild) svg.removeChild(svg.firstChild);
-                        <!--- Restablecer el valor del input oculto --->
-                        hiddenInput.value = '';
-                    }
-
-                    <!--- Eventos de puntero para el área de firma --->
-                    wrapper.addEventListener('pointerdown', startStroke);
-                    wrapper.addEventListener('pointermove', moveStroke);
-                    wrapper.addEventListener('pointerup', endStroke);
-                    wrapper.addEventListener('pointercancel', endStroke);
-                    wrapper.addEventListener('pointerleave', endStroke);
-
-                    <!--- Evento para el botón de limpiar firma --->
-                    clearBtn.addEventListener('click', clearSignature);
-
-                    <!--- Evento para el envío del formulario --->
-                    const form = document.getElementById('formFirma');
-                    <!--- Al enviar el formulario, guardar el SVG generado en el input oculto --->
-                    form.addEventListener('submit', function(e){
-                        <!--- Guardar el SVG exportado en el input oculto --->
-                        hiddenInput.value = exportSVG();
-                    });
-                }
-
-                <!--- Inicializar la firma para el superior --->
-                initSignature('signature-wrapper-superior', 'signature-svg-superior', 'firma_superior_svg', 'clearBtn-superior');
+                // Ya no necesitamos inicializar la firma superior porque es estática.
+                // Si hubiera otras firmas dibujables, dejaríamos su initSignature aquí.
             });
         </script>
 
         <!--- Script para el botón de menú --->
         <script>
             <!--- Manejar el clic en el botón de menú --->
-            document.getElementById("submit-btn-menu").addEventListener("click", function() {
-                <!--- 1. Activar la otra acción --->
-                document.getElementById("clearBtn-superior").click(); <!--- simula que se hizo click en btnActivar --->
-
-                <!--- 2. Esperar un momento si quieres que se vea el efecto --->
-                setTimeout(function() {
-                    <!--- 3. Redirigir a otra página --->
-                    window.location.href = "menu.cfm";
-                }, 150); <!--- 150 ms de retraso para que se note la acción --->
+            document.getElementById("submit-btn-menu").addEventListener("click", function(e) {
+                // Eliminamos la logica del botón 'limpiar' ya que no existe
+                e.preventDefault(); <!--- Prevenir la acción por defecto del enlace --->
+                window.location.href = "menu.cfm";
             });
         </script>
 

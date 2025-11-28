@@ -1,66 +1,68 @@
 <cfcomponent>
     <cffunction name="getPrediccion" access="remote" returnformat="json">
         <cfargument name="rangoDias" type="numeric" required="yes">
-        <cfargument name="areaId" type="numeric" required="no">
+        <cfargument name="areaId" type="any" required="no" default="">
 
-        <!--- Fecha inicial del histórico --->
         <cfset fechaInicio = dateAdd("d", -arguments.rangoDias, now())>
 
-        <!--- Consulta histórica --->
-        <cfquery name="solicitudesHist" datasource="Autorizacion">
-            SELECT fecha, tipo_solicitud, tipo_permiso, status_final, COUNT(*) as total
+        <cfquery name="qHistoria" datasource="Autorizacion">
+            SELECT 
+                CAST(fecha AS DATE) as dia,
+                SUM(CASE WHEN status_final = 'Aprobado' THEN 1 ELSE 0 END) as total_aprobados,
+                SUM(CASE WHEN status_final = 'Pendiente' THEN 1 ELSE 0 END) as total_pendientes,
+                SUM(CASE WHEN status_final = 'Rechazado' THEN 1 ELSE 0 END) as total_rechazados,
+                COUNT(*) as total_general
             FROM solicitudes
             WHERE fecha >= <cfqueryparam value="#fechaInicio#" cfsqltype="cf_sql_date">
-            <cfif arguments.areaId neq "">
+            <cfif isNumeric(arguments.areaId)>
                 AND id_area = <cfqueryparam value="#arguments.areaId#" cfsqltype="cf_sql_integer">
             </cfif>
-            GROUP BY fecha, tipo_solicitud, tipo_permiso, status_final
-            ORDER BY fecha ASC
+            GROUP BY CAST(fecha AS DATE)
         </cfquery>
 
-        <!--- Transformar datos en array plano --->
-        <cfset datos = []>
-        <cfloop query="solicitudesHist">
-            <cfset arrayAppend(datos, {
-                "fecha" = fecha,
-                "tipo_solicitud" = tipo_solicitud,
-                "tipo_permiso" = tipo_permiso,
-                "aprobados" = (status_final EQ "Aprobado") ? total : 0,
-                "pendientes" = (status_final EQ "Pendiente") ? total : 0,
-                "rechazados" = (status_final EQ "Rechazado") ? total : 0
-            })>
+        <cfset statsDias = structNew()>
+        <cfloop from="1" to="7" index="i">
+            <cfset statsDias[i] = {
+                "acum_aprobados" = 0, "acum_pendientes" = 0, "acum_rechazados" = 0, "conteo_dias" = 0
+            }>
         </cfloop>
 
-        <!--- Credibilidad según cantidad de datos --->
-        <cfset totalRegistros = arrayLen(datos)>
-        <cfset credibilidad = min(100, totalRegistros * 10)>
+        <cfloop query="qHistoria">
+            <cfset dow = DayOfWeek(qHistoria.dia)> <cfset statsDias[dow].acum_aprobados += qHistoria.total_aprobados>
+            <cfset statsDias[dow].acum_pendientes += qHistoria.total_pendientes>
+            <cfset statsDias[dow].acum_rechazados += qHistoria.total_rechazados>
+            <cfset statsDias[dow].conteo_dias += 1>
+        </cfloop>
 
-        <!--- Predicción simple para próximos 7 días --->
+        <cfset credibilidadBase = min(98, qHistoria.recordCount * 2)>
+        
         <cfset prediccion = []>
-        <cfloop from="1" to="7" index="i">
+        
+        <cfset nombresDias = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"]>
+        
+        <cfloop from="1" to="7" index="k">
+            <cfset fechaFutura = dateAdd("d", k, now())>
+            <cfset dowFuturo = DayOfWeek(fechaFutura)> <cfset datosDia = statsDias[dowFuturo]>
+            
+            <cfset divisor = (datosDia.conteo_dias GT 0) ? datosDia.conteo_dias : 1>
+            
+            <cfset avgAprob = round(datosDia.acum_aprobados / divisor)>
+            <cfset avgPend = round(datosDia.acum_pendientes / divisor)>
+            <cfset avgRech = round(datosDia.acum_rechazados / divisor)>
+            <cfset credibilidadDia = max(10, credibilidadBase - (k * 2))>
+
             <cfset arrayAppend(prediccion, {
-                "fecha" = dateFormat(dateAdd("d", i, now()), "yyyy-mm-dd"),
-                "tipo_solicitud" = "Personal",
-                "tipo_permiso" = "Por día completo",
-                "aprobados" = round(avgArray(datos, "aprobados")),
-                "pendientes" = round(avgArray(datos, "pendientes")),
-                "rechazados" = round(avgArray(datos, "rechazados")),
-                "credibilidad" = credibilidad
+                "fecha" = dateFormat(fechaFutura, "dd/mm"),
+                "nombre_dia" = nombresDias[dowFuturo], 
+                "aprobados" = avgAprob,
+                "pendientes" = avgPend,
+                "rechazados" = avgRech,
+                "credibilidad" = credibilidadDia,
+                "tipo_solicitud" = "Estimación", 
+                "tipo_permiso" = "Basado en Historial"
             })>
         </cfloop>
 
         <cfreturn prediccion>
-    </cffunction>
-
-    <cffunction name="avgArray">
-        <cfargument name="arr" type="array" required="yes">
-        <cfargument name="key" type="string" required="yes">
-        <cfset var sum = 0>
-        <cfset var count = 0>
-        <cfloop array="#arguments.arr#" index="item">
-            <cfset sum += item[arguments.key]>
-            <cfset count += 1>
-        </cfloop>
-        <cfreturn (count GT 0) ? (sum / count) : 0>
     </cffunction>
 </cfcomponent>

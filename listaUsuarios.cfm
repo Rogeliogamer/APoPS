@@ -15,6 +15,28 @@
  * - Cada acción redirige a la página correspondiente con la información del usuario seleccionado.
 --->
 
+<!--- Lógica de manejo de parámetros y búsqueda --->
+<cfscript>
+    <!--- 1. Valores por defecto --->
+    param name="url.page" default="1";
+    param name="url.search" default="";
+    param name="form.search" default="";
+
+    <!--- 2. Lógica de prioridad MANUAL: --->
+    <!--- Si se envió el formulario (POST) y tiene texto, úsalo. --->
+    if (len(trim(form.search)) GT 0) {
+        searchTerm = trim(form.search);
+    } 
+    <!--- Si no, revisa si viene en la URL (GET) de la paginación --->
+    else if (len(trim(url.search)) GT 0) {
+        searchTerm = trim(url.search);
+    } 
+    <!--- Si no hay nada, cadena vacía --->
+    else {
+        searchTerm = "";
+    }
+</cfscript>
+
 <!DOCTYPE html>
 <html lang="es">
     <head>
@@ -45,11 +67,6 @@
             <cflocation url="menu.cfm" addtoken="no">
         </cfif>
 
-        <!--- Parámetros de paginación y búsqueda --->
-        <cfparam name="url.page" default="1">
-        <!--- Parámetro de búsqueda del formulario --->
-        <cfparam name="form.search" default="">
-
         <!--- Configuración de paginación --->
         <cfset rowsPerPage = 10>
         <!--- Cálculo de la fila inicial para la consulta --->
@@ -79,6 +96,7 @@
                     OR du.nombre LIKE <cfqueryparam value="%#form.search#%" cfsqltype="cf_sql_varchar">
                     OR du.apellido_paterno LIKE <cfqueryparam value="%#form.search#%" cfsqltype="cf_sql_varchar">
                     OR du.apellido_materno LIKE <cfqueryparam value="%#form.search#%" cfsqltype="cf_sql_varchar">
+                    OR CONCAT(du.nombre, ' ', du.apellido_paterno, ' ', du.apellido_materno) LIKE <cfqueryparam value="%#form.search#%" cfsqltype="cf_sql_varchar">
                     OR a.nombre LIKE <cfqueryparam value="%#form.search#%" cfsqltype="cf_sql_varchar">
                 )
             </cfif>
@@ -89,7 +107,7 @@
             </cfif>
 
             <!--- Ordenar resultados --->
-            ORDER BY du.apellido_paterno, du.nombre
+            ORDER BY u.id_usuario ASC
         </cfquery>
 
         <!--- Número total de registros --->
@@ -232,7 +250,7 @@
                                 <cfset prevPage = startPage - 1>
                                 <!--- Enlace al bloque anterior --->
                                 <cfoutput>
-                                    <a href="listaUsuarios.cfm?page=#prevPage#&search=#urlEncodedFormat(form.search)#"
+                                    <a href="listaUsuarios.cfm?page=#prevPage#&search=#urlEncodedFormat(searchTerm)#"
                                         class="submit-btn-anterior"
                                         style="text-decoration:none">&laquo; Anterior</a>
                                 </cfoutput>
@@ -249,7 +267,7 @@
                                 <!--- Botón para otras páginas --->
                                 <cfelse>
                                     <cfoutput>
-                                        <a href="listaUsuarios.cfm?page=#i#&search=#urlEncodedFormat(form.search)#" 
+                                        <a href="listaUsuarios.cfm?page=#i#&search=#urlEncodedFormat(searchTerm)#" 
                                             class="submit-btn-paginacion" style="text-decoration:none">#i#</a>
                                     </cfoutput>
                                 </cfif>
@@ -261,7 +279,7 @@
                                 <cfset nextPage = endPage + 1>
                                 <!--- Enlace al siguiente bloque --->
                                 <cfoutput>
-                                    <a href="listaUsuarios.cfm?page=#nextPage#&search=#urlEncodedFormat(form.search)#"
+                                    <a href="listaUsuarios.cfm?page=#nextPage#&search=#urlEncodedFormat(searchTerm)#"
                                         class="submit-btn-siguiente"
                                         style="text-decoration:none">Siguiente &raquo;</a>
                                 </cfoutput>

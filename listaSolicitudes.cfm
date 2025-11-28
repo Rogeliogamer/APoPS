@@ -10,12 +10,27 @@
  * - Página destinada al seguimiento de solicitudes firmadas por el usuario logueado.
 --->
 
-<!--- Evita errores si no existe form.search --->
-<cfif structKeyExists(form, "search")>
-    <cfset searchTerm = trim(form.search)>
-<cfelse>
-    <cfset searchTerm = "">
-</cfif>
+<!--- Lógica de manejo de parámetros y búsqueda --->
+<cfscript>
+    <!--- 1. Valores por defecto --->
+    param name="url.page" default="1";
+    param name="url.search" default="";
+    param name="form.search" default="";
+
+    <!--- 2. Lógica de prioridad MANUAL: --->
+    <!--- Si se envió el formulario (POST) y tiene texto, úsalo. --->
+    if (len(trim(form.search)) GT 0) {
+        searchTerm = trim(form.search);
+    } 
+    <!--- Si no, revisa si viene en la URL (GET) de la paginación --->
+    else if (len(trim(url.search)) GT 0) {
+        searchTerm = trim(url.search);
+    } 
+    <!--- Si no hay nada, cadena vacía --->
+    else {
+        searchTerm = "";
+    }
+</cfscript>
 
 <!--- Consulta para obtener las solicitudes firmadas por el usuario en sesión --->
 <cfquery name="qFirmados" datasource="autorizacion">
@@ -43,6 +58,7 @@
             d.nombre LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
             OR d.apellido_paterno LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
             OR d.apellido_materno LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
+            OR CONCAT(d.nombre, ' ', d.apellido_paterno, ' ', d.apellido_materno) LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
             OR s.tipo_solicitud LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
             OR s.tipo_permiso LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
             OR s.status_final LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
@@ -50,7 +66,8 @@
             OR f.aprobado LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
         )
     </cfif>
-    ORDER BY f.fecha_firma DESC
+    GROUP BY s.id_solicitud
+    ORDER BY s.id_solicitud DESC
 </cfquery>
 
 <!DOCTYPE html>
@@ -78,10 +95,6 @@
             <cflocation url="menu.cfm" addtoken="no">
         </cfif>
 
-        <!--- Parámetros de URL y formulario --->
-        <cfparam name="url.page" default="1">
-        <cfparam name="form.search" default="">
-
         <!--- Configuración de paginación --->
         <cfset rowsPerPage = 10>
         <!--- Calcular la página actual y los índices de fila --->
@@ -102,6 +115,7 @@
         <cfquery dbtype="query" name="qPaged">
             SELECT *
             FROM qFirmados
+            ORDER BY id_solicitud DESC
         </cfquery>
 
         <!--- Contenido de la página --->
@@ -162,7 +176,6 @@
                                     <th class="titulo-general">Fecha Solicitud</th>
                                     <th class="titulo-general">Rol</th>
                                     <th class="titulo-general">Estado Firma</th>
-                                    <th class="titulo-general">Fecha Firma</th>
                                     <th class="titulo-general-centrado">Acciones</th>
                                 </tr>
                             </thead>
@@ -191,7 +204,6 @@
                                                 <span class="status-desconocido">#status_final#</span>
                                             </cfif>
                                         </td>
-                                        <td class="titulo-general-centrado">#DateFormat(fecha_firma,'dd/mm/yyyy')# #TimeFormat(fecha_firma,'HH:mm')#</td>
                                         <td class="titulo-general-centrado">
                                             <!--- Botón para ver detalles de la solicitud --->
                                             <form action="solicitudDetalles.cfm" method="post">
@@ -224,7 +236,7 @@
                                 <cfset prevPage = startPage - 1>
                                 <!---- Enlace al bloque anterior --->
                                 <cfoutput>
-                                    <a href="listaSolicitudes.cfm?page=#prevPage#&search=#urlEncodedFormat(form.search)#"
+                                    <a href="listaSolicitudes.cfm?page=#prevPage#&search=#urlEncodedFormat(searchTerm)#"
                                         class="submit-btn-anterior"
                                         style="text-decoration:none">&laquo; Anterior</a>
                                 </cfoutput>
@@ -242,7 +254,7 @@
                                 <cfelse>
                                     <!--- Enlace a la página correspondiente --->
                                     <cfoutput>
-                                        <a href="listaSolicitudes.cfm?page=#i#&search=#urlEncodedFormat(form.search)#" 
+                                        <a href="listaSolicitudes.cfm?page=#i#&search=#urlEncodedFormat(searchTerm)#" 
                                             class="submit-btn-paginacion" style="text-decoration:none">#i#</a>
                                     </cfoutput>
                                 </cfif>
@@ -254,7 +266,7 @@
                                 <cfset nextPage = endPage + 1>
                                 <!--- Enlace al siguiente bloque --->
                                 <cfoutput>
-                                    <a href="listaSolicitudes.cfm?page=#nextPage#&search=#urlEncodedFormat(form.search)#"
+                                    <a href="listaSolicitudes.cfm?page=#nextPage#&search=#urlEncodedFormat(searchTerm)#"
                                         class="submit-btn-siguiente"
                                         style="text-decoration:none">Siguiente &raquo;</a>
                                 </cfoutput>

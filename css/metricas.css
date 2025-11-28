@@ -237,3 +237,11 @@ td {
     box-sizing: border-box;
   }
 }
+
+/* Agrega esto a tus estilos */
+.chart-wrapper-fixed {
+    position: relative;
+    height: 350px; /* Altura fija para evitar el crecimiento infinito */
+    width: 100%;
+    overflow: hidden;
+}

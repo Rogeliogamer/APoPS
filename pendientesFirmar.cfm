@@ -11,14 +11,27 @@
  * - Página destinada al flujo de revisión y firma de solicitudes por parte de las autoridades correspondientes.
 --->
 
-<!--- Evitar error si form.search no existe --->
-<cfif structKeyExists(form, "search")>
-    <!--- Asignar el valor de búsqueda si existe --->
-    <cfset searchTerm = trim(form.search)>
-<cfelse>
-    <!--- Asignar cadena vacía si no existe --->
-    <cfset searchTerm = "">
-</cfif>
+<!--- Lógica de manejo de parámetros y búsqueda --->
+<cfscript>
+    <!--- 1. Valores por defecto --->
+    param name="url.page" default="1";
+    param name="url.search" default="";
+    param name="form.search" default="";
+
+    <!--- 2. Lógica de prioridad MANUAL: --->
+    <!--- Si se envió el formulario (POST) y tiene texto, úsalo. --->
+    if (len(trim(form.search)) GT 0) {
+        searchTerm = trim(form.search);
+    } 
+    <!--- Si no, revisa si viene en la URL (GET) de la paginación --->
+    else if (len(trim(url.search)) GT 0) {
+        searchTerm = trim(url.search);
+    } 
+    <!--- Si no hay nada, cadena vacía --->
+    else {
+        searchTerm = "";
+    }
+</cfscript>
 
 <!-- Determinar el filtro según el rol -->
 <cfset filtroRol = "">
@@ -54,6 +67,7 @@
         s.tipo_solicitud, 
         s.tipo_permiso, 
         s.fecha,
+        CONCAT(du.nombre, ' ', du.apellido_paterno, ' ', du.apellido_materno) AS solicitante,
         du.nombre, 
         du.apellido_paterno, 
         du.apellido_materno,
@@ -73,13 +87,14 @@
             du.nombre LIKE <cfqueryparam value="%#form.search#%" cfsqltype="cf_sql_varchar">
             OR du.apellido_paterno LIKE <cfqueryparam value="%#form.search#%" cfsqltype="cf_sql_varchar">
             OR du.apellido_materno LIKE <cfqueryparam value="%#form.search#%" cfsqltype="cf_sql_varchar">
+            OR CONCAT(du.nombre, ' ', du.apellido_paterno, ' ', du.apellido_materno) LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
             OR aa.nombre LIKE <cfqueryparam value="%#form.search#%" cfsqltype="cf_sql_varchar">
             OR s.tipo_solicitud LIKE <cfqueryparam value="%#form.search#%" cfsqltype="cf_sql_varchar">
             OR s.tipo_permiso LIKE <cfqueryparam value="%#form.search#%" cfsqltype="cf_sql_varchar">
         )
     </cfif>
-
-    ORDER BY s.fecha DESC
+    GROUP BY s.id_solicitud
+    ORDER BY s.id_solicitud DESC
 </cfquery>
 
 <!DOCTYPE html>
@@ -109,10 +124,6 @@
                 <!--- El rol no está autorizado para acceder a esta sección --->
             <cflocation url="menu.cfm" addtoken="no">
         </cfif>
-
-        <!--- Parámetros de URL y formulario --->
-        <cfparam name="url.page" default="1">
-        <cfparam name="form.search" default="">
 
         <!--- Configuración de paginación --->
         <cfset rowsPerPage = 10>
@@ -146,7 +157,7 @@
                     <cfoutput>#usuarioRol#</cfoutput>
                 </div>
                 <!--- Título principal --->
-                <h1>Solicitudes Pendientes de Firma</h1>
+                <h1>Solicitudes Pendientes de Firmar</h1>
             </div>
 
             <!--- Contenedor del formulario y la tabla --->
@@ -177,7 +188,7 @@
                 <cfif qPendientes.recordcount eq 0>
                     <!--- Mensaje si no hay solicitudes pendientes --->
                     <div class="section">
-                        <p>No tienes solicitudes pendientes de firma.</p>
+                        <p>No tienes solicitudes pendientes de firmar.</p>
                     </div>
 
                 <!--- Mostrar tabla de solicitudes pendientes --->
@@ -214,7 +225,7 @@
                                         <tr>
                                             <!--- Datos de cada columna --->
                                             <td class="titulo-general-centrado">#id_solicitud#</td>
-                                            <td>#nombre# #apellido_paterno# #apellido_materno#</td>
+                                            <td>#solicitante#</td>
                                             <td>#area_nombre#</td>
                                             <td>#tipo_solicitud#</td>
                                             <td>#tipo_permiso#</td>
@@ -250,7 +261,7 @@
                                     <cfset prevPage = startPage - 1>
                                     <!--- Enlace al bloque anterior --->
                                     <cfoutput>
-                                        <a href="pendientesFirmar.cfm?page=#prevPage#&search=#urlEncodedFormat(form.search)#"
+                                        <a href="pendientesFirmar.cfm?page=#prevPage#&search=#urlEncodedFormat(searchTerm)#"
                                             class="submit-btn-anterior"
                                             style="text-decoration:none">&laquo; Anterior</a>
                                     </cfoutput>
@@ -268,7 +279,7 @@
                                     <cfelse>
                                         <!--- Enlace a la página correspondiente --->
                                         <cfoutput>
-                                            <a href="pendientesFirmar.cfm?page=#i#&search=#urlEncodedFormat(form.search)#" 
+                                            <a href="pendientesFirmar.cfm?page=#i#&search=#urlEncodedFormat(searchTerm)#" 
                                                 class="submit-btn-paginacion" style="text-decoration:none">#i#</a>
                                         </cfoutput>
                                     </cfif>
@@ -280,7 +291,7 @@
                                     <cfset nextPage = endPage + 1>
                                     <!--- Enlace al siguiente bloque --->
                                     <cfoutput>
-                                        <a href="pendientesFirmar.cfm?page=#nextPage#&search=#urlEncodedFormat(form.search)#"
+                                        <a href="pendientesFirmar.cfm?page=#nextPage#&search=#urlEncodedFormat(searchTerm)#"
                                             class="submit-btn-siguiente"
                                             style="text-decoration:none">Siguiente &raquo;</a>
                                     </cfoutput>

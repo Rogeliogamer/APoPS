@@ -10,12 +10,27 @@
  * - Página destinada al seguimiento y revisión de solicitudes emitidas por el usuario.
 --->
 
-<!--- Evitar error si form.search no existe --->
-<cfif structKeyExists(form, "search")>
-    <cfset searchTerm = trim(form.search)>
-<cfelse>
-    <cfset searchTerm = "">
-</cfif>
+<!--- Lógica de manejo de parámetros y búsqueda --->
+<cfscript>
+    <!--- 1. Valores por defecto --->
+    param name="url.page" default="1";
+    param name="url.search" default="";
+    param name="form.search" default="";
+
+    <!--- 2. Lógica de prioridad MANUAL: --->
+    <!--- Si se envió el formulario (POST) y tiene texto, úsalo. --->
+    if (len(trim(form.search)) GT 0) {
+        searchTerm = trim(form.search);
+    } 
+    <!--- Si no, revisa si viene en la URL (GET) de la paginación --->
+    else if (len(trim(url.search)) GT 0) {
+        searchTerm = trim(url.search);
+    } 
+    <!--- Si no hay nada, cadena vacía --->
+    else {
+        searchTerm = "";
+    }
+</cfscript>
 
 <!--- Filtro de área según el rol del usuario en sesión --->
 <cfif session.rol EQ "Solicitante">
@@ -63,7 +78,8 @@
                 OR f.aprobado LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
             )
         </cfif>
-    ORDER BY f.fecha_firma DESC
+    GROUP BY s.id_solicitud
+    ORDER BY s.id_solicitud DESC
 </cfquery>
 
 <!DOCTYPE html>
@@ -94,10 +110,6 @@
             <cflocation url="menu.cfm" addtoken="no">
         </cfif>
 
-        <!--- Parámetros de URL y formulario --->
-        <cfparam name="url.page" default="1">
-        <cfparam name="form.search" default="">
-
         <!--- Configuración de paginación --->
         <cfset rowsPerPage = 10>
         <!--- Página actual y cálculo de filas --->
@@ -118,6 +130,7 @@
         <cfquery dbtype="query" name="qPaged">
             SELECT *
             FROM qFirmados
+            ORDER BY s.id_solicitud DESC
         </cfquery>
 
         <!--- Contenido de la página --->
@@ -184,7 +197,6 @@
                                     <th class="titulo-general">Fecha Solicitud</th>
                                     <th class="titulo-general-centrado">Rol</th>
                                     <th class="titulo-general">Estado</th>
-                                    <th class="titulo-general">Fecha Firma</th>
                                     <th class="titulo-general-centrado">Acciones</th>
                                 </tr>
                             </thead>
@@ -213,7 +225,6 @@
                                                 <span class="status-desconocido">#status_final#</span>
                                             </cfif>
                                         </td>
-                                        <td class="titulo-general-centrado">#DateFormat(fecha_firma,'dd/mm/yyyy')#</td>
                                         <td style="text-align:center;">
                                             <!--- Formulario para ver detalles de la solicitud --->
                                             <form action="solicitudDetalles.cfm" method="post">
@@ -246,7 +257,7 @@
                                 <cfset prevPage = startPage - 1>
                                 <!--- Enlace al bloque anterior --->
                                 <cfoutput>
-                                    <a href="firmados.cfm?page=#prevPage#&search=#urlEncodedFormat(form.search)#"
+                                    <a href="firmados.cfm?page=#prevPage#&search=#urlEncodedFormat(searchTerm)#"
                                         class="submit-btn-anterior"
                                         style="text-decoration:none">&laquo; Anterior</a>
                                 </cfoutput>
@@ -263,7 +274,7 @@
                                 <cfelse>
                                     <!--- Botón para otras páginas --->
                                     <cfoutput>
-                                        <a href="firmados.cfm?page=#i#&search=#urlEncodedFormat(form.search)#" 
+                                        <a href="firmados.cfm?page=#i#&search=#urlEncodedFormat(searchTerm)#" 
                                             class="submit-btn-paginacion" style="text-decoration:none">#i#</a>
                                     </cfoutput>
                                 </cfif>
@@ -275,7 +286,7 @@
                                 <cfset nextPage = endPage + 1>
                                 <!--- Enlace al siguiente bloque --->
                                 <cfoutput>
-                                    <a href="firmados.cfm?page=#nextPage#&search=#urlEncodedFormat(form.search)#"
+                                    <a href="firmados.cfm?page=#nextPage#&search=#urlEncodedFormat(searchTerm)#"
                                         class="submit-btn-siguiente"
                                         style="text-decoration:none">Siguiente &raquo;</a>
                                 </cfoutput>

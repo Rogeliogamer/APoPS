@@ -109,8 +109,12 @@
                 <cfset session.rol = qLogin.rol>
                 <cfset session.id_area = qLogin.id_area>
 
-                <!--- Redirigir al menú principal después del inicio de sesión exitoso --->
-                <cflocation url="menu.cfm">
+                <cfif session.rol EQ "admin">
+                    <cflocation url="adminPanel.cfm" addtoken="no">
+                <cfelse>
+                    <!--- Redirigir al menú principal después del inicio de sesión exitoso --->
+                    <cflocation url="menu.cfm" addtoken="no">
+                </cfif>
                 
             <!--- Si las credenciales son incorrectas, mostrar mensaje de error --->
             <cfelse>
