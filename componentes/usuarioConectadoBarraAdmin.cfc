@@ -42,17 +42,17 @@
             <!-- Contenido de la barra -->
             <div class="contenido">
                 <div class="info-usuario">
-                    <img src="elements/usuario.svg" alt="Usuario" width="16" height="16">
+                    <img src="../elements/usuario.svg" alt="Usuario" width="16" height="16">
                     <strong>' & session.usuario & '</strong> - <em>' & session.rol & '</em>
                 </div>
 
                 <div class="titulo-central">
-                    Panel de Usuario
+                    Panel de Administración
                 </div>
 
                 <div class="info-logout">
                     <a href="cerrarSesion.cfm" class="boton-salir">
-                        Cerrar Sesion <img src="elements/salir.svg" alt="Salir" width="16" height="16">
+                        Cerrar Sesion <img src="../elements/salir.svg" alt="Salir" width="16" height="16">
                     </a>
                 </div>
             </div>
