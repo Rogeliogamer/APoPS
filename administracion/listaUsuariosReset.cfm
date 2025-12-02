@@ -45,15 +45,15 @@
         <!--- Vista adaptable para dispositivos móviles --->
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <!--- Icono de la pagina --->
-        <link rel="icon" href="elements/icono.ico" type="image/x-icon">
+        <link rel="icon" href="../elements/icono.ico" type="image/x-icon">
         <!--- Título de la página --->
         <title>Lista de usuarios</title>
         <!--- Enlace a fuentes y hojas de estilo --->
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="css/globalForm.css">
-        <link rel="stylesheet" href="css/listaUsuarios.css">
-        <link rel="stylesheet" href="css/botones.css">
-        <link rel="stylesheet" href="css/tablas.css">
+        <link rel="stylesheet" href="../css/globalForm.css">
+        <link rel="stylesheet" href="../css/listaUsuarios.css">
+        <link rel="stylesheet" href="../css/botones.css">
+        <link rel="stylesheet" href="../css/tablas.css">
     </head>
     <body>
         <!--- Verificación de sesión y rol --->
@@ -62,9 +62,9 @@
             OR len(trim(session.rol)) EQ 0>
             <!--- No hay sesión activa --->
             <cflocation url="login.cfm" addtoken="no">
-        <cfelseif listFindNoCase("admin,Expediente,RecursosHumanos,Jefe", trim(session.rol)) EQ 0>
+        <cfelseif listFindNoCase("admin", trim(session.rol)) EQ 0>
             <!--- Rol no autorizado --->
-            <cflocation url="menu.cfm" addtoken="no">
+            <cflocation url="../menu.cfm" addtoken="no">
         </cfif>
 
         <!--- Configuración de paginación --->
@@ -100,12 +100,6 @@
                     OR a.nombre LIKE <cfqueryparam value="%#form.search#%" cfsqltype="cf_sql_varchar">
                 )
             </cfif>
-
-            <!--- Filtro si el usuario logueado es jefe --->
-            <cfif structKeyExists(session, "rol") AND session.rol EQ "Jefe">
-                AND du.id_area = <cfqueryparam value="#session.id_area#" cfsqltype="cf_sql_integer">
-            </cfif>
-
             <!--- Ordenar resultados --->
             ORDER BY u.id_usuario ASC
         </cfquery>
@@ -129,7 +123,7 @@
                 <!--- Título y logo --->
                 <div class="logo">
                     <!--- Mostrar el rol del usuario conectado --->
-                    <cfset usuarioRol = createObject("component", "componentes/usuarioConectadoS").render()>
+                    <cfset usuarioRol = createObject("component", "../componentes/usuarioConectadoSAdmin").render()>
                     <!--- Mostrar rol --->
                     <cfoutput>#usuarioRol#</cfoutput>
                 </div>
@@ -168,7 +162,7 @@
                 <div class="section">
                     <!--- Contenedor de la tabla --->
                     <div class="section-title">
-                        Usuarios Registrados
+                        Lista de Usuarios
                     </div>
 
                     <!--- Tabla responsiva --->
@@ -185,13 +179,7 @@
                                 <td class="titulo-general">Apellido Paterno</td>
                                 <td class="titulo-general">Apellido Materno</td>
                                 <td class="titulo-general">Área</td>
-
-                                <!--- Mostrar columnas Editar y Eliminar solo si el usuario tiene rol admin --->
-                                <cfif structKeyExists(session, "usuario") AND session.rol EQ "admin">
-                                    <!--- Encabezados adicionales --->
-                                    <td class="titulo-general">Editar</td>
-                                    <td class="titulo-general">Eliminar</td>
-                                </cfif>
+                                <td class="titulo-general">Reset</td>
                             </tr>
 
                             <!--- Filas de la tabla --->
@@ -206,27 +194,12 @@
                                     <td>#apellido_paterno#</td>
                                     <td>#apellido_materno#</td>
                                     <td>#area#</td>
-
-                                    <!--- Mostrar botones solo si el usuario tiene rol admin --->
-                                    <cfif structKeyExists(session, "usuario") AND session.rol EQ "admin">
-                                        <!--- Botón Editar --->
-                                        <td class="submit-btn-editar-separacion">
-                                            <form action="editarUsuario.cfm" method="post">
-                                                <input type="hidden" name="id" value="#id_usuario#">
-                                                <button type="submit" class="submit-btn-editar">Editar</button>
-                                            </form>
-                                        </td>
-
-                                        <!--- Botón Eliminar --->
-                                        <td class="submit-btn-eliminar-separacion">
-                                            <form action="eliminarUsuario.cfm" method="post">
-                                                <input type="hidden" name="id" value="#id_usuario#">
-                                                <button type="submit" class="submit-btn-eliminar">Eliminar</button>
-                                            </form>
-
-                                            
-                                        </td>
-                                    </cfif>
+                                    <td class="submit-btn-editar-separacion">
+                                        <form action="resetUsuario.cfm" method="post">
+                                            <input type="hidden" name="id" value="#id_usuario#">
+                                            <button type="submit" class="submit-btn-editar">Reset</button>
+                                        </form>
+                                    </td>
                                 </tr>
                             </cfoutput>
                         </table>
@@ -250,7 +223,7 @@
                                 <cfset prevPage = startPage - 1>
                                 <!--- Enlace al bloque anterior --->
                                 <cfoutput>
-                                    <a href="listaUsuarios.cfm?page=#prevPage#&search=#urlEncodedFormat(searchTerm)#"
+                                    <a href="listaUsuariosReset.cfm?page=#prevPage#&search=#urlEncodedFormat(searchTerm)#"
                                         class="submit-btn-anterior"
                                         style="text-decoration:none">&laquo; Anterior</a>
                                 </cfoutput>
@@ -267,7 +240,7 @@
                                 <!--- Botón para otras páginas --->
                                 <cfelse>
                                     <cfoutput>
-                                        <a href="listaUsuarios.cfm?page=#i#&search=#urlEncodedFormat(searchTerm)#" 
+                                        <a href="listaUsuariosReset.cfm?page=#i#&search=#urlEncodedFormat(searchTerm)#" 
                                             class="submit-btn-paginacion" style="text-decoration:none">#i#</a>
                                     </cfoutput>
                                 </cfif>
@@ -279,7 +252,7 @@
                                 <cfset nextPage = endPage + 1>
                                 <!--- Enlace al siguiente bloque --->
                                 <cfoutput>
-                                    <a href="listaUsuarios.cfm?page=#nextPage#&search=#urlEncodedFormat(searchTerm)#"
+                                    <a href="listaUsuariosReset.cfm?page=#nextPage#&search=#urlEncodedFormat(searchTerm)#"
                                         class="submit-btn-siguiente"
                                         style="text-decoration:none">Siguiente &raquo;</a>
                                 </cfoutput>
@@ -292,12 +265,12 @@
                         <!--- Enlace para regresar al menú principal --->
                         <div class="field-group">
                             <!--- Botón Menu --->
-                            <a href="menu.cfm" class="submit-btn-menu submit-btn-menu-text">
+                            <a href="../adminPanel.cfm" class="submit-btn-menu submit-btn-menu-text">
                                 Menu
                             </a>
                             
                             <!--- Botón Cerrar Sesion --->
-                            <a href="cerrarSesion.cfm" class="submit-btn-cerrarSesion submit-btn-cerrarSesion-text">
+                            <a href="../cerrarSesion.cfm" class="submit-btn-cerrarSesion submit-btn-cerrarSesion-text">
                                 Cerrar Sesion
                             </a>
                         </div>

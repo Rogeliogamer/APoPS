@@ -16,27 +16,27 @@
         <!--- Vista adaptable para dispositivos móviles --->
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <!--- Icono de la pagina --->
-        <link rel="icon" href="elements/icono.ico" type="image/x-icon">
+        <link rel="icon" href="../elements/icono.ico" type="image/x-icon">
         <!--- Título de la página --->
-        <title>Dashboard - Sistema de Permisos</title>
+        <title>Metricas de Permisos o Pases</title>
         <!-- Carga de jQuery (local) -->
-        <script src="js/jquery-3.6.0.min.js"></script>
+        <script src="../js/jquery-3.6.0.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <!-- Scripts del sistema -->
-        <script src="js/graficasKPI.js"></script>
-        <script src="js/metricas.js"></script>
+        <script src="../js/graficasKPI.js"></script>
+        <script src="../js/metricas.js"></script>
         <!--- Enlace a fuentes y hojas de estilo --->
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="css/globalForm.css">
-        <link rel="stylesheet" href="css/metricas.css">
-        <link rel="stylesheet" href="css/botones.css">
-        <link rel="stylesheet" href="css/temp.css">
+        <link rel="stylesheet" href="../css/globalForm.css">
+        <link rel="stylesheet" href="../css/metricas.css">
+        <link rel="stylesheet" href="../css/botones.css">
+        <link rel="stylesheet" href="../css/temp.css">
     </head>
     <body>
         <!-- Verificación de sesión y rol -->
         <cfif NOT structKeyExists(session, "rol") 
             OR ListFindNoCase("Admin,Expediente,RecursosHumanos,Autorizacion,Jefe,Solicitante", session.rol) EQ 0>
-            <cflocation url="menu.cfm" addtoken="no">
+            <cflocation url="../menu.cfm" addtoken="no">
         </cfif>
 
         <div class="container">
@@ -44,7 +44,7 @@
             <div class="header">
                 <!-- Nombre del usuario y rol que esta conectado -->
                 <div class="logo">
-                    <cfset usuarioRol = createObject("component", "componentes/usuarioConectadoS").render()>
+                    <cfset usuarioRol = createObject("component", "../componentes/usuarioConectadoSSoli").render()>
                     <cfoutput>#usuarioRol#</cfoutput>
                 </div>
 
@@ -105,7 +105,7 @@
                         
                     <div class="submit-section">
                         <div class="field-group triple">
-                            <a href="menu.cfm" class="submit-btn-menu submit-btn-menu-text">
+                            <a href="../menu.cfm" class="submit-btn-menu submit-btn-menu-text">
                                 Menu
                             </a>
 
@@ -113,7 +113,7 @@
                                 🔍 Actualizar
                             </button>
 
-                            <a href="cerrarSesion.cfm" class="submit-btn-cerrarSesion submit-btn-cerrarSesion-text">
+                            <a href="../cerrarSesion.cfm" class="submit-btn-cerrarSesion submit-btn-cerrarSesion-text">
                                 Cerrar Sesion
                             </a>
                         </div>
@@ -259,7 +259,7 @@
 
                 <!-- Tablas -->
                 <div class="section">
-                    <div class="field-group row">
+                    <div class="row">
                         <div class="kpi-header col-12">
                             <div class="chart-title mb-2">
                                 Ranking por Área seleccionada
@@ -282,7 +282,11 @@
                                 </table>
                             </div>
                         </div>
+                    </div>
+                </div>
 
+                <div class="section">
+                    <div class="row">
                         <div class="kpi-header col-12">
                             <div class="chart-title mb-2">Top 10 Solicitantes por area seleccionada</div>
                                 <div class="table-container table-responsive">
@@ -298,7 +302,7 @@
                                             </tr>
                                         </thead>
                                         <tbody id="tablaFirmantesBody">
-                                            <tr><td colspan="5" style="text-align: center;>Cargando...</td></tr>
+                                            <tr><td colspan="5" style="text-align: center;">Cargando...</td></tr>
                                         </tbody>
                                     </table>
                                 </div>
@@ -310,7 +314,7 @@
         </div>
 
         <!--- Carga de jQuery (local o CDN) --->
-        <script src="js/jquery-3.6.0.min.js"></script>
+        <script src="../js/jquery-3.6.0.min.js"></script>
 
         <!--- 
             Seccion 2
@@ -332,7 +336,7 @@
                     $("#loadingOverlay").addClass("active");
 
                     $.ajax({
-                        url: "obtenerMetricas.cfm",
+                        url: "../apis/obtenerMetricas.cfm",
                         method: "POST",
                         data: { 
                             rango: dias, 
@@ -467,7 +471,7 @@
 
                 function actualizarGraficaEstados(area, dias) {
                     $.ajax({
-                        url: "obtenerEstadoSolicitudes.cfm",
+                        url: "../apis/obtenerEstadoSolicitudes.cfm",
                         method: "POST",
                         data: { 
                             rango: dias, 
@@ -558,7 +562,7 @@
 
                 // --- Graficar Etapas de Firma ---
                 $.ajax({
-                    url: 'obtenerFirmasPorRol.cfm',
+                    url: '../apis/obtenerFirmasPorRol.cfm',
                     method: 'GET',
                     data: { 
                         rango: rango, 
@@ -637,7 +641,7 @@
                 }
 
                 $.ajax({
-                    url: "obtenerTendencia.cfm",
+                    url: "../apis/obtenerTendencia.cfm",
                     method: "POST",
                     data: { 
                         rango: rango, 
@@ -763,7 +767,7 @@
                 }
 
                 $.ajax({
-                    url: "obtenerSolicitudesAreaSeleccionada.cfm",
+                    url: "../apis/obtenerSolicitudesAreaSeleccionada.cfm",
                     method: "POST",
                     data: { 
                         area: areaSeleccionada,
@@ -870,7 +874,7 @@
                 }
 
                 // Llamada AJAX a obtener_tipos_permiso.cfm
-                fetch(`obtenerTiposPermiso.cfm?id_area=${idArea}&rangoDias=${rangoDias}`)
+                fetch(`../apis/obtenerTiposPermiso.cfm?id_area=${idArea}&rangoDias=${rangoDias}`)
                 .then(response => response.json())
                 .then(data => {
                     console.log("Respuesta de permisos:", data);
@@ -940,7 +944,7 @@
                 const area = $('#areaSeleccionada').val();
 
                 $.ajax({
-                    url: 'obtenerPersonalVSOficial.cfm',
+                    url: '../apis/obtenerPersonalVSOficial.cfm',
                     method: 'GET',
                     data: { 
                         rango: rango, 
@@ -1018,7 +1022,7 @@
                     let areaId = $('#areaSeleccionada').val();
 
                     $.ajax({
-                        url: 'obtenerPrediccion.cfc?method=getPrediccion',
+                        url: '../apis/obtenerPrediccion.cfc?method=getPrediccion',
                         type: 'GET',
                         data: { 
                             rangoDias: rangoDias, 
@@ -1199,7 +1203,7 @@
                     '<tr><td colspan="6" style="text-align:center;">Cargando...</td></tr>';
 
                 // Llamar al archivo CFM que genera la tabla
-                fetch("obtenerMetricasRanking.cfm", {
+                fetch("../apis/obtenerMetricasRanking.cfm", {
                     method: "POST",
                     headers: { 
                         "Content-Type": "application/x-www-form-urlencoded" 
@@ -1236,7 +1240,7 @@
 
                 tablaBody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Cargando datos...</td></tr>`;
 
-                fetch("obtenerTop10.cfm", {
+                fetch("../apis/obtenerTop10.cfm", {
                     method: "POST",
                     headers: { 
                         "Content-Type": "application/x-www-form-urlencoded" 
@@ -1263,9 +1267,9 @@
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
         <!-- Tu script de métricas (ya existente) -->
-        <script src="js/metricas.js"></script>
+        <script src="../js/metricas.js"></script>
 
         <!-- Nuevo script de gráficas -->
-        <script src="js/graficasKPI.js"></script>
+        <script src="../js/graficasKPI.js"></script>
     </body>
 </html>

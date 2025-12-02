@@ -81,4 +81,4 @@
 
 
 <!--- Redirige después de guardar --->
-<cflocation url="menu.cfm" addtoken="false">
+<cflocation url="../menu.cfm" addtoken="false">

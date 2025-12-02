@@ -17,27 +17,27 @@
         <!--- Vista adaptable para dispositivos móviles --->
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <!--- Icono de la pagina --->
-        <link rel="icon" href="elements/icono.ico" type="image/x-icon">
+        <link rel="icon" href="../elements/icono.ico" type="image/x-icon">
         <!--- Título de la página --->
         <title>Permiso o Pase de Salida</title>
         <!--- Enlace a fuentes y hojas de estilo --->
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="css/globalForm.css">
-        <link rel="stylesheet" href="css/svgFirma.css">
-        <link rel="stylesheet" href="css/pase.css">
-        <link rel="stylesheet" href="css/botones.css">
+        <link rel="stylesheet" href="../css/globalForm.css">
+        <link rel="stylesheet" href="../css/svgFirma.css">
+        <link rel="stylesheet" href="../css/pase.css">
+        <link rel="stylesheet" href="../css/botones.css">
     </head>
     <body>
         <!--- Validar que exista un sesión activa --->
         <cfif NOT structKeyExists(session, "rol") OR len(trim(session.rol)) EQ 0>
             <!--- No hay sesión activa, redirigir al login --->
-            <cflocation url="login.cfm" addtoken="no">
+            <cflocation url="../login.cfm" addtoken="no">
         </cfif>
 
         <!--- Si el usuario es administrador, redirigir al menú principal --->
         <cfif session.rol EQ "admin">
             <!--- Redirigir al menú principal --->
-            <cflocation url="menu.cfm" addtoken="no">
+            <cflocation url="../adminPanel.cfm" addtoken="no">
         </cfif>
 
         <!--- Contenedor principal --->
@@ -46,7 +46,7 @@
             <div class="header">
                 <!--- Logo y título --->
                 <div class="logo">
-                    <cfset usuarioRol = createObject("component", "componentes/usuarioConectadoS").render()>
+                    <cfset usuarioRol = createObject("component", "../componentes/usuarioConectadoSSoli").render()>
                     <cfoutput>#usuarioRol#</cfoutput>
                 </div>
                 <!--- Título de la página --->
@@ -56,7 +56,7 @@
             <!--- Contenedor del formulario --->
             <div class="form-container">
                 <!--- Formulario de Solicitud de Permiso o Pase de Salida --->
-                <form id="formPermiso" action="procesar_permiso.cfm" method="post" name="permisoForm">
+                <form id="formPermiso" action="procesarPermiso.cfm" method="post" name="permisoForm">
                     
                     <!--- Datos del Solicitante --->
                     <div class="section">
@@ -366,12 +366,12 @@
                     <!---- Grupo de botones --->
                     <div class="field-group">
                         <!--- Botón para ir al menú principal --->
-                        <a href="menu.cfm" class="submit-btn-menu submit-btn-menu-text">
+                        <a href="../menu.cfm" class="submit-btn-menu submit-btn-menu-text">
                             Menu
                         </a>
                         
                         <!--- Botón para cerrar sesión --->
-                        <a href="cerrarSesion.cfm" class="submit-btn-cerrarSesion submit-btn-cerrarSesion-text">
+                        <a href="../cerrarSesion.cfm" class="submit-btn-cerrarSesion submit-btn-cerrarSesion-text">
                             Cerrar Sesion
                         </a>
                     </div>
@@ -380,9 +380,9 @@
         </div>
 
         <!--- Enlace a scripts de validación y firma SVG --->
-        <script src="js/validacionForm.js"></script>
+        <script src="../js/validacionForm.js"></script>
 
-        <script src="js/svgFirma.js"></script>
+        <script src="../js/svgFirma.js"></script>
 
         <script>
             document.addEventListener("DOMContentLoaded", function() {

@@ -59,3 +59,49 @@ body {
     cursor: not-allowed;
     pointer-events: none;
 }
+
+.menu-card-graficas {
+    background-color: #ff0000;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    padding: 30px 20px;
+    text-align: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+}
+
+.menu-card-graficas:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+}
+
+.menu-card-graficas h2 {
+    margin-bottom: 15px;
+    color: #2c3e50;
+}
+
+.menu-card-graficas p {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.menu-card-graficas a {
+    display: inline-block;
+    padding: 10px 18px;
+    background-color: #3498db;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
+}
+
+.menu-card-graficas a:hover {
+    background-color: #2980b9;
+}
+
+.menu-card-graficas a.disabled {
+    background-color: #bdc3c7;
+    cursor: not-allowed;
+    pointer-events: none;
+}

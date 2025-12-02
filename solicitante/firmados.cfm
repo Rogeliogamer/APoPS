@@ -90,15 +90,15 @@
         <!--- Vista adaptable para dispositivos móviles --->
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <!--- Icono de la pagina --->
-        <link rel="icon" href="elements/icono.ico" type="image/x-icon">
+        <link rel="icon" href="../elements/icono.ico" type="image/x-icon">
         <!--- Título de la página --->
         <title>Solicitudes Firmadas</title>
         <!--- Enlace a fuentes y hojas de estilo --->
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="css/globalForm.css">
-        <link rel="stylesheet" href="css/firmados.css">
-        <link rel="stylesheet" href="css/tablas.css">
-        <link rel="stylesheet" href="css/botones.css">
+        <link rel="stylesheet" href="../css/globalForm.css">
+        <link rel="stylesheet" href="../css/firmados.css">
+        <link rel="stylesheet" href="../css/tablas.css">
+        <link rel="stylesheet" href="../css/botones.css">
     </head>
     <body>
         <!--- Verificación de sesión y rol --->
@@ -140,7 +140,7 @@
                 <!--- Logo y rol del usuario --->
                 <div class="logo">
                     <!--- Incluir el logo de la aplicación --->
-                    <cfset usuarioRol = createObject("component", "componentes/usuarioConectadoS").render()>
+                    <cfset usuarioRol = createObject("component", "../componentes/usuarioConectadoSSoli").render()>
                     <!--- Mostrar el rol del usuario --->
                     <cfoutput>
                         #usuarioRol#
@@ -300,12 +300,12 @@
                     <!--- Grupo de botones --->
                     <div class="field-group">
                         <!--- botón para regresar al menú --->
-                        <a href="menu.cfm" class="submit-btn-menu submit-btn-menu-text">
+                        <a href="../menu.cfm" class="submit-btn-menu submit-btn-menu-text">
                             Menu
                         </a>
                     
                         <!--- botón para cerrar sesión --->
-                        <a href="cerrarSesion.cfm" class="submit-btn-cerrarSesion submit-btn-cerrarSesion-text">
+                        <a href="../cerrarSesion.cfm" class="submit-btn-cerrarSesion submit-btn-cerrarSesion-text">
                             Cerrar Sesion
                         </a>
                     </div>

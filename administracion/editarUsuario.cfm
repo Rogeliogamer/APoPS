@@ -1,18 +1,15 @@
 <!---
- * Página `eliminarUsuario.cfm` para la eliminación de la información de un usuario.
+ * Página `editarUsuario.cfm` para la modificación de la información básica de un usuario.
  *
  * Funcionalidad:
- * - Permite al administrador eliminar al usuario seleccionado.
- * - Recibe el ID del usuario a eliminar mediante un formulario POST.
- * - Valida que el ID sea válido y que el usuario exista en la base de datos.
- * - Si el usuario existe, se muestra un formulario con los datos actuales del usuario.
- * - Al confirmar la eliminación, se actualiza el campo `activo` a 0 en la tabla de usuarios (borrado lógico).
- * - Se proporciona retroalimentación al administrador sobre el resultado de la operación.
- * - En caso de que el usuario no exista, se muestra un mensaje de error.
- * - Al finalizar, se redirige automáticamente a la lista de usuarios.
+ * - Permite al administrador editar los campos necesarios de la información del usuario seleccionado.
+ * - Si los datos son válidos, se actualizan en la base de datos reemplazando la información anterior.
+ * - Todos los campos requeridos deben ser completados; de lo contrario, no se podrá guardar la información.
+ * - Al confirmar los cambios, se redirige automáticamente a la lista de usuarios.
+ * - Si el usuario no existe, se muestra un mensaje de error.
  *
  * Uso:
- * - Página destinada a la desactivación (borrado lógico) de usuarios registrados en el sistema.
+ * - Página destinada a la edición y mantenimiento de la información de los usuarios registrados.
 --->
 
 <!DOCTYPE html>
@@ -23,13 +20,13 @@
         <!--- Vista adaptable para dispositivos móviles --->
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <!--- Icono de la pagina --->
-        <link rel="icon" href="elements/icono.ico" type="image/x-icon">
+        <link rel="icon" href="../elements/icono.ico" type="image/x-icon">
         <!--- Título de la página --->
         <title>Editar Usuario</title>
         <!--- Enlace a fuentes y hojas de estilo --->
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="css/globalForm.css">
-        <link rel="stylesheet" href="css/botones.css">
+        <link rel="stylesheet" href="../css/globalForm.css">
+        <link rel="stylesheet" href="../css/botones.css">
     </head>
     <body>
         <!--- Verificación de sesión y rol --->
@@ -37,14 +34,17 @@
             OR NOT structKeyExists(session, "rol")
             OR len(trim(session.rol)) EQ 0>
             <!--- No hay sesión activa --->
-            <cflocation url="login.cfm" addtoken="no">
+            <cflocation url="../login.cfm" addtoken="no">
         <cfelseif listFindNoCase("admin", trim(session.rol)) EQ 0>
             <!--- Rol no autorizado --->
-            <cflocation url="listaUsuarios.cfm" addtoken="no">
+            <cflocation url="../menu.cfm" addtoken="no">
         </cfif>
 
-        <!--- Parámetro de entrada --->
-        <cfparam name="form.id" default="0">
+        <!--- Verificar que el formulario se haya enviado correctamente --->
+        <cfif NOT structKeyExists(form, "id") OR NOT isNumeric(form.id) OR form.id LTE 0>
+            <!--- Si no viene por POST o es inválido, redirigir a la lista --->
+            <cflocation url="listaUsuarios.cfm" addtoken="no">
+        </cfif>
 
         <!--- Obtener datos del usuario --->
         <cfquery name="qUsuario" datasource="autorizacion">
@@ -56,11 +56,9 @@
                 d.nombre, 
                 d.apellido_paterno, 
                 d.apellido_materno, 
-                d.id_area,
-                a.nombre AS nombre_area
+                d.id_area
             FROM usuarios u
             INNER JOIN datos_usuario d ON u.id_datos = d.id_datos
-            INNER JOIN area_adscripcion a ON d.id_area = a.id_area
             WHERE u.id_usuario = <cfqueryparam value="#form.id#" cfsqltype="cf_sql_integer">
         </cfquery>
 
@@ -87,24 +85,35 @@
 
         <!--- Procesar valores ENUM --->
         <cfset enumStringR = qRol.Type[1]>
-        <!--- Eliminar prefijos y sufijos innecesarios --->
-        <cfset enumStringR = REReplace(enumStringR,"^enum\('","", "all")>
-        <!--- Eliminar el sufijo final --->
+        <!--- Limpiar la cadena para obtener solo los valores --->
+        <cfset enumStringR = REReplace(enumStringR,"^enum\('","", "all")>.
+        <!--- Eliminar el paréntesis final --->
         <cfset enumStringR = REReplace(enumStringR,"'\)$","", "all")>
-        <!--- Reemplazar separadores de ENUM por comas --->
+        <!--- Reemplazar los separadores para crear una lista --->
         <cfset enumListR = REReplace(enumStringR,"','",",","all")>
 
         <!--- Procesar formulario --->
-        <cfif structKeyExists(form, "eliminar")>
+        <cfif structKeyExists(form, "guardar")>
             <!--- Actualizar tabla usuarios --->
             <cfquery datasource="autorizacion">
                 UPDATE usuarios
-                SET activo = 0
+                SET usuario = <cfqueryparam value="#form.usuario#" cfsqltype="cf_sql_varchar">,
+                    rol = <cfqueryparam value="#form.rol#" cfsqltype="cf_sql_varchar">
                 WHERE id_usuario = <cfqueryparam value="#form.id#" cfsqltype="cf_sql_integer">
             </cfquery>
 
+            <!--- Actualizar tabla datos_usuario --->
+            <cfquery datasource="autorizacion">
+                UPDATE datos_usuario
+                SET nombre = <cfqueryparam value="#form.nombre#" cfsqltype="cf_sql_varchar">,
+                    apellido_paterno = <cfqueryparam value="#form.apellido_paterno#" cfsqltype="cf_sql_varchar">,
+                    apellido_materno = <cfqueryparam value="#form.apellido_materno#" cfsqltype="cf_sql_varchar">,
+                    id_area = <cfqueryparam value="#form.id_area#" cfsqltype="cf_sql_integer">
+                WHERE id_datos = <cfqueryparam value="#qUsuario.id_datos#" cfsqltype="cf_sql_integer">
+            </cfquery>
+
             <!--- Redirigir a la lista de usuarios --->
-            <cflocation url="listaUsuarios.cfm" addtoken="false">
+            <cflocation url="listaUsuariosEditar.cfm" addtoken="false">
         </cfif>
 
         <!--- Formulario de edición --->
@@ -115,8 +124,10 @@
                 <div class="header">
                     <!--- Logo y título --->
                     <div class="logo">
-                        <cfset usuarioRol = createObject("component", "componentes/usuarioConectadoS").render()>
-                        <cfoutput>#usuarioRol#</cfoutput>
+                        <cfset usuarioRol = createObject("component", "../componentes/usuarioConectadoSAdmin").render()>
+                        <cfoutput>
+                            #usuarioRol#
+                        </cfoutput>
                     </div>
 
                     <!--- Nombre del usuario --->
@@ -127,14 +138,14 @@
                 <div class="form-container">
                     <!--- Formulario --->
                     <form method="post">
-                        <!--- Campo oculto con el ID del usuario --->
+                        <!-- Campo oculto con el ID del usuario -->
                         <input type="hidden" name="id" value="#qUsuario.id_usuario#">
 
                         <!--- Sección de datos del usuario --->
                         <div class="section">
                             <!--- Título de la sección --->
                             <div class="section-title">
-                                Datos usuarios
+                                Datos de Inicio de Sesión
                             </div>
 
                             <!--- Grupo de campos --->
@@ -147,7 +158,7 @@
                                     </label>
 
                                     <!--- Campo de texto para el nombre de usuario --->
-                                    <input type="text" name="usuario" value="#qUsuario.usuario#" required class="form-input-general" readonly><br>
+                                    <input type="text" name="usuario" value="#qUsuario.usuario#" required class="form-input-general"><br>
                                 </div>
 
                                 <!--- Campo de rol --->
@@ -157,8 +168,14 @@
                                         Rol:
                                     </label>
 
-                                    <!--- Campo de texto para el rol del usuario --->
-                                    <input type="text" name="rol" value="#qUsuario.rol#" required class="form-input-general" readonly><br>
+                                    <!--- Lista desplegable para seleccionar el rol --->
+                                    <select name="rol" required class="form-input-general">
+                                        <!--- Iterar sobre los valores ENUM para crear las opciones --->
+                                        <cfloop list="#enumListR#" index="tipo">
+                                            <!--- Marcar la opción seleccionada --->
+                                            <option value="#tipo#" <cfif tipo EQ qUsuario.rol>selected</cfif>>#tipo#</option>
+                                        </cfloop>
+                                    </select>
                                 </div>
 
                                 <!--- Campo de área --->
@@ -168,8 +185,14 @@
                                         Área:
                                     </label>
 
-                                    <!--- Campo de texto para el nombre de area del usuario --->
-                                    <input type="text" name="area" value="#qUsuario.nombre_area#" required class="form-input-general" readonly><br>
+                                    <!--- Lista desplegable para seleccionar el área --->
+                                    <select name="id_area" required class="form-input-general">
+                                        <!--- Iterar sobre las áreas para crear las opciones --->
+                                        <cfloop query="qAreas">
+                                            <!--- Marcar la opción seleccionada --->
+                                            <option value="#id_area#" <cfif id_area EQ qUsuario.id_area>selected</cfif>>#nombre#</option>
+                                        </cfloop>
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -191,7 +214,7 @@
                                     </label>
 
                                     <!--- Campo de texto para el nombre --->
-                                    <input type="text" name="nombre" value="#qUsuario.nombre#" required class="form-input-general" readonly><br>
+                                    <input type="text" name="nombre" value="#qUsuario.nombre#" required class="form-input-general"><br>
                                 </div>
 
                                 <!--- Campo de apellido paterno --->
@@ -202,7 +225,7 @@
                                     </label>
 
                                     <!--- Campo de texto para el apellido paterno --->
-                                    <input type="text" name="apellido_paterno" value="#qUsuario.apellido_paterno#" required class="form-input-general" readonly><br>
+                                    <input type="text" name="apellido_paterno" value="#qUsuario.apellido_paterno#" required class="form-input-general"><br>
                                 </div>
 
                                 <!--- Campo de apellido materno --->
@@ -213,7 +236,7 @@
                                     </label>
 
                                     <!--- Campo de texto para el apellido materno --->
-                                    <input type="text" name="apellido_materno" value="#qUsuario.apellido_materno#" required class="form-input-general" readonly><br>
+                                    <input type="text" name="apellido_materno" value="#qUsuario.apellido_materno#" required class="form-input-general"><br>
                                 </div>
                             </div>
                         </div>
@@ -221,8 +244,8 @@
                         <!--- Sección de envío --->
                         <div class="submit-section">
                             <!--- Botón para guardar los cambios --->
-                            <button type="submit" name="eliminar" class="submit-btn-eliminarUsuario">
-                                Eliminar
+                            <button type="submit" name="guardar" class="submit-btn-guardar">
+                                Guardar cambios
                             </button>
                         </div>
 
@@ -234,14 +257,14 @@
                                 <a class="submit-btn-regresar submit-btn-regresar-text" id="btnRegresar">
                                     Regresar
                                 </a>
-
+                                
                                 <!--- Botón para ir al menú principal --->
-                                <a href="menu.cfm" class="submit-btn-menu" style="text-decoration: none">
+                                <a href="../adminPanel.cfm" class="submit-btn-menu" style="text-decoration: none">
                                     Menu
                                 </a>
-                                
+
                                 <!--- Botón para cerrar sesión --->
-                                <a href="cerrarSesion.cfm" class="submit-btn-cerrarSesion submit-btn-cerrarSesion-text">
+                                <a href="../cerrarSesion.cfm" class="submit-btn-cerrarSesion submit-btn-cerrarSesion-text">
                                     Cerrar Sesion
                                 </a>
                             </div>
@@ -260,11 +283,11 @@
             btnRegresar.addEventListener('click', function() {
                 <!--- Verificamos si hay una página de referencia --->
                 if (document.referrer) {
-                    // Va a la página desde donde llegó
+                    <!--- Va a la página desde donde llegó --->
                     window.location.href = document.referrer;
                 } else {
-                    // Si no hay referrer, va a una página por defecto
-                    window.location.href = 'listaUsuarios.cfm';
+                    <!--- Si no hay referrer, va a una página por defecto --->
+                    window.location.href = 'listaUsuariosEditar.cfm';
                 }
             });
         </script>

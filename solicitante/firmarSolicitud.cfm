@@ -63,15 +63,15 @@
         <!-- Vista adaptable para dispositivos móviles -->
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <!--- Icono de la pagina --->
-        <link rel="icon" href="elements/icono.ico" type="image/x-icon">
+        <link rel="icon" href="../elements/icono.ico" type="image/x-icon">
         <!-- Título de la página -->
         <title>Firmar Solicitud</title>
         <!-- Enlace a fuentes y hojas de estilo -->
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="css/globalForm.css">
-        <link rel="stylesheet" href="css/svgFirma.css">
-        <link rel="stylesheet" href="css/firmarSolicitud.css">
-        <link rel="stylesheet" href="css/botones.css">
+        <link rel="stylesheet" href="../css/globalForm.css">
+        <link rel="stylesheet" href="../css/svgFirma.css">
+        <link rel="stylesheet" href="../css/firmarSolicitud.css">
+        <link rel="stylesheet" href="../css/botones.css">
     </head>
     <body>
         <!--- Validar que se recibió el id_solicitud --->
@@ -99,7 +99,7 @@
             <div class="header">
                 <!--- Logo y rol del usuario --->
                 <div class="logo">
-                    <cfset usuarioRol = createObject("component", "componentes/usuarioConectadoS").render()>
+                    <cfset usuarioRol = createObject("component", "../componentes/usuarioConectadoSSoli").render()>
                     <cfoutput>#usuarioRol#</cfoutput>
                 </div>
                 <!--- Título de la página --->
@@ -335,12 +335,12 @@
                         </a>
 
                         <!--- Botón Menú --->
-                        <a href="menu.cfm" class="submit-btn-menu submit-btn-menu-text" id="submit-btn-menu">
+                        <a href="../menu.cfm" class="submit-btn-menu submit-btn-menu-text" id="submit-btn-menu">
                             Menú
                         </a>
                         
                         <!--- Botón Cerrar Sesión --->
-                        <a href="cerrarSesion.cfm" class="submit-btn-cerrarSesion submit-btn-cerrarSesion-text">
+                        <a href="../cerrarSesion.cfm" class="submit-btn-cerrarSesion submit-btn-cerrarSesion-text">
                             Cerrar Sesion
                         </a>
                     </div>
@@ -362,7 +362,7 @@
             document.getElementById("submit-btn-menu").addEventListener("click", function(e) {
                 // Eliminamos la logica del botón 'limpiar' ya que no existe
                 e.preventDefault(); <!--- Prevenir la acción por defecto del enlace --->
-                window.location.href = "menu.cfm";
+                window.location.href = "../menu.cfm";
             });
         </script>
 

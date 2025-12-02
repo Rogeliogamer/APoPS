@@ -77,21 +77,21 @@
         <!--- Vista adaptable para dispositivos móviles --->
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <!--- Icono de la pagina --->
-        <link rel="icon" href="elements/icono.ico" type="image/x-icon">
+        <link rel="icon" href="../elements/icono.ico" type="image/x-icon">
         <!--- Título de la página --->
         <title>Solicitudes Firmadas</title>
         <!--- Enlace a fuentes y hojas de estilo --->
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="css/globalForm.css">
-        <link rel="stylesheet" href="css/tablas.css">
-        <link rel="stylesheet" href="css/botones.css">
-        <link rel="stylesheet" href="css/listaSolicitudes.css">
+        <link rel="stylesheet" href="../css/globalForm.css">
+        <link rel="stylesheet" href="../css/tablas.css">
+        <link rel="stylesheet" href="../css/botones.css">
+        <link rel="stylesheet" href="../css/listaSolicitudes.css">
     </head>
     <body>
         <!--- Verificación de sesión y rol --->
         <cfif NOT structKeyExists(session, "rol") 
             OR ListFindNoCase("RecursosHumanos", session.rol) EQ 0>
-            <cflocation url="menu.cfm" addtoken="no">
+            <cflocation url="../menu.cfm" addtoken="no">
         </cfif>
 
         <!--- Configuración de paginación --->
@@ -123,7 +123,7 @@
             <div class="header">
                 <!--- Logo con el rol del usuario --->
                 <div class="logo">
-                    <cfset usuarioRol = createObject("component", "componentes/usuarioConectadoS").render()>
+                    <cfset usuarioRol = createObject("component", "../componentes/usuarioConectadoSSoli").render()>
                     <cfoutput>#usuarioRol#</cfoutput>
                 </div>
                 <!--- Título de la página --->
@@ -279,12 +279,12 @@
                     <!--- Botón para regresar al menú principal --->
                     <div class="field-group">
                         <!--- Botón de menú --->
-                        <a href="menu.cfm" class="submit-btn-menu submit-btn-menu-text">
+                        <a href="../menu.cfm" class="submit-btn-menu submit-btn-menu-text">
                             Menú
                         </a>
                         
                         <!--- Botón para cerrar sesión --->
-                        <a href="cerrarSesion.cfm" class="submit-btn-cerrarSesion submit-btn-cerrarSesion-text">
+                        <a href="../cerrarSesion.cfm" class="submit-btn-cerrarSesion submit-btn-cerrarSesion-text">
                             Cerrar Sesion
                         </a>
                     </div>

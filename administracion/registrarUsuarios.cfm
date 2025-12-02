@@ -18,14 +18,14 @@
         <!--- Vista adaptable para dispositivos móviles --->
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <!--- Icono de la pagina --->
-        <link rel="icon" href="elements/icono.ico" type="image/x-icon">
+        <link rel="icon" href="../elements/icono.ico" type="image/x-icon">
         <!--- Título de la página --->
         <title>Registrar Usuario</title>
         <!--- Enlace a fuentes y hojas de estilo --->
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="css/globalForm.css">
-        <link rel="stylesheet" href="css/registrarUsuarios.css">
-        <link rel="stylesheet" href="css/botones.css">
+        <link rel="stylesheet" href="../css/globalForm.css">
+        <link rel="stylesheet" href="../css/registrarUsuarios.css">
+        <link rel="stylesheet" href="../css/botones.css">
     </head>
     <body>
         <!--- Verificar si el usuario esta logeado --->
@@ -41,7 +41,7 @@
                 <!--- Nombre del usuario y rol que esta conectado --->
                 <div class="logo">
                     <!--- Llamar al componente para mostrar el usuario conectado y su rol --->
-                    <cfset usuarioRol = createObject("component", "componentes/usuarioConectadoS").render()>
+                    <cfset usuarioRol = createObject("component", "../componentes/usuarioConectadoSAdmin").render()>
                     <!--- Mostrar el nombre del usuario y su rol --->
                     <cfoutput>#usuarioRol#</cfoutput>
                 </div>
@@ -266,9 +266,9 @@
 
                     <div class="submit-section">
                         <!--- Enlace para regresar al menú principal --->
-                        <a href="menu.cfm" class="submit-btn-menu">Menu</a>
+                        <a href="../adminPanel.cfm" class="submit-btn-menu">Menu</a>
                         <!--- Enlace para cerrar sesión --->
-                        <a href="cerrarSesion.cfm" class="submit-btn-cerrarSesion">
+                        <a href="../cerrarSesion.cfm" class="submit-btn-cerrarSesion">
                             Cerrar Sesion
                         </a>
                     </div>
@@ -277,6 +277,6 @@
         </div>
         
         <!--- Enlace al archivo JavaScript para validación del formulario --->
-        <script src="js/validacionRegistrarUsuarios.js"></script>
+        <script src="../js/validacionRegistrarUsuarios.js"></script>
     </body>
 </html>

@@ -80,30 +80,14 @@
                 <!--- Verificar si el usuario tiene acceso a esta página --->
                 <cfif tieneAcceso("pase.cfm")>
                     <!--- Enlace habilitado --->
-                    <a href="pase.cfm" class="submit-btn-menu-original">Solicitar</a>
+                    <a href="solicitante/pase.cfm" class="submit-btn-menu-original">Solicitar</a>
                 <!--- Enlace deshabilitado --->
                 <cfelse>
                     <a href="##" class="disabled">Solicitar</a>
                 </cfif>
             </div>
 
-            <!--- 2. registrarUsuarios.cfm --->
-            <!--- Tarjeta de menú para registrar nuevos usuarios --->
-            <div class="menu-card">
-                <!--- Título y descripción --->
-                <h2>Registrar usuarios</h2>
-                <p>Registra usuarios en el sistema</p>
-                <!--- Verificar si el usuario tiene acceso a esta página --->
-                <cfif tieneAcceso("registrarUsuarios.cfm")>
-                    <!--- Enlace habilitado --->
-                    <a href="registrarUsuarios.cfm" class="submit-btn-menu-original">Registrar</a>
-                <!--- Enlace deshabilitado --->
-                <cfelse>
-                    <a href="##" class="disabled">Registrar</a>
-                </cfif>
-            </div>
-
-            <!--- 3. listaUsuarios.cfm --->
+            <!--- 2. listaUsuarios.cfm --->
             <!--- Tarjeta de menú para ver la lista de usuarios --->
             <div class="menu-card">
                 <!--- Título y descripción --->
@@ -112,14 +96,14 @@
                 <!--- Verificar si el usuario tiene acceso a esta página --->
                 <cfif tieneAcceso("listaUsuarios.cfm")>
                     <!--- Enlace habilitado --->
-                    <a href="listaUsuarios.cfm" class="submit-btn-menu-original">Ver</a>
+                    <a href="solicitante/listaUsuarios.cfm" class="submit-btn-menu-original">Ver</a>
                 <!--- Enlace deshabilitado --->
                 <cfelse>
                     <a href="##" class="disabled">Ver</a>
                 </cfif>
             </div>
 
-            <!--- 4. pendientesFirmar.cfm --->
+            <!--- 3. pendientesFirmar.cfm --->
             <!--- Tarjeta de menú para ver solicitudes pendientes de firma --->
             <div class="menu-card">
                 <!--- Título y descripción --->
@@ -128,14 +112,14 @@
                 <!--- Verificar si el usuario tiene acceso a esta página --->
                 <cfif tieneAcceso("pendientesFirmar.cfm")>
                     <!--- Enlace habilitado --->
-                    <a href="pendientesFirmar.cfm" class="submit-btn-menu-original">Pendientes</a>
+                    <a href="solicitante/pendientesFirmar.cfm" class="submit-btn-menu-original">Pendientes</a>
                 <!--- Enlace deshabilitado --->
                 <cfelse>
                     <a href="##" class="disabled">Pendientes</a>
                 </cfif>
             </div>
 
-            <!--- 5. firmados.cfm --->
+            <!--- 4. firmados.cfm --->
             <!--- Tarjeta de menú para ver solicitudes ya firmadas --->
             <div class="menu-card">
                 <!--- Título y descripción --->
@@ -144,14 +128,14 @@
                 <!--- Verificar si el usuario tiene acceso a esta página --->
                 <cfif tieneAcceso("firmados.cfm")>
                     <!--- Enlace habilitado --->
-                    <a href="firmados.cfm" class="submit-btn-menu-original">Firmados</a>
+                    <a href="solicitante/firmados.cfm" class="submit-btn-menu-original">Firmados</a>
                 <!--- Enlace deshabilitado --->
                 <cfelse>
                     <a href="##" class="disabled">Firmados</a>
                 </cfif>
             </div>
 
-            <!--- 6. listaSolicitudes.cfm --->
+            <!--- 5. listaSolicitudes.cfm --->
             <!--- Tarjeta de menú para ver el pase completo --->
             <div class="menu-card">
                 <!--- Título y descripción --->
@@ -160,14 +144,14 @@
                 <!--- Verificar si el usuario tiene acceso a esta página --->
                 <cfif tieneAcceso("listaSolicitudes.cfm")>
                     <!--- Enlace habilitado --->
-                    <a href="listaSolicitudes.cfm" class="submit-btn-menu-original">Detalles</a>
+                    <a href="solicitante/listaSolicitudes.cfm" class="submit-btn-menu-original">Detalles</a>
                 <!--- Enlace deshabilitado --->
                 <cfelse>
                     <a href="##" class="disabled">Detalles</a>
                 </cfif>
             </div>
 
-            <!--- 7. metricas.cfm --->
+            <!--- 6. metricas.cfm --->
             <!--- Tarjeta de menú para ver métricas y gráficos --->
             <div class="menu-card">
                 <!--- Título y descripción --->
@@ -176,14 +160,14 @@
                 <!--- Verificar si el usuario tiene acceso a esta página --->
                 <cfif tieneAcceso("metricas.cfm")>
                     <!--- Enlace habilitado --->
-                    <a href="metricas.cfm" class="submit-btn-menu-original">Detalles</a>
+                    <a href="solicitante/metricas.cfm" class="submit-btn-menu-original">Detalles</a>
                 <!--- Enlace deshabilitado --->
                 <cfelse>
                     <a href="##" class="disabled">Detalles</a>
                 </cfif>
             </div>
 
-            <!--- 8. listaTodasSolicitudes.cfm --->
+            <!--- 7. listaTodasSolicitudes.cfm --->
             <!--- Tarjeta de menú para ver todas las solicitudes --->
             <div class="menu-card">
                 <!--- Título y descripción --->
@@ -192,7 +176,7 @@
                 <!--- Verificar si el usuario tiene acceso a esta página --->
                 <cfif tieneAcceso("listaTodasSolicitudes.cfm")>
                     <!--- Enlace habilitado --->
-                    <a href="listaTodasSolicitudes.cfm" class="submit-btn-menu-original">Detalles</a>
+                    <a href="solicitante/listaTodasSolicitudes.cfm" class="submit-btn-menu-original">Detalles</a>
                 <!--- Enlace deshabilitado --->
                 <cfelse>
                     <a href="##" class="disabled">Detalles</a>
