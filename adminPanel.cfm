@@ -33,8 +33,11 @@
                         "listaUsuariosEditar.cfm",
                         "listaUsuariosEliminar.cfm",
                         "listaUsuariosReset.cfm",
-                        
-                        "listaUsuarios.cfm"]
+                        "agregarAreas.cfm",
+                        "listaUsuarios.cfm",
+                        "listaSolicitudes.cfm",
+                        "listaFirmaSolicitudes.cfm",
+                        "listaAreas.cfm"]
         };
 
         <!--- Validar si el rol existe en el struct --->
@@ -237,7 +240,7 @@
                 <!--- Verificar si el usuario tiene acceso a esta página --->
                 <cfif tieneAcceso("listaAreas.cfm")>
                     <!--- Enlace habilitado --->
-                    <a href="administracion/listaArea.cfm" class="submit-btn-menu-original">Acceder</a>
+                    <a href="administracion/listaAreas.cfm" class="submit-btn-menu-original">Acceder</a>
                 <!--- Enlace deshabilitado --->
                 <cfelse>
                     <a href="##" class="disabled">Acceder</a>
