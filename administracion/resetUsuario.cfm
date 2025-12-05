@@ -1,18 +1,27 @@
 <!---
- * Página `eliminarUsuario.cfm` para la eliminación de la información de un usuario.
- *
- * Funcionalidad:
- * - Permite al administrador eliminar al usuario seleccionado.
- * - Recibe el ID del usuario a eliminar mediante un formulario POST.
- * - Valida que el ID sea válido y que el usuario exista en la base de datos.
- * - Si el usuario existe, se muestra un formulario con los datos actuales del usuario.
- * - Al confirmar la eliminación, se actualiza el campo `activo` a 0 en la tabla de usuarios (borrado lógico).
- * - Se proporciona retroalimentación al administrador sobre el resultado de la operación.
- * - En caso de que el usuario no exista, se muestra un mensaje de error.
- * - Al finalizar, se redirige automáticamente a la lista de usuarios.
- *
- * Uso:
- * - Página destinada a la desactivación (borrado lógico) de usuarios registrados en el sistema.
+ * Nombre de la pagina: administracion/resetUsuario.cfm
+ * 
+ * Descripción:
+ * Esta página permite a los administradores restablecer la contraseña de un usuario específico.
+ * Incluye validaciones de seguridad para la nueva contraseña y actualiza la base de datos.
+ * Muestra mensajes de error si la contraseña no cumple con los requisitos.
+ * 
+ * Roles:
+ * Admin: Solo accesible para usuarios con rol de administrador.
+ * 
+ * Paginas relacionadas:
+ * login.cfm - Página de inicio de sesión.
+ * menu.cfm - Menú principal del sistema.
+ * listaUsuariosReset.cfm - Lista de usuarios para resetear contraseña.
+ * adminPanel.cfm - Panel de administración.
+ * cerrarSesion.cfm - Cierre de sesión del usuario.
+ * validacionResetContraseña.js - Validación del formulario de reset de contraseña.
+ * 
+ * Autor: Rogelio Perez Guevara
+ * 
+ * Fecha de creación: 02-12-2025
+ * 
+ * Versión: 1.0
 --->
 
 <!DOCTYPE html>
@@ -33,13 +42,12 @@
     </head>
     <body>
         <!--- Verificación de sesión y rol --->
-        <cfif NOT structKeyExists(session, "usuario") 
-            OR NOT structKeyExists(session, "rol")
-            OR len(trim(session.rol)) EQ 0>
-            <!--- No hay sesión activa --->
+        <cfif NOT (structKeyExists(session, "rol") AND len(trim(session.usuario)))>
+            <!--- Redirigir a la página de login si no hay sesión activa --->
             <cflocation url="../login.cfm" addtoken="no">
-        <cfelseif listFindNoCase("admin", trim(session.rol)) EQ 0>
-            <!--- Rol no autorizado --->
+        <!--- Verificar si el rol del usuario es Admin --->
+        <cfelseif ListFindNoCase("Admin", session.rol) EQ 0>
+            <!--- Redirigir a la página de menú si el rol no es Admin --->
             <cflocation url="../menu.cfm" addtoken="no">
         </cfif>
 
@@ -230,7 +238,7 @@
                             </div>
                         </div>
 
-                        <!--- Seccion de Reset Contraseña --->
+                        <!--- Sección de Reset Contraseña --->
                         <div class="section">
                             <!--- Título de la sección --->
                             <div class="section-title">
@@ -261,7 +269,7 @@
                         <!--- Sección de envío --->
                         <div class="submit-section">
                             <!--- Botón para guardar los cambios --->
-                            <button type="submit" name="reset" class="submit-btn-eliminarUsuario">
+                            <button type="submit" name="reset" class="submit-btn-reset">
                                 Actualizar Contraseña
                             </button>
                         </div>
@@ -282,7 +290,7 @@
                                 
                                 <!--- Botón para cerrar sesión --->
                                 <a href="../cerrarSesion.cfm" class="submit-btn-cerrarSesion submit-btn-cerrarSesion-text">
-                                    Cerrar Sesion
+                                    Cerrar Sesión
                                 </a>
                             </div>
                         </div>

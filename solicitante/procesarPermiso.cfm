@@ -1,5 +1,24 @@
-<!--- DEBUG temporal: ver qué llega en FORM --->
-<!--- <cfdump var="#FORM#"><cfabort> --->
+<!--- 
+ * Nombre de la pagina: procesarPermiso.cfm
+ * 
+ * Descripción:
+ * Esta página procesa la solicitud de permiso enviada por el solicitante,
+ * guarda la firma SVG en la base de datos y verifica si se ha excedido
+ * el límite sugerido de solicitudes personales por mes.
+ * Luego redirige al usuario al menú principal.
+ * 
+ * Roles:
+ * No aplica (se usa la sesión del solicitante).
+ * 
+ * Paginas relacionadas:
+ * menu.cfm - Página principal del sistema.
+ * 
+ * Autor: Rogelio Pérez Guevara
+ * 
+ * Fecha de creación: 29-09-2025
+ * 
+ * Versión: 1.0
+--->
 
 <cfif NOT StructKeyExists(FORM, "firma_svg") OR Len(Trim(FORM.firma_svg)) EQ 0>
   <cfoutput>

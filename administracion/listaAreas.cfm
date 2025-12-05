@@ -1,18 +1,27 @@
 <!---
- * Componente `listaUsuarios.cfc` para la visualización y gestión de usuarios.
- *
- * Acceso:
- * - Permitido únicamente a usuarios con rol: `admin`, `expediente`, `RecursosHumanos` y `jefe`.
- * - Rol `usuario` no tiene acceso a esta página.
- *
- * Funcionalidad:
- * - Muestra la lista de usuarios filtrada según los privilegios del rol autenticado.
- * - La búsqueda de usuarios también respeta las restricciones de acceso por rol.
- * - Garantiza un nivel de seguridad al limitar la visibilidad de la información sensible.
- *
- * Permisos especiales:
- * - Solo los usuarios con rol `admin` tienen habilitados los botones de **Editar** y **Eliminar**.
- * - Cada acción redirige a la página correspondiente con la información del usuario seleccionado.
+ * Nombre de la pagina: administracion/listaAreas.cfm
+ * 
+ * Descripción: 
+ * Esta página muestra una lista paginada de las áreas de adscripción registradas en el
+ * sistema. Permite buscar áreas por ID o nombre, y está restringida a usuarios con rol
+ * de administrador. Incluye validaciones para asegurar que solo los usuarios autorizados
+ * puedan acceder a la información.
+ * 
+ * Roles:
+ * Admin: Acceso completo para ver la lista de áreas.
+ * 
+ * Paginas relacionadas:
+ * login.cfm - Página de inicio de sesión.
+ * menu.cfm - Menú principal del sistema.
+ * listaAreas.cfm - Página actual que muestra la lista de áreas.
+ * adminPanel.cfm - Panel de administración.
+ * cerrarSesion.cfm - Cierre de sesión del usuario.
+ * 
+ * Autor: Rogelio Perez Guevara
+ * 
+ * Fecha de creación: 03-12-2025
+ * 
+ * Versión: 1.0
 --->
 
 <!--- Lógica de manejo de parámetros y búsqueda --->
@@ -47,7 +56,7 @@
         <!--- Icono de la pagina --->
         <link rel="icon" href="../elements/icono.ico" type="image/x-icon">
         <!--- Título de la página --->
-        <title>Lista de Solicitudes</title>
+        <title>Lista de Areas</title>
         <!--- Enlace a fuentes y hojas de estilo --->
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="../css/globalForm.css">
@@ -57,13 +66,12 @@
     </head>
     <body>
         <!--- Verificación de sesión y rol --->
-        <cfif NOT structKeyExists(session, "usuario") 
-            OR NOT structKeyExists(session, "rol")
-            OR len(trim(session.rol)) EQ 0>
-            <!--- No hay sesión activa --->
+        <cfif NOT (structKeyExists(session, "rol") AND len(trim(session.usuario)))>
+            <!--- Redirigir a la página de login si no hay sesión activa --->
             <cflocation url="../login.cfm" addtoken="no">
-        <cfelseif listFindNoCase("admin", trim(session.rol)) EQ 0>
-            <!--- Rol no autorizado --->
+        <!--- Verificar si el rol del usuario es Admin --->
+        <cfelseif ListFindNoCase("Admin", session.rol) EQ 0>
+            <!--- Redirigir a la página de menú si el rol no es Admin --->
             <cflocation url="../menu.cfm" addtoken="no">
         </cfif>
 
@@ -122,7 +130,7 @@
             <!--- Contenedor del formulario y tabla --->
             <div class="form-container">
                 <!--- Formulario de búsqueda --->
-                <form method="post" action="../administracion/listaFirmaSolicitudes.cfm" class="field-group single">
+                <form method="post" action="../administracion/listaAreas.cfm" class="field-group single">
                     <!--- Campo de búsqueda --->
                     <div class="form-field">
                         <!--- Etiqueta y campo de entrada --->
@@ -160,7 +168,7 @@
                             <!--- Encabezados de la tabla --->
                             <tr class="titulos-tabla">
                                 <!--- Encabezados de las columnas --->
-                                <td class="titulo-general">ID AREA</td>
+                                <td class="titulo-general-centrado">ID AREA</td>
                                 <td class="titulo-general">NOMBRE</td>
                             </tr>
 
@@ -169,7 +177,7 @@
                                 <!--- Fila de datos --->
                                 <tr>
                                     <!--- Datos del usuario --->
-                                    <td>#id_area#</td>
+                                    <td class="titulo-general-centrado">#id_area#</td>
                                     <td>#nombre#</td>
                                 </tr>
                             </cfoutput>

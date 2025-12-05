@@ -1,3 +1,24 @@
+<!--- 
+ * API: obtenerSolicitudesAreaSeleccionada.cfm
+ * 
+ * Descripción:
+ * proporciona una API para obtener los solicitantes y el conteo de sus solicitudes en un área específica
+ * dentro de un rango de fechas determinado.
+ *  
+ * Parámetros de entrada:
+ *   - rango (opcional): Número de días para el rango de fechas (por defecto 30 días)
+ *   - area (requerido): ID del área para filtrar los solicitantes
+ * 
+ * Parámetros de salida:
+ * JSON con la lista de solicitantes y el conteo de sus solicitudes por estado
+ * 
+ * Autor: Rogelio Perez Guevara
+ * 
+ * Fecha de creación: 20-10-2025
+ * 
+ * Versión: 1.0   
+ --->
+
 <cfsetting enablecfoutputonly="yes">
 <cfcontent type="application/json; charset=utf-8">
 

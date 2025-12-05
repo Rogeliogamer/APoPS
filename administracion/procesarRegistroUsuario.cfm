@@ -1,3 +1,36 @@
+<!---
+ * Nombre de la pagina: administracion/procesarRegistroUsuario.cfm
+ * 
+ * Descripción: 
+ * Este archivo procesa el registro de un nuevo usuario en el sistema.
+ * Realiza validaciones de seguridad, verifica la existencia del usuario,
+ * y almacena los datos en la base de datos.
+ * Utiliza hashing para la contraseña y maneja errores adecuadamente.
+ * Redirige al usuario con mensajes de éxito o error según corresponda.
+ * 
+ * Roles:
+ * No aplica (solo accesible para administradores).
+ * 
+ * Paginas relacionadas:
+ * registrarUsuarios.cfm - Formulario de registro de usuarios.
+ * 
+ * Autor: Rogelio Perez Guevara
+ * 
+ * Fecha de creación: 25-09-2025
+ * 
+ * Versión: 1.0
+--->
+
+<!--- Verificación de sesión y rol --->
+<cfif NOT (structKeyExists(session, "rol") AND len(trim(session.usuario)))>
+<!--- Redirigir a la página de login si no hay sesión activa --->
+    <cflocation url="../login.cfm" addtoken="no">
+<!--- Verificar si el rol del usuario es Admin --->
+<cfelseif ListFindNoCase("Admin", session.rol) EQ 0>
+    <!--- Redirigir a la página de menú si el rol no es Admin --->
+    <cflocation url="../menu.cfm" addtoken="no">
+</cfif>
+
 <!-- procesarRegistroUsuario.cfm -->
 <cftry>
     <!-- Obtener y limpiar los datos del formulario -->
@@ -98,7 +131,7 @@
 
     <!-- Establecer mensajes de éxito en la sesión -->
     <cfset session.mensajeRegistro = "Usuario registrado correctamente.">
-    <cfset session.tipoMensaje = "exito">
+    <cfset session.tipoMensaje = "éxito">
     
     <!-- Redirigir de vuelta al formulario de registro -->
     <cflocation url="registrarUsuarios.cfm" addtoken="no">

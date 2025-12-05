@@ -1,17 +1,31 @@
 <!---
- * Página pública de acceso (login).
- *
- * Características:
- * - Accesible sin autenticación previa, ya que permite iniciar sesión.
- * - Requiere credenciales válidas (usuario y contraseña) para acceder al sistema.
- * - Si las credenciales no son correctas, el acceso se deniega y el usuario permanece en `login.cfm`.
- *
- * Nota:
- * Esta página actúa como puerta de entrada al sistema; todas las demás requieren sesión activa.
+ * Nombre de la pagina: login.cfm
+ * 
+ * Descripción:
+ * Esta pagina no va permitir acceder al sistemas de acuerdo al tipo de rol de usuario,
+ * por lo que de acuerdo a dicho rol se le permitirán ciertas funciones dentro del sistema.
+ * En caso de no poder acceder se mostrara un mensaje de error y se mantendrá en la misma pagina
+ * hasta que ingrese los datos correctos.
+ * 
+ * Roles:
+ * - Usuarios: Pueden iniciar sesión y acceder al sistema según su rol.
+ * - Administradores: Tienen acceso a funciones adicionales y pueden gestionar usuarios.
+ * 
+ * Páginas Relacionadas:
+ * - `menu.cfm`: Página principal del sistema tras el inicio de sesión.
+ * - `adminPanel.cfm`: Panel de administración para usuarios con rol de administrador.
+ * - `elements/icono.ico`: Icono utilizado en la pestaña del navegador.
+ * - `css/globalForm.css`: Hoja de estilos para formularios globales.
+ * - `css/botones.css`: Hoja de estilos para botones.
+ * 
+ * Autor: Rogelio Pérez Guevara
+ * Fecha de creación: 24-09-2025
+ * Última modificación: 03-12-2025
+ * Versión: 1.0
 --->
 
 <!DOCTYPE html>
-<html>
+<html lang="es">
     <head>
         <!--- Metadatos y enlaces a estilos --->
         <meta charset="UTF-8">
@@ -97,8 +111,8 @@
                 INNER JOIN datos_usuario d 
                     ON u.id_datos = d.id_datos
                 WHERE u.usuario = <cfqueryparam value="#form.usuario#" cfsqltype="cf_sql_varchar">
-                AND u.contraseña = <cfqueryparam value="#contrasenaHasheada#" cfsqltype="cf_sql_varchar">
-                AND u.activo = 1
+                    AND u.contraseña = <cfqueryparam value="#contrasenaHasheada#" cfsqltype="cf_sql_varchar">
+                    AND u.activo = 1
             </cfquery>
 
             <!--- Verificar si se encontró un usuario con las credenciales proporcionadas --->

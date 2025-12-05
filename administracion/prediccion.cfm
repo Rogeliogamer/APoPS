@@ -1,12 +1,30 @@
 <!---
- * Dashboard Integral para Sistema de Permisos
- * Integra datos reales desde getDashboardData.cfm
+ * Nombre de la pagina: administracion/prediccion.cfm
+ * 
+ * Descripción:
+ * Esta página muestra una gráfica de "Personal VS Oficial" basada en los datos seleccionados por el usuario.
+ * Permite a los usuarios con rol de "Admin" filtrar los datos por rango de
+ * fechas y área, y visualizar la información en una gráfica de pastel.
+ * 
+ * Roles:
+ * Admin: Acceso completo para ver y filtrar la gráfica.
+ * 
+ * Paginas relacionadas:
+ * menu.cfm: Panel principal del sistema.
+ * adminPanel.cfm: Panel de administración.
+ * cerrarSesion.cfm: Cierre de sesión del usuario.
+ * jquery-3.6.0.min.js: Biblioteca jQuery para manipulación del DOM y AJAX.
+ * obtenerPrediccion.cfc: API para obtener los datos de predicción.
+ * https://cdn.jsdelivr.net/npm/chart.js: Biblioteca Chart.js para renderizar gráficas.
+ * metricas.js: Script personalizado para manejar métricas y gráficas.
+ * graficasKPI.js: Script personalizado para renderizar gráficas KPI.
+ * 
+ * Autor: Rogelio Perez Guevara
+ * 
+ * Fecha de creación: 01-12-2025
+ * 
+ * Versión: 1.0
 --->
-
-<!--- Verificación de sesión --->
-<cfif NOT structKeyExists(session, "rol")>
-    <cflocation url="index.cfm" addtoken="no">
-</cfif>
 
 <!DOCTYPE html>
 <html lang="es">
@@ -18,7 +36,7 @@
         <!--- Icono de la pagina --->
         <link rel="icon" href="../elements/icono.ico" type="image/x-icon">
         <!--- Título de la página --->
-        <title>Grafica - Prediccion</title>
+        <title>Grafica - Predicción</title>
         <!-- Carga de jQuery (local) -->
         <script src="../js/jquery-3.6.0.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -33,9 +51,13 @@
         <link rel="stylesheet" href="../css/temp.css">
     </head>
     <body>
-        <!-- Verificación de sesión y rol -->
-        <cfif NOT structKeyExists(session, "rol") 
-            OR ListFindNoCase("Admin", session.rol) EQ 0>
+        <!--- Verificación de sesión y rol --->
+        <cfif NOT (structKeyExists(session, "rol") AND len(trim(session.usuario)))>
+            <!--- Redirigir a la página de login si no hay sesión activa --->
+            <cflocation url="../login.cfm" addtoken="no">
+        <!--- Verificar si el rol del usuario es Admin --->
+        <cfelseif ListFindNoCase("Admin", session.rol) EQ 0>
+            <!--- Redirigir a la página de menú si el rol no es Admin --->
             <cflocation url="../menu.cfm" addtoken="no">
         </cfif>
 
@@ -49,7 +71,7 @@
                 </div>
 
                 <!-- Nombre del formulario -->
-                <h1>Metricas</h1>
+                <h1>Predicción</h1>
             </div>
 
             <div class="loading-overlay" id="loadingOverlay">
@@ -76,10 +98,10 @@
                         <!--- Select dinámico --->
                         <select class="form-input-general" id="areaSeleccionada">
                             <!--- Opción para todas las áreas --->
-                            <option value="">-- Seleciona un área --</option>
+                            <option value="">-- Selecciona un área --</option>
                                 
                             <!--- Consultar áreas según el rol del usuario --->
-                            <cfif ListFindNoCase("Admin,RecursosHumanos,Autorizacion,Expediente", session.rol)>
+                            <cfif ListFindNoCase("Admin,RecursosHumanos", session.rol)>
                                 <!--- Estos roles pueden ver todas las áreas --->
                                 <cfquery name="getAreas" datasource="Autorizacion">
                                     SELECT id_area, 
@@ -120,14 +142,14 @@
                     </div>
                 </div>
 
-                <!-- prediccion a futuro -->
+                <!-- predicción a futuro -->
                 <div class="section container-fluid">
                     <div class="kpi-header">
                         <div class="chart-title text-center mb-2">
-                            Predicion a 7 dias por area seleccionada
+                            Predicción a 7 dias por area seleccionada
                         </div>
-                        <div class="chart-wrapper-fixed">
-                            <canvas id="chartPredicion" class="w-100"></canvas>
+                        <div style="position: relative; height: 250px; width: 100%;">
+                            <canvas id="chartPredicion"></canvas>
                         </div>
                         <!-- Overlay solo para este canvas -->
                         <div class="canvasOverlay">
@@ -142,7 +164,7 @@
         <script src="js/jquery-3.6.0.min.js"></script>
 
         <!---
-            Seccion -> 3, 4
+            Sección -> 3, 4
             Grafica -> 1, 2, 3, 4, 5, 6, 7
             Quita los overlays de las graficas
         --->
@@ -154,9 +176,9 @@
         </script>
 
         <!---
-            Seccion -> 4
+            Sección -> 4
             Grafica -> 7
-            Grafica -> Predicion a 7 dias por area selecionada
+            Grafica -> Predicción a 7 dias por area seleccionada
         --->
         <script>
             $(document).ready(function() {
@@ -186,7 +208,7 @@
             });
 
             function renderAdvancedChart(data) {
-                // Usamo fecha y nombre del dia para el eje X
+                // Usamos fecha y nombre del dia para el eje X
                 const labels = data.map(d => `${d.nombre_dia} ${d.fecha}`);
                 const ctx = document.getElementById('chartPredicion').getContext('2d');
 
@@ -260,7 +282,7 @@
                             borderColor: '#3399ff',
                             backgroundColor: 'rgba(51,153,255,0.1)',
                             fill: false,
-                            tension: 0, // Linea recta para datos tecnicos
+                            tension: 0, // Linea recta para datos técnicos
                             pointRadius: 0, // Ocultar puntos para limpiar ruido visual
                             borderWidth: 1,
                             yAxisID: 'yCredibilidad',

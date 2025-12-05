@@ -1,6 +1,31 @@
 <!---
- * Dashboard Integral para Sistema de Permisos
- * Integra datos reales desde getDashboardData.cfm
+ * Nombre de la pagina: administracion/etapasFirma.cfm
+ * 
+ * Descripción:
+ * Esta página muestra las métricas relacionadas con las etapas de firma de las solicitudes.
+ * Permite a los administradores filtrar las métricas por rango de fechas y área de
+ * adscripción. Utiliza Chart.js para representar gráficamente los datos.
+ * Incluye validaciones de sesión y rol para asegurar que solo los usuarios autorizados
+ * puedan acceder a la página.
+ * 
+ * Roles:
+ * Admin: Acceso completo a las métricas de etapas de firma.
+ * 
+ * Paginas relacionadas:
+ * menu.cfm: Página principal del sistema.
+ * adminPanel.cfm: Panel de administración.
+ * cerrarSesion.cfm: Cierre de sesión del usuario.
+ * jquery-3.6.0.min.js: Biblioteca jQuery para manipulación del DOM y AJAX.
+ * obtenerFirmasPorRol.cfm: API para obtener datos de firmas por rol.
+ * https://cdn.jsdelivr.net/npm/chart.js: Biblioteca Chart.js para gráficos.
+ * metricas.js: Script personalizado para manejar métricas.
+ * graficasKPI.js: Script personalizado para manejar gráficas de KPI.
+ * 
+ * Autor: Rogelio Perez Guevara
+ * 
+ * Fecha de creación: 01-12-2025
+ * 
+ * Versión: 1.0
 --->
 
 <!--- Verificación de sesión --->
@@ -33,10 +58,14 @@
         <link rel="stylesheet" href="../css/temp.css">
     </head>
     <body>
-        <!-- Verificación de sesión y rol -->
-        <cfif NOT structKeyExists(session, "rol") 
-            OR ListFindNoCase("Admin", session.rol) EQ 0>
-            <cflocation url="menu.cfm" addtoken="no">
+        <!--- Verificación de sesión y rol --->
+        <cfif NOT (structKeyExists(session, "rol") AND len(trim(session.usuario)))>
+            <!--- Redirigir a la página de login si no hay sesión activa --->
+            <cflocation url="../login.cfm" addtoken="no">
+        <!--- Verificar si el rol del usuario es Admin --->
+        <cfelseif ListFindNoCase("Admin", session.rol) EQ 0>
+            <!--- Redirigir a la página de menú si el rol no es Admin --->
+            <cflocation url="../menu.cfm" addtoken="no">
         </cfif>
 
         <div class="container">
@@ -49,7 +78,7 @@
                 </div>
 
                 <!-- Nombre del formulario -->
-                <h1>Metricas</h1>
+                <h1>Etapas de Firma</h1>
             </div>
 
             <div class="loading-overlay" id="loadingOverlay">
@@ -76,7 +105,7 @@
                         <!--- Select dinámico --->
                         <select class="form-input-general" id="areaSeleccionada">
                             <!--- Opción para todas las áreas --->
-                            <option value="">-- Seleciona un área --</option>
+                            <option value="">-- Selecciona un área --</option>
                                 
                             <!--- Consultar áreas según el rol del usuario --->
                             <cfif ListFindNoCase("Admin", session.rol)>
@@ -124,7 +153,10 @@
                 <div class="section container-fluid">
                     <div class="kpi-header">
                         <div class="chart-title">Etapa de Firma</div>
-                        <canvas id="chartEtapas" height="250"></canvas>
+                        <div style="position: relative; height: 250px; width: 100%;">
+                            <canvas id="chartEtapas"></canvas>
+                        </div>
+                        
                         <!-- Overlay solo para este canvas -->
                         <div class="canvasOverlay">
                             ¡A punto de revelar las estadísticas!
@@ -138,7 +170,7 @@
         <script src="../js/jquery-3.6.0.min.js"></script>
 
         <!---
-            Seccion -> 3
+            Sección -> 3
             Grafica -> 2
             Grafica -> Etapa de Firma
         --->
@@ -148,6 +180,10 @@
 
                 const rango = $('#rangoFechas').val();
                 const area = $('#areaSeleccionada').val();
+                if(area === "") {
+                    alert("Por favor, selecciona un área para continuar.");
+                    return;
+                }
 
                 // --- Graficar Etapas de Firma ---
                 $.ajax({
@@ -189,6 +225,7 @@
                             },
                             options: {
                                 responsive: true,
+                                maintainAspectRatio: false,
                                 scales: {
                                     y: {
                                         beginAtZero: true,
@@ -205,12 +242,14 @@
                         console.error(err);
                         alert("Ocurrió un error al cargar la gráfica de firmas.");
                     }
+
+
                 });
             });
         </script>
 
         <!---
-            Seccion -> 3, 4
+            Sección -> 3, 4
             Grafica -> 1, 2, 3, 4, 5, 6, 7
             Quita los overlays de las graficas
         --->

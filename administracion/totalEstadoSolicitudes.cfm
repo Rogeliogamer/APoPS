@@ -1,6 +1,32 @@
 <!---
- * Dashboard Integral para Sistema de Permisos
- * Integra datos reales desde getDashboardData.cfm
+ * Nombre de la pagina: administracion/totalEstadoSolicitudes.cfm
+ * 
+ * Descripción: 
+ * Esta página muestra las métricas y el estado total de las solicitudes
+ * realizadas en el sistema. Incluye gráficos y KPIs para visualizar
+ * el total de solicitudes, aprobadas, pendientes, rechazadas y el tiempo
+ * promedio de aprobación.
+ * Permite filtrar por rango de fechas y área de adscripción.
+ * Utiliza AJAX para actualizar los datos sin recargar la página.
+ * 
+ * Roles:
+ * Admin: Acceso completo a las métricas.
+ * 
+ * Paginas relacionadas:
+ * menu.cfm: Página principal del menú.
+ * adminPanel.cfm: Panel de administración.
+ * cerrarSesion.cfm: Cierre de sesión del usuario.
+ * jquery-3.6.0.min.js: Biblioteca jQuery para manipulación del DOM y AJAX.
+ * obtenerMetricas.cfm: API para obtener los datos de las métricas.
+ * https://cdn.jsdelivr.net/npm/chart.js: Biblioteca Chart.js para gráficos.
+ * metricas.js: Script personalizado para manejar las métricas.
+ * graficasKPI.js: Script personalizado para manejar las gráficas de los KPIs.
+ * 
+ * Autor: Rogelio Perez Guevara
+ * 
+ * Fecha de creación: 01-12-2025
+ * 
+ * Versión: 1.0
 --->
 
 <!--- Verificación de sesión --->
@@ -33,10 +59,14 @@
         <link rel="stylesheet" href="../css/temp.css">
     </head>
     <body>
-        <!-- Verificación de sesión y rol -->
-        <cfif NOT structKeyExists(session, "rol") 
-            OR ListFindNoCase("Admin", session.rol) EQ 0>
-            <cflocation url="menu.cfm" addtoken="no">
+        <!--- Verificación de sesión y rol --->
+        <cfif NOT (structKeyExists(session, "rol") AND len(trim(session.usuario)))>
+            <!--- Redirigir a la página de login si no hay sesión activa --->
+            <cflocation url="../login.cfm" addtoken="no">
+        <!--- Verificar si el rol del usuario es Admin --->
+        <cfelseif ListFindNoCase("Admin", session.rol) EQ 0>
+            <!--- Redirigir a la página de menú si el rol no es Admin --->
+            <cflocation url="../menu.cfm" addtoken="no">
         </cfif>
 
         <div class="container">
@@ -49,7 +79,7 @@
                 </div>
 
                 <!-- Nombre del formulario -->
-                <h1>Metricas</h1>
+                <h1>Total estado de Solicitudes</h1>
             </div>
 
             <div class="loading-overlay" id="loadingOverlay">
@@ -76,7 +106,7 @@
                         <!--- Select dinámico --->
                         <select class="form-input-general" id="areaSeleccionada">
                             <!--- Opción para todas las áreas --->
-                            <option value="">-- Seleciona un área --</option>
+                            <option value="">-- Selecciona un área --</option>
                                 
                             <!--- Consultar áreas según el rol del usuario --->
                             <cfif ListFindNoCase("Admin", session.rol)>
@@ -134,7 +164,7 @@
                             </div>
                         </div>
 
-                        <div class="kpi-header-aprovadas kpi-card">
+                        <div class="kpi-header-aprobadas kpi-card">
                             <div class="kpi-info">
                                 <div class="kpi-title">Aprobadas</div>
                                 <div class="kpi-value" id="solicitudesAprobadas">0</div>
@@ -186,8 +216,8 @@
         <script src="js/jquery-3.6.0.min.js"></script>
 
         <!--- 
-            Seccion 2
-            Actuliza el contador del estado de las solicitudes y el tiempo promedio de aprobacion 
+            Sección 2
+            Actualiza el contador del estado de las solicitudes y el tiempo promedio de aprobacion 
         --->
         <script>
             $(document).ready(function() {

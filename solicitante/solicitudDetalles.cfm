@@ -1,13 +1,31 @@
 <!---
- * Página `solicitudDetalles.cfm` para la visualización detallada de una solicitud.
+ * Nombre de la página: solicitudDetalles.cfm
+ * 
+ * Descripción:
+ * Esta página muestra los detalles de una solicitud específica,
+ * incluyendo la información del solicitante, tipo de solicitud,
+ * tipo de permiso, fechas, horas y el estado final.
+ * También muestra las firmas asociadas a la solicitud.
+ * Permite al usuario generar un PDF de la solicitud.
+ * 
+ * Roles:
+ * Solicitante: Puede ver los detalles de sus propias solicitudes.
+ * Jefe: Puede ver los detalles de las solicitudes de sus subordinados.
+ * RecursosHumanos: Puede ver los detalles de todas las solicitudes.
+ * Admin: Puede ver los detalles de todas las solicitudes.
+ * 
+ * Paginas relacionadas:
+ * menu.cfm - Página principal del sistema.
+ * generarPDF.cfm - Página para generar el PDF de la solicitud.
+ * cerrarSesion.cfm - Página para cerrar sesión.
+ * firmados.cfm - Página para ver solicitudes firmadas.
+ * generarPDF.cfm - Página para generar el PDF de la solicitud.
  *
- * Funcionalidad:
- * - Muestra toda la información de un formulario específico del usuario autenticado.
- * - Incluye información básica, estado final de la solicitud y el estado de las cinco firmas correspondientes.
- * - Cada firma puede tener estado: **Aprobado**, **Rechazado** o **Pendiente**.
- *
- * Uso:
- * - Página destinada a revisar el detalle completo y el historial de firmas de una solicitud.
+ * Autor: Rogelio Pérez Guevara
+ * 
+ * Fecha de creación: 01-10-2025
+ * 
+ * Versión: 1.0
 --->
 
 <!--- Verificación de sesión y rol autorizado --->
@@ -41,7 +59,7 @@
         svg
     FROM firmas
     WHERE id_solicitud = <cfqueryparam value="#form.id_solicitud#" cfsqltype="cf_sql_integer">
-    ORDER BY FIELD(rol, 'Solicitante','Jefe','RecursosHumanos','Autorizacion','Expediente')
+    ORDER BY FIELD(rol, 'Solicitante','Jefe','RecursosHumanos','Admin')
 </cfquery>
 
 <!DOCTYPE html>
@@ -92,12 +110,12 @@
     </head>
     <body>
         <!--- Verificación de sesión y rol autorizado --->
-        <cfif NOT structKeyExists(session, "rol") OR len(trim(session.rol)) EQ 0>
+        <cfif NOT (structKeyExists(session, "rol") AND len(trim(session.rol)))>
             <!--- No hay sesión activa o rol definido --->
-            <cflocation url="login.cfm" addtoken="no">
-        <cfelseif ListFindNoCase("Solicitante,Jefe,RecursosHumanos,Autorizacion,Expediente", trim(session.rol)) EQ 0>
+            <cflocation url="../login.cfm" addtoken="no">
+        <cfelseif ListFindNoCase("Solicitante,Jefe,RecursosHumanos,Admin", session.rol) EQ 0>
             <!--- Rol no autorizado para esta sección --->
-            <cflocation url="menu.cfm" addtoken="no">
+            <cflocation url="../menu.cfm" addtoken="no">
         </cfif>
 
         <!--- Contenedor principal --->
@@ -168,7 +186,7 @@
                                 <label class="form-label">Status Final</label>
                                 <!--- Campo con clase CSS según el valor de status_final --->
                                 <cfif #qSolicitud.status_final# EQ "Aprobado">
-                                    <input type="text" class="form-input-aprovado" value="#qSolicitud.status_final#" readonly>
+                                    <input type="text" class="form-input-aprobado" value="#qSolicitud.status_final#" readonly>
                                 <cfelseif #qSolicitud.status_final# EQ "Rechazado">
                                     <input type="text" class="form-input-rechazado" value="#qSolicitud.status_final#" readonly>
                                 <cfelse>
@@ -264,7 +282,7 @@
 
                         <!--- Botón para cerrar sesión --->
                         <a href="../cerrarSesion.cfm" class="submit-btn-cerrarSesion submit-btn-cerrarSesion-text">
-                            Cerrar Sesion
+                            Cerrar Sesión
                         </a>
                     </div>
                 </div>

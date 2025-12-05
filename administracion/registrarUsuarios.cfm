@@ -1,13 +1,26 @@
 <!--- 
- * Página `registrarUsuarios.cfm` para la gestión de usuarios.
- *
- * Funcionalidad:
- * - Permite registrar nuevos usuarios en el sistema.
- * - El acceso está restringido exclusivamente a administradores.
- * - Si el usuario no tiene rol de administrador, el acceso es denegado.
- *
- * Uso:
- * - Página reservada para tareas de administración y control de cuentas.
+ * Nombre de la página: administracion/registrarUsuarios.cfm
+ * 
+ * Descripción: 
+ * Página para registrar nuevos usuarios en el sistema.
+ * Incluye un formulario que recopila datos personales y de usuario, 
+ * y envía la información a procesarRegistroUsuario.cfm para su procesamiento.
+ * 
+ * Roles:
+ * Admin: Solo los usuarios con rol 'admin' pueden acceder a esta página.
+ * 
+ * Paginas relacionadas:
+ * menu.cfm: Página principal del menú.
+ * procesarRegistroUsuario.cfm: Página que procesa el registro de usuarios.
+ * adminPanel.cfm: Panel de administración.
+ * cerrarSesion.cfm: Página para cerrar sesión.
+ * validacionRegistrarUsuarios.js: Archivo JavaScript para validación del formulario.
+ * 
+ * Autor: Rogelio Pérez Guevara
+ * 
+ * Fecha de creación: 25-09-2025
+ * 
+ * Versión: 1.0
 --->
 
 <!DOCTYPE html>
@@ -28,10 +41,14 @@
         <link rel="stylesheet" href="../css/botones.css">
     </head>
     <body>
-        <!--- Verificar si el usuario esta logeado --->
-        <cfif NOT structKeyExists(session, "rol") OR session.rol NEQ "admin">
-            <!--- Redirigir al menú si es administrador --->
-            <cflocation url="menu.cfm" addtoken="no">
+        <!--- Verificación de sesión y rol --->
+        <cfif NOT (structKeyExists(session, "rol") AND len(trim(session.usuario)))>
+            <!--- Redirigir a la página de login si no hay sesión activa --->
+            <cflocation url="../login.cfm" addtoken="no">
+        <!--- Verificar si el rol del usuario es Admin --->
+        <cfelseif ListFindNoCase("Admin", session.rol) EQ 0>
+            <!--- Redirigir a la página de menú si el rol no es Admin --->
+            <cflocation url="../menu.cfm" addtoken="no">
         </cfif>
 
         <!--- Contenedor principal --->
@@ -196,7 +213,8 @@
                                     name="usuario"
                                     class="form-input-general"
                                     oninput="sanitizarUsuario(this)"
-                                    oninput="this.value = this.value.replace(/<|>|'|&quot;|;|--/g, '')"
+                                    placeholder="Solo letras y números"
+                                    autocomplete="off"
                                     required>
                             </div>
 

@@ -1,12 +1,33 @@
 <!---
- * Dashboard Integral para Sistema de Permisos
- * Integra datos reales desde getDashboardData.cfm
+ * Nombre de la pagina: administracion/estadoSolicitudes.cfm
+ * 
+ * Descripción: 
+ * Esta página muestra las métricas y el estado de las solicitudes
+ * realizadas en el sistema. Incluye gráficos interactivos que permiten
+ * visualizar el estado de las solicitudes (aprobadas, pendientes,
+ * rechazadas) en función de diferentes filtros como rango de fechas
+ * y área de adscripción. La página está protegida y solo accesible
+ * para usuarios con rol de administrador.
+ * 
+ * Roles:
+ * Admin: Acceso completo a las métricas y gráficos.
+ * 
+ * Paginas relacionadas:
+ * menu.cfm: Página principal del menú.
+ * adminPanel.cfm: Panel de administración.
+ * cerrarSesion.cfm: Cierre de sesión del usuario.
+ * jquery-3.6.0.min.js: Biblioteca jQuery para manipulación del DOM y AJAX.
+ * obtenerEstadoSolicitudes.cfm: API para obtener datos de estado de solicitudes.
+ * https://cdn.jsdelivr.net/npm/chart.js: Biblioteca Chart.js para gráficos.
+ * metricas.js: Script personalizado para manejar métricas.
+ * graficasKPI.js: Script personalizado para manejar gráficos KPI.
+ * 
+ * Autor: Rogelio Perez Guevara
+ * 
+ * Fecha de creación: 01-12-2025
+ * 
+ * Versión: 1.0
 --->
-
-<!--- Verificación de sesión --->
-<cfif NOT structKeyExists(session, "rol")>
-    <cflocation url="index.cfm" addtoken="no">
-</cfif>
 
 <!DOCTYPE html>
 <html lang="es">
@@ -18,7 +39,7 @@
         <!--- Icono de la pagina --->
         <link rel="icon" href="../elements/icono.ico" type="image/x-icon">
         <!--- Título de la página --->
-        <title>Grafica - Estado Solicitudes</title>
+        <title>Gráfica - Estado Solicitudes</title>
         <!-- Carga de jQuery (local) -->
         <script src="../js/jquery-3.6.0.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -33,9 +54,13 @@
         <link rel="stylesheet" href="../css/temp.css">
     </head>
     <body>
-        <!-- Verificación de sesión y rol -->
-        <cfif NOT structKeyExists(session, "rol") 
-            OR ListFindNoCase("Admin", session.rol) EQ 0>
+        <!--- Verificación de sesión y rol --->
+        <cfif NOT (structKeyExists(session, "rol") AND len(trim(session.usuario)))>
+            <!--- Redirigir a la página de login si no hay sesión activa --->
+            <cflocation url="../login.cfm" addtoken="no">
+        <!--- Verificar si el rol del usuario es Admin --->
+        <cfelseif ListFindNoCase("Admin", session.rol) EQ 0>
+            <!--- Redirigir a la página de menú si el rol no es Admin --->
             <cflocation url="../menu.cfm" addtoken="no">
         </cfif>
 
@@ -49,7 +74,7 @@
                 </div>
 
                 <!-- Nombre del formulario -->
-                <h1>Metricas</h1>
+                <h1>Estado de solicitudes</h1>
             </div>
 
             <div class="loading-overlay" id="loadingOverlay">
@@ -76,10 +101,10 @@
                         <!--- Select dinámico --->
                         <select class="form-input-general" id="areaSeleccionada">
                             <!--- Opción para todas las áreas --->
-                            <option value="">-- Seleciona un área --</option>
+                            <option value="">-- Selecciona un área --</option>
                                 
                             <!--- Consultar áreas según el rol del usuario --->
-                            <cfif ListFindNoCase("Admin,RecursosHumanos,Autorizacion,Expediente", session.rol)>
+                            <cfif ListFindNoCase("RecursosHumanos,Admin", session.rol)>
                                 <!--- Estos roles pueden ver todas las áreas --->
                                 <cfquery name="getAreas" datasource="Autorizacion">
                                     SELECT id_area, 
@@ -128,7 +153,10 @@
                             <div class="chart-title text-center text-md-start">
                                 Estado de solicitudes
                             </div>
-                            <canvas id="chartEstados" height="250"></canvas>
+                            <div style="position: relative; height: 250px; width: 100%;">
+                                <canvas id="chartEstados"></canvas>
+                            </div>
+                            
                             <!-- Overlay solo para este canvas -->
                             <div class="canvasOverlay">
                                 ¡A punto de revelar las estadísticas!
@@ -142,9 +170,9 @@
         <script src="js/jquery-3.6.0.min.js"></script>
 
         <!---
-            Seccion -> 3
-            Grafica -> 1
-            Grafica -> Estado de solicitudes
+            Sección -> 3
+            Gráfica -> 1
+            Gráfica -> Estado de solicitudes
         --->
         <script>
             $(document).ready(function() {
@@ -185,6 +213,7 @@
                                 data: data,
                                 options: {
                                     responsive: true,
+                                    maintainAspectRatio: false,
                                     plugins: {
                                         legend: {
                                             position: 'bottom',
@@ -231,7 +260,7 @@
         </script>
 
         <!---
-            Seccion -> 3, 4
+            Sección -> 3, 4
             Grafica -> 1, 2, 3, 4, 5, 6, 7
             Quita los overlays de las graficas
         --->

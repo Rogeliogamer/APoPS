@@ -1,13 +1,27 @@
 <!---
- * Página `listaSolicitudes.cfm` para la visualización de solicitudes firmadas.
- *
- * Funcionalidad:
- * - Muestra un listado de las solicitudes firmadas por el usuario autenticado.
- * - Permite consultar información general y el estado actual de la firma.
- * - Incluye un botón que permite acceder a los detalles completos de cada solicitud.
- *
- * Uso:
- * - Página destinada al seguimiento de solicitudes firmadas por el usuario logueado.
+ * Nombre de la pagina: solicitante/listaSolicitudes.cfm
+ * 
+ * Descripción:
+ * Lista de solicitudes firmadas por el usuario autenticado.
+ * Permite buscar, paginar y ver detalles de cada solicitud.
+ * 
+ * Roles:
+ * - Solicitante: Acceso completo para ver sus solicitudes firmadas.
+ * - Jefe: Acceso completo para ver sus solicitudes firmadas.
+ * - RecursosHumanos: Acceso completo para ver sus solicitudes firmadas.
+ * - Admin: Acceso completo para ver sus solicitudes firmadas.
+ * 
+ * Páginas Relacionadas:
+ * - menu.cfm: Página principal del menú.
+ * - listaSolicitudes.cfm: Página actual para listar solicitudes firmadas.
+ * - solicitudDetalles.cfm: Página para ver detalles completos de una solicitud.
+ * - cerrarSesion.cfm: Página para cerrar la sesión del usuario.
+ * 
+ * Autor: Rogelio Pérez Guevara
+ * 
+ * Fecha de creación: 01-10-2025
+ * 
+ * Versión: 1.0
 --->
 
 <!--- Lógica de manejo de parámetros y búsqueda --->
@@ -90,9 +104,10 @@
     </head>
     <body>
         <!--- Verificación de sesión y rol --->
-        <cfif NOT structKeyExists(session, "rol") 
-            OR ListFindNoCase("Expediente,RecursosHumanos,Autorizacion,Jefe,Solicitante", session.rol) EQ 0>
-            <cflocation url="menu.cfm" addtoken="no">
+        <cfif NOT (structKeyExists(session, "rol") AND len(trim(session.usuario)))>
+            <cflocation url="../login.cfm" addtoken="no"> 
+        <cfelseif ListFindNoCase("Solicitante,Jefe,RecursosHumanos,Admin", session.rol) EQ 0>
+            <cflocation url="../menu.cfm" addtoken="no">
         </cfif>
 
         <!--- Configuración de paginación --->
@@ -286,7 +301,7 @@
                         
                         <!--- Botón para cerrar sesión --->
                         <a href="../cerrarSesion.cfm" class="submit-btn-cerrarSesion submit-btn-cerrarSesion-text">
-                            Cerrar Sesion
+                            Cerrar Sesión
                         </a>
                     </div>
                 </div>

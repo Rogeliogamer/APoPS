@@ -1,18 +1,24 @@
 <!---
- * Componente `listaUsuarios.cfc` para la visualización y gestión de usuarios.
- *
- * Acceso:
- * - Permitido únicamente a usuarios con rol: `admin`, `expediente`, `RecursosHumanos` y `jefe`.
- * - Rol `usuario` no tiene acceso a esta página.
- *
- * Funcionalidad:
- * - Muestra la lista de usuarios filtrada según los privilegios del rol autenticado.
- * - La búsqueda de usuarios también respeta las restricciones de acceso por rol.
- * - Garantiza un nivel de seguridad al limitar la visibilidad de la información sensible.
- *
- * Permisos especiales:
- * - Solo los usuarios con rol `admin` tienen habilitados los botones de **Editar** y **Eliminar**.
- * - Cada acción redirige a la página correspondiente con la información del usuario seleccionado.
+ * Nombre de la pagina: solicitante/listaUsuarios.cfm
+ * 
+ * Descripción:
+ * Muestra una lista de usuarios registrados en el sistema con funcionalidades de búsqueda y paginación.
+ * 
+ * Roles:
+ * - Jefe: Acceso limitado a usuarios de su misma área.
+ * - RecursosHumanos: Acceso completo a todos los usuarios.
+ * - Admin: Acceso completo a todos los usuarios con permisos adicionales.
+ * 
+ * Páginas Relacionadas:
+ * - menu.cfm: Página principal del menú.
+ * - listaUsuarios.cfm: Página actual para listar usuarios.
+ * - cerrarsesion.cfm: Página para cerrar sesión.
+ * 
+ * Autor: Rogelio Pérez Guevara
+ * 
+ * Fecha de creación: 25-09-2025
+ * 
+ * Versión: 1.0
 --->
 
 <!--- Lógica de manejo de parámetros y búsqueda --->
@@ -56,14 +62,13 @@
         <link rel="stylesheet" href="../css/tablas.css">
     </head>
     <body>
-        <!--- Verificación de sesión y rol --->
-        <cfif NOT structKeyExists(session, "usuario") 
-            OR NOT structKeyExists(session, "rol")
-            OR len(trim(session.rol)) EQ 0>
-            <!--- No hay sesión activa --->
-            <cflocation url="login.cfm" addtoken="no">
-        <cfelseif listFindNoCase("admin,Expediente,RecursosHumanos,Jefe", trim(session.rol)) EQ 0>
-            <!--- Rol no autorizado --->
+        <!--- Verificación de sesión y roles --->
+        <cfif NOT (structKeyExists(session, "rol") AND len(trim(session.usuario)))>
+            <!--- Redirigir si no hay sesión activa --->
+            <cflocation url="../login.cfm" addtoken="no">
+        <!--- Verificar roles permitidos --->
+        <cfelseif listFindNoCase("Jefe,RecursosHumanos,Admin", session.rol) EQ 0>
+            <!--- Redirigir si el rol no tiene permiso --->
             <cflocation url="../menu.cfm" addtoken="no">
         </cfif>
 
@@ -90,14 +95,16 @@
             INNER JOIN datos_usuario du ON u.id_datos = du.id_datos
             INNER JOIN area_adscripcion a ON du.id_area = a.id_area
             WHERE 1=1 AND u.activo = 1
-            <cfif len(trim(form.search))>
+            <cfif len(trim(searchTerm))>
                 AND (
-                    u.usuario LIKE <cfqueryparam value="%#form.search#%" cfsqltype="cf_sql_varchar">
-                    OR du.nombre LIKE <cfqueryparam value="%#form.search#%" cfsqltype="cf_sql_varchar">
-                    OR du.apellido_paterno LIKE <cfqueryparam value="%#form.search#%" cfsqltype="cf_sql_varchar">
-                    OR du.apellido_materno LIKE <cfqueryparam value="%#form.search#%" cfsqltype="cf_sql_varchar">
-                    OR CONCAT(du.nombre, ' ', du.apellido_paterno, ' ', du.apellido_materno) LIKE <cfqueryparam value="%#form.search#%" cfsqltype="cf_sql_varchar">
-                    OR a.nombre LIKE <cfqueryparam value="%#form.search#%" cfsqltype="cf_sql_varchar">
+                    u.id_usuario LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
+                    OR u.usuario LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
+                    OR u.rol LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
+                    OR du.nombre LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
+                    OR du.apellido_paterno LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
+                    OR du.apellido_materno LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
+                    OR CONCAT(du.nombre, ' ', du.apellido_paterno, ' ', du.apellido_materno) LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
+                    OR a.nombre LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
                 )
             </cfif>
 
@@ -268,9 +275,9 @@
                                 Menu
                             </a>
                             
-                            <!--- Botón Cerrar Sesion --->
+                            <!--- Botón Cerrar Sesión --->
                             <a href="../cerrarSesion.cfm" class="submit-btn-cerrarSesion submit-btn-cerrarSesion-text">
-                                Cerrar Sesion
+                                Cerrar Sesión
                             </a>
                         </div>
                     </div>

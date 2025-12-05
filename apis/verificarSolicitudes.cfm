@@ -1,3 +1,23 @@
+<!---
+ * Nombre de la página: verificarSolicitudes.cfm
+ * 
+ * Descripción:
+ * Esta página verifica cuántas solicitudes personales ha realizado
+ * el solicitante en el mes actual y devuelve el conteo en formato JSON.
+ * 
+ * Roles:
+ * No aplica (se usa la sesión del solicitante).
+ * 
+ * Paginas relacionadas:
+ * Ninguna.
+ * 
+ * Autor: Rogelio Pérez Guevara
+ * 
+ * Fecha de creación: 13-11-2025
+ * 
+ * Versión: 1.0
+--->
+
 <cfsetting enablecfoutputonly="true">
 <cfcontent type="application/json; charset=utf-8">
 <cftry>

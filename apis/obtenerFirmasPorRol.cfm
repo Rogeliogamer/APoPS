@@ -1,8 +1,29 @@
+<!---
+ * API: obtenerFirmasPorRol.cfm
+ * 
+ * Descripción: 
+ * Proporciona el número de firmas realizadas por rol de usuario
+ * en un rango de fechas determinado.
+ * 
+ * Parámetros de entrada:
+ *   - rango (opcional): Número de días para el rango de fechas (por defecto 30 días)
+ *   - area (requerido): ID del área para filtrar las firmas
+ * 
+ * Parámetros de salida:
+ * JSON con el conteo de firmas por rol
+ * 
+ * Autor: Rogelio Perez Guevara
+ * 
+ * Fecha de creación: 21-10-2025
+ * 
+ * Versión: 1.0   
+--->
+
 <cfsetting showdebugoutput="No">
 <cfcontent type="application/json" reset="true">
 
-<cfparam name="url.rango" default="30">
-<cfparam name="url.area" default="">
+<cfparam name="url.rango" default="30" requerid="yes">
+<cfparam name="url.area" default="" requerid="yes">
 
 <cfset fechaFin = now()>
 <cfset fechaInicio = dateAdd("d", -val(url.rango), fechaFin)>

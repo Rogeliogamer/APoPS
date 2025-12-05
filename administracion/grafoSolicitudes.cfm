@@ -1,3 +1,28 @@
+<!---
+ * Nombre de la pagina: administracion/grafoSolicitudes.cfm
+ * 
+ * Descripción:
+ * Esta página genera una visualización gráfica interactiva de las solicitudes realizadas en el sistema.
+ * Utiliza la librería vis.js para representar nodos y conexiones entre usuarios y solicitudes.
+ * Los nodos representan a los solicitantes, autoridades y el estado de las solicitudes.
+ * Las conexiones muestran la relación entre la creación y firma de las solicitudes.
+ * Permite a los administradores analizar visualmente el flujo de solicitudes.
+ * 
+ * Roles:
+ * Admin: Acceso completo para ver el grafo de solicitudes.
+ * 
+ * Paginas relacionadas:
+ * adminPanel.cfm - Panel principal de administración.
+ * cerrarSesion.cfm - Cierre de sesión del usuario.
+ * obtenerGrafoSolicitudes.cfc - API para obtener los datos del grafo.
+ * 
+ * Autor: Rogelio Perez Guevara
+ * 
+ * Fecha de creación: 28-11-2025
+ * 
+ * Versión: 1.0
+--->
+
 <!DOCTYPE html>
 <html lang="es">
     <head>
@@ -91,6 +116,15 @@
         </style>
     </head>
     <body>
+        <!--- Validación de sesión y rol --->
+        <cfif NOT (structKeyExists(session, "rol") AND len(trim(session.usuario)))>
+            <!--- Redirigir a login si no hay sesión activa --->
+            <cflocation url="../login.cfm" addtoken="no">
+        <!--- Verificar rol de Admin --->
+        <cfelseif ListFindNoCase("Admin", session.rol) EQ 0>
+            <!--- Redirigir a menú si no es Admin --->
+            <cflocation url="../menu.cfm" addtoken="no">
+        </cfif>
 
         <div class="dashboard-panel">
             <h3>Red de Solicitudes</h3>

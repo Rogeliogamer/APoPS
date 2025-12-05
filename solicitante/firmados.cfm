@@ -1,13 +1,29 @@
 <!---
- * Página `firmados.cfm` para la visualización de solicitudes emitidas.
- *
- * Funcionalidad:
- * - Muestra un listado de las solicitudes emitidas por el usuario autenticado.
- * - Presenta información general, el estado de cada solicitud y un botón para ver más detalles.
- * - El botón de "ver más detalles" permite acceder a toda la información de la solicitud seleccionada.
- *
- * Uso:
- * - Página destinada al seguimiento y revisión de solicitudes emitidas por el usuario.
+ * Nombre de la pagina: solicitante/firmados.cfm
+ * 
+ * Descripción:
+ * Lista de solicitudes ya firmadas por el usuario autenticado.
+ * Permite buscar y paginar a través de las solicitudes firmadas.
+ * Muestra detalles básicos y permite ver más información de cada solicitud.
+ * 
+ * Roles:
+ * - Solicitante: Puede ver sus propias solicitudes firmadas.
+ * - Jefe: Puede ver solicitudes firmadas de su área.
+ * - RecursosHumanos: Puede ver todas las solicitudes firmadas.
+ * - Admin: Puede ver todas las solicitudes firmadas.
+ * 
+ * Páginas Relacionadas:
+ * - login.cfm: Página de inicio de sesión.
+ * - menu.cfm: Página de menú principal.
+ * - firmados.cfm: Página actual para ver solicitudes firmadas.
+ * - solicitudDetalles.cfm: Página para ver detalles completos de una solicitud.
+ * - cerrarSesion.cfm: Página para cerrar la sesión del usuario.
+ * 
+ * Autor: Rogelio Pérez Guevara
+ * 
+ * Fecha de creación: 29-09-2025
+ * 
+ * Versión: 1.0
 --->
 
 <!--- Lógica de manejo de parámetros y búsqueda --->
@@ -39,7 +55,7 @@
 <cfelseif session.rol EQ "Jefe">
     <!--- Los Jefes solo ven solicitudes de su área --->
     <cfset filtroArea = "AND d.id_area = " & session.id_area>
-<cfelseif session.rol EQ "RecursosHumanos" OR session.rol EQ "Autorizacion" OR session.rol EQ "Expediente">
+<cfelseif session.rol EQ "RecursosHumanos" OR session.rol EQ "Admin">
     <!--- Estos roles ven solicitudes de todas las áreas --->
     <cfset filtroArea = "">
 </cfif>
@@ -102,12 +118,12 @@
     </head>
     <body>
         <!--- Verificación de sesión y rol --->
-        <cfif NOT structKeyExists(session, "rol") OR len(trim(session.rol)) EQ 0>
+        <cfif NOT (structKeyExists(session, "rol") AND len(trim(session.rol)))>
             <!--- No hay sesión activa o rol definido --->
-            <cflocation url="login.cfm" addtoken="no">
-        <cfelseif ListFindNoCase("Expediente,RecursosHumanos,Autorizacion,Jefe,Solicitante", trim(session.rol)) EQ 0>
+            <cflocation url="../login.cfm" addtoken="no">
+        <cfelseif ListFindNoCase("Solicitante,Jefe,RecursosHumanos,Admin", session.rol) EQ 0>
             <!--- Rol no autorizado para esta sección --->
-            <cflocation url="menu.cfm" addtoken="no">
+            <cflocation url="../menu.cfm" addtoken="no">
         </cfif>
 
         <!--- Configuración de paginación --->
@@ -306,7 +322,7 @@
                     
                         <!--- botón para cerrar sesión --->
                         <a href="../cerrarSesion.cfm" class="submit-btn-cerrarSesion submit-btn-cerrarSesion-text">
-                            Cerrar Sesion
+                            Cerrar Sesión
                         </a>
                     </div>
                 </div>

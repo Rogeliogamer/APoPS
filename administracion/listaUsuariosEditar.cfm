@@ -1,18 +1,27 @@
 <!---
- * Componente `listaUsuarios.cfc` para la visualización y gestión de usuarios.
- *
- * Acceso:
- * - Permitido únicamente a usuarios con rol: `admin`, `expediente`, `RecursosHumanos` y `jefe`.
- * - Rol `usuario` no tiene acceso a esta página.
- *
- * Funcionalidad:
- * - Muestra la lista de usuarios filtrada según los privilegios del rol autenticado.
- * - La búsqueda de usuarios también respeta las restricciones de acceso por rol.
- * - Garantiza un nivel de seguridad al limitar la visibilidad de la información sensible.
- *
- * Permisos especiales:
- * - Solo los usuarios con rol `admin` tienen habilitados los botones de **Editar** y **Eliminar**.
- * - Cada acción redirige a la página correspondiente con la información del usuario seleccionado.
+ * Nombre de la pagina: administracion/listaUsuariosEditar.cfm
+ * 
+ * Descripción:
+ * Esta página muestra una lista paginada de usuarios registrados en el sistema,
+ * permitiendo la búsqueda por varios campos como ID, nombre, apellidos y área.
+ * Solo los usuarios con rol de administrador pueden acceder a esta página.
+ * 
+ * Roles:
+ * admin - Solo los administradores pueden acceder a esta página.
+ * 
+ * Paginas relacionadas:
+ * login.cfm - Página de inicio de sesión.
+ * menu.cfm - Página de menú principal.
+ * listaUsuariosEditar.cfm - Página actual para listar y editar usuarios.
+ * editarUsuario.cfm - Página para editar los detalles de un usuario específico.
+ * adminPanel.cfm - Panel de administración.
+ * cerrarSesion.cfm - Página para cerrar sesión.
+ * 
+ * Autor: Rogelio Perez Guevara
+ * 
+ * Fecha de creación: 02-12-2025
+ * 
+ * Versión: 1.0
 --->
 
 <!--- Lógica de manejo de parámetros y búsqueda --->
@@ -47,7 +56,7 @@
         <!--- Icono de la pagina --->
         <link rel="icon" href="../elements/icono.ico" type="image/x-icon">
         <!--- Título de la página --->
-        <title>Lista de usuarios</title>
+        <title>Lista de Edición de Usuarios</title>
         <!--- Enlace a fuentes y hojas de estilo --->
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="../css/globalForm.css">
@@ -57,24 +66,14 @@
     </head>
     <body>
         <!--- Verificación de sesión y rol --->
-        <cfif NOT structKeyExists(session, "usuario") 
-            OR NOT structKeyExists(session, "rol")
-            OR len(trim(session.rol)) EQ 0>
-            <!--- No hay sesión activa --->
-            <cflocation url="login.cfm" addtoken="no">
-        <cfelseif listFindNoCase("admin", trim(session.rol)) EQ 0>
-            <!--- Rol no autorizado --->
+        <cfif NOT (structKeyExists(session, "rol") AND len(trim(session.usuario)))>
+            <!--- Redirigir a la página de login si no hay sesión activa --->
+            <cflocation url="../login.cfm" addtoken="no">
+        <!--- Verificar si el rol del usuario es Admin --->
+        <cfelseif ListFindNoCase("Admin", session.rol) EQ 0>
+            <!--- Redirigir a la página de menú si el rol no es Admin --->
             <cflocation url="../menu.cfm" addtoken="no">
         </cfif>
-
-        <!--- Configuración de paginación --->
-        <cfset rowsPerPage = 10>
-        <!--- Cálculo de la fila inicial para la consulta --->
-        <cfset currentPage = val(url.page)>
-        <!--- Asegurar que la página actual sea al menos 1 --->
-        <cfif currentPage LTE 0><cfset currentPage = 1></cfif>
-        <!--- Cálculo de la fila inicial --->
-        <cfset startRow = (currentPage - 1) * rowsPerPage + 1>
         
         <!--- Consulta con filtro de búsqueda --->
         <cfquery name="qUsuarios" datasource="autorizacion">
@@ -90,30 +89,42 @@
             INNER JOIN datos_usuario du ON u.id_datos = du.id_datos
             INNER JOIN area_adscripcion a ON du.id_area = a.id_area
             WHERE 1=1 AND u.activo = 1
-            <cfif len(trim(form.search))>
+            <cfif len(trim(searchTerm))>
                 AND (
-                    u.usuario LIKE <cfqueryparam value="%#form.search#%" cfsqltype="cf_sql_varchar">
-                    OR du.nombre LIKE <cfqueryparam value="%#form.search#%" cfsqltype="cf_sql_varchar">
-                    OR du.apellido_paterno LIKE <cfqueryparam value="%#form.search#%" cfsqltype="cf_sql_varchar">
-                    OR du.apellido_materno LIKE <cfqueryparam value="%#form.search#%" cfsqltype="cf_sql_varchar">
-                    OR CONCAT(du.nombre, ' ', du.apellido_paterno, ' ', du.apellido_materno) LIKE <cfqueryparam value="%#form.search#%" cfsqltype="cf_sql_varchar">
-                    OR a.nombre LIKE <cfqueryparam value="%#form.search#%" cfsqltype="cf_sql_varchar">
+                    u.id_usuario LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
+                    OR u.usuario LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
+                    OR du.nombre LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
+                    OR du.apellido_paterno LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
+                    OR du.apellido_materno LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
+                    OR CONCAT(du.nombre, ' ', du.apellido_paterno, ' ', du.apellido_materno) LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
+                    OR a.nombre LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
                 )
             </cfif>
             <!--- Ordenar resultados --->
             ORDER BY u.id_usuario ASC
         </cfquery>
 
+        <!--- Configuración de paginación --->
+        <cfset rowsPerPage = 10>
+        <!--- Cálculo de la fila inicial para la consulta --->
+        <cfset currentPage = val(url.page)>
+        <!--- Asegurar que la página actual sea al menos 1 --->
+        <cfif currentPage LTE 0><cfset currentPage = 1></cfif>
+        <!--- Cálculo de la fila inicial --->
+        <cfset startRow = (currentPage - 1) * rowsPerPage + 1>
+
         <!--- Número total de registros --->
         <cfset totalRecords = qUsuarios.recordCount>
         <!--- Cálculo del total de páginas --->
         <cfset totalPages = ceiling(totalRecords / rowsPerPage)>
+        <!--- Calcular el índice de la última fila de la página actual --->
+        <cfset endRow = min(startRow + rowsPerPage - 1, totalRecords)>
 
         <!--- Limitar resultados por página --->
         <cfquery dbtype="query" name="qPaged">
             SELECT *
             FROM qUsuarios
-            WHERE currentRow BETWEEN #startRow# AND #startRow + rowsPerPage - 1#
+            WHERE qUsuarios.currentRow BETWEEN <cfqueryparam value="#startRow#" cfsqltype="cf_sql_integer"> AND <cfqueryparam value="#endRow#" cfsqltype="cf_sql_integer">
         </cfquery>
 
         <!--- Listado de usuarios --->
@@ -134,7 +145,7 @@
             <!--- Contenedor del formulario y tabla --->
             <div class="form-container">
                 <!--- Formulario de búsqueda --->
-                <form method="post" action="listaUsuarios.cfm" class="field-group single">
+                <form method="post" action="listaUsuariosEditar.cfm" class="field-group single">
                     <!--- Campo de búsqueda --->
                     <div class="form-field">
                         <!--- Etiqueta y campo de entrada --->
@@ -215,6 +226,7 @@
                             <cfset currentBlock = ceiling(currentPage / blockSize)>
                             <!--- Página inicial y final del bloque --->
                             <cfset startPage = ((currentBlock - 1) * blockSize) + 1>
+                            <!--- Asegurar que la página final no exceda el total de páginas --->
                             <cfset endPage = min(startPage + blockSize - 1, totalPages)>
 
                             <!--- Botón 'Anterior' si hay bloques previos --->

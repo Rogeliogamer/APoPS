@@ -80,6 +80,32 @@ a.submit-btn-cerrarSesion-text{
     text-decoration: none;
 }
 
+.submit-btn-reset {
+    background: linear-gradient(135deg, #000000 0%, #000000 100%);
+    color: white;
+    padding: 15px 40px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px #4b4b4b;
+    padding: 3px 20px;
+    text-decoration:none;
+}
+
+.submit-btn-reset:hover {
+    background: linear-gradient(135deg, #ff0000 0%, #ff0000 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px #b4b4b4;
+}
+
+.submit-btn-reset:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 8px #b4b4b4;
+}
+
 .submit-btn-regresar {
     background: linear-gradient(135deg, #00ACC1 0%, #00838F 100%);
     color: white;

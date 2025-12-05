@@ -1,12 +1,27 @@
 <!---
- * Página `firmarSolicitud.cfm` para la firma de solicitudes por parte del usuario.
- *
- * Funcionalidad:
- * - Permite al usuario autenticado firmar las solicitudes que le corresponden según su rol.
- * - El usuario puede **aceptar** o **rechazar** cada solicitud.
- *
- * Uso:
- * - Página destinada al proceso de validación y firma de solicitudes por las autoridades correspondientes.
+ * Nombre de la pagina: solicitar/firmarSolicitud.cfm
+ * 
+ * Descripción:
+ * Esta página permite a los usuarios jefe firmar automáticamente las solicitudes que han sido enviadas por los solicitantes y que están pendientes de ser aprobadas o rechazadas.
+ * Los usuarios RH también firman automáticamente las solicitudes que han sido aprobadas por los jefes y están pendientes de ser validadas.
+ * 
+ * Roles:
+ * - Jefe: Firma las solicitudes de sus subordinados.
+ * - RH: Firma las solicitudes aprobadas por los jefes.
+ * - Admin: Firma las solicitudes en calidad de administrador. Solo en casos especiales.
+ * 
+ * Paginas relacionadas:
+ * http://www.w3.org/2000/svg: Especificación SVG
+ * https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap: Fuente para la firma
+ * guardarFirma.cfm: Página que procesa y guarda la firma en la base de datos.
+ * menu.cfm: Página principal del menú.
+ * pendientesFirmar.cfm: Página que lista las solicitudes pendientes de firma.
+ * 
+ * Autor: Rogelio Pérez Guevara
+ * 
+ * Fecha de creación: 29-09-2025
+ * 
+ * Versión: 1.0
 --->
 
 <!--- Consulta de Solicitud --->
@@ -74,6 +89,16 @@
         <link rel="stylesheet" href="../css/botones.css">
     </head>
     <body>
+        <!--- Verificación de sesión y rol --->
+        <cfif NOT (structKeyExists(session, "rol") AND len(trim(session.usuario)))>
+            <!--- Redirigir a la página de login si no hay sesión activa --->
+            <cflocation url="../login.cfm" addtoken="no">
+        <!--- Verificar si el rol del usuario es Admin --->
+        <cfelseif ListFindNoCase("Jefe,RecursosHumanos,Admin", session.rol) EQ 0>
+            <!--- Redirigir a la página de menú si el rol no es Admin --->
+            <cflocation url="../menu.cfm" addtoken="no">
+        </cfif>
+
         <!--- Validar que se recibió el id_solicitud --->
         <cfif structKeyExists(form, "id_solicitud")>
             <cfset id_solicitud = form.id_solicitud>
@@ -341,7 +366,7 @@
                         
                         <!--- Botón Cerrar Sesión --->
                         <a href="../cerrarSesion.cfm" class="submit-btn-cerrarSesion submit-btn-cerrarSesion-text">
-                            Cerrar Sesion
+                            Cerrar Sesión
                         </a>
                     </div>
                 </div>
@@ -352,7 +377,7 @@
         <script>
             document.addEventListener('DOMContentLoaded', function () {
                 // Ya no necesitamos inicializar la firma superior porque es estática.
-                // Si hubiera otras firmas dibujables, dejaríamos su initSignature aquí.
+                // Si hubiera otras firmas trazables, dejaríamos su initSignature aquí.
             });
         </script>
 
@@ -360,7 +385,7 @@
         <script>
             <!--- Manejar el clic en el botón de menú --->
             document.getElementById("submit-btn-menu").addEventListener("click", function(e) {
-                // Eliminamos la logica del botón 'limpiar' ya que no existe
+                // Eliminamos la lógica del botón 'limpiar' ya que no existe
                 e.preventDefault(); <!--- Prevenir la acción por defecto del enlace --->
                 window.location.href = "../menu.cfm";
             });

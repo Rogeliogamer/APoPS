@@ -12,7 +12,17 @@ document.addEventListener("DOMContentLoaded", function() {
     // 2. Sanitización del usuario (sin HTML, sin espacios extras)
     // ==============================
     window.sanitizarUsuario = function(input) {
-        input.value = input.value.replace(/<[^>]*>?/gm, '').trim();
+        // Variable original
+        let valorOriginal = input.value;
+
+        // Reemplaza cualquier caracter que no sea letra, número o letras con tilde
+        // El simbolo ^ dentro de [] significa negación
+        let valorLimpio = valorOriginal.replace(/[^a-zA-Z0-9ñÑáéíóúÁÉÍÓÚüÜ]/g, '');
+
+        // Si hubo cambios (es, decir, si se ingresaron caracteres inválidos), actualiza el valor del input
+        if (valorLimpio !== valorOriginal) {
+            input.value = valorLimpio;
+        }
     };
 
     // ==============================

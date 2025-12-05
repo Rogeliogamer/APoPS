@@ -1,13 +1,25 @@
 <!---
- * Página `listaSolicitudes.cfm` para la visualización de solicitudes firmadas.
- *
- * Funcionalidad:
- * - Muestra un listado de las solicitudes firmadas por el usuario autenticado.
- * - Permite consultar información general y el estado actual de la firma.
- * - Incluye un botón que permite acceder a los detalles completos de cada solicitud.
- *
- * Uso:
- * - Página destinada al seguimiento de solicitudes firmadas por el usuario logueado.
+ * Nombre de la pagina: solicitante/listaTodasSolicitudes.cfm
+ * 
+ * Descripción:
+ * Lista todas las solicitudes firmadas por todos los usuarios, con opciones de búsqueda y paginación.
+ * Esta página está destinada a usuarios con rol de Recursos Humanos o Admin.
+ * 
+ * Roles:
+ * - RecursosHumanos: Acceso completo a todas las solicitudes.
+ * - Admin: Acceso completo a todas las solicitudes.
+ * 
+ * Páginas Relacionadas:
+ * menu.cfm: Página principal del menú.
+ * listaTodasSolicitudes.cfm: Página actual para listar todas las solicitudes.
+ * solicitudDetalles.cfm: Página para ver los detalles de una solicitud específica.
+ * cerrarsesion.cfm: Página para cerrar la sesión del usuario.
+ * 
+ * Autor: Rogelio Pérez Guevara
+ * 
+ * Fecha de creación: 12-11-2025
+ * 
+ * Versión: 1.0
 --->
 
 <!--- Lógica de manejo de parámetros y búsqueda --->
@@ -54,15 +66,16 @@
     <!--- Filtro de búsqueda si hay texto --->
     <cfif len(searchTerm)>
         AND (
-            d.nombre LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
+            s.id_solicitud LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
+            OR d.nombre LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
             OR d.apellido_paterno LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
             OR d.apellido_materno LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
             OR CONCAT(d.nombre, ' ', d.apellido_paterno, ' ', d.apellido_materno) LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
             OR s.tipo_solicitud LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
             OR s.tipo_permiso LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
+            OR s.fecha LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
             OR s.status_final LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
             OR f.rol LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
-            OR f.aprobado LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
         )
     </cfif>
     GROUP BY s.id_solicitud
@@ -89,8 +102,12 @@
     </head>
     <body>
         <!--- Verificación de sesión y rol --->
-        <cfif NOT structKeyExists(session, "rol") 
-            OR ListFindNoCase("RecursosHumanos", session.rol) EQ 0>
+        <cfif NOT (structKeyExists(session, "rol") AND len(trim(session.usuario)))>
+            <!--- Redirigir a login si no hay sesión --->
+            <cflocation url="../login.cfm" addtoken="no">
+        <!--- Verificar rol --->
+        <cfelseif ListFindNoCase("RecursosHumanos,Admin", session.rol) EQ 0>
+            <!--- Redirigir al menú si el rol no es autorizado --->
             <cflocation url="../menu.cfm" addtoken="no">
         </cfif>
 
@@ -285,7 +302,7 @@
                         
                         <!--- Botón para cerrar sesión --->
                         <a href="../cerrarSesion.cfm" class="submit-btn-cerrarSesion submit-btn-cerrarSesion-text">
-                            Cerrar Sesion
+                            Cerrar Sesión
                         </a>
                     </div>
                 </div>

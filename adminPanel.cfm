@@ -1,13 +1,41 @@
 <!--- 
- * Página de menú de adminitracion del sistema.
- *
- * Funcionalidad:
- * - Muestra las opciones disponibles para el adminstrador autenticado.
- * - Las opciones se habilitan o deshabilitan dinámicamente según el rol del usuario.
- * - Algunas opciones pueden no estar disponibles dependiendo de los permisos asignados.
- *
- * Uso:
- * - Incluir esta página como interfaz de navegación principal para usuarios logueados.
+ * Nombre de la pagina: adminPanel.cfm
+ * 
+ * Descripción:
+ * Esta pagina sirve como el panel de administración para usuarios con rol de administrador.
+ * 
+ *  Roles:
+ * - Admin: Acceso completo a todas las funciones del sistema.
+ * 
+ * Páginas Relacionadas:
+ * - login.cfm: Página de inicio de sesión.
+ * - menu.cfm: Página principal del sistema tras el inicio de sesión.
+ * - registrarUsuarios.cfm: Página para registrar nuevos usuarios.
+ * - listaUsuariosEditar.cfm: Página para editar usuarios existentes.
+ * - listaUsuariosEliminar.cfm: Página para eliminar usuarios.
+ * - listaUsuariosReset.cfm: Página para restaurar contraseñas de usuarios.
+ * - agregarAreas.cfm: Página para agregar nuevas áreas al sistema.
+ * - listaUsuarios.cfm: Página para ver la lista de usuarios.
+ * - listaSolicitudes.cfm: Página para ver la lista de solicitudes.
+ * - listaFirmaSolicitudes.cfm: Página para ver la lista de firmas de solicitudes.
+ * - listaAreas.cfm: Página para ver la lista de áreas.
+ * - totalEstadoSolicitudes.cfm: Gráfica del total de estado de solicitudes.
+ * - estadoSolicitudes.cfm: Gráfica del estado de solicitudes.
+ * - etapasFirmar.cfm: Gráfica de las etapas de firma.
+ * - tendenciaSolicitudes.cfm: Gráfica de tendencia de solicitudes.
+ * - solicitudesArea.cfm: Gráfica de solicitudes por área.
+ * - tiposPermiso.cfm: Gráfica de tipos de permiso.
+ * - personalVSOficial.cfm: Gráfica de personal vs oficial.
+ * - prediccion.cfm: Gráfica de predicción de solicitudes.
+ * - rankingArea.cfm: Tabla de ranking por área.
+ * - topSolicitantes.cfm: Tabla de los principales solicitantes.
+ * - grafoSolicitudes.cfm: Red de nodos de solicitudes.
+ * 
+ * Autor: Rogelio Pérez Guevara
+ * 
+ * Fecha de creación: 28-11-2025
+ * 
+ * Versión: 1.0
 --->
 
 <!--- Función para verificar acceso basado en rol --->
@@ -18,7 +46,16 @@
         var rol = session.rol;
         <!--- Definir los accesos por rol --->
         var accesos = {
-            "Admin": ["totalEstadoSolicitudes.cfm", 
+            "Admin": ["registrarUsuarios.cfm",
+                        "listaUsuariosEditar.cfm",
+                        "listaUsuariosEliminar.cfm",
+                        "listaUsuariosReset.cfm",
+                        "agregarAreas.cfm",
+                        "listaUsuarios.cfm",
+                        "listaSolicitudes.cfm",
+                        "listaFirmaSolicitudes.cfm",
+                        "listaAreas.cfm",
+                        "totalEstadoSolicitudes.cfm", 
                         "estadoSolicitudes.cfm",
                         "etapasFirmar.cfm",
                         "tendenciaSolicitudes.cfm",
@@ -28,16 +65,7 @@
                         "prediccion.cfm",
                         "rankingArea.cfm",
                         "topSolicitantes.cfm",
-                        "grafoSolicitudes.cfm",
-                        "registrarUsuarios.cfm",
-                        "listaUsuariosEditar.cfm",
-                        "listaUsuariosEliminar.cfm",
-                        "listaUsuariosReset.cfm",
-                        "agregarAreas.cfm",
-                        "listaUsuarios.cfm",
-                        "listaSolicitudes.cfm",
-                        "listaFirmaSolicitudes.cfm",
-                        "listaAreas.cfm"]
+                        "grafoSolicitudes.cfm"]
         };
 
         <!--- Validar si el rol existe en el struct --->
@@ -70,12 +98,13 @@
         <link rel="stylesheet" href="css/botones.css">
     </head>
     <body>
-        <!--- Verificar si existe un usuario logeado --->
-        <cfif structKeyExists(session, "rol") AND len(trim(session.usuario))>
-            <!--- El usuario está logeado, puede continuar --->
-        <cfelse>
-            <!--- No hay sesión, redirigir al login --->
+        <!--- Verificar si el usuario está autenticado --->
+        <cfif NOT (structKeyExists(session, "rol") AND len(trim(session.usuario)))>
             <cflocation url="login.cfm" addtoken="no">
+        <!--- Verificar si el rol es Admin --->
+        <cfelseif listFindNoCase("Admin", session.rol) EQ 0>
+            <!--- Redirigir a la página de menú si no es Admin --->
+            <cflocation url="menu.cfm" addtoken="no">
         </cfif>
 
         <!--- Incluye la barra de usuario conectado --->
@@ -83,11 +112,11 @@
         <!--- Mostrar la barra --->
         <cfoutput>#barra#</cfoutput>
 
-        <h2 style="text-align: center; margin-top: 60px; margin-bottom: 30px;">
+        <h2 style="text-align: center; margin-top: 60px; margin-bottom: 0px;">
             OPCIONES DE USUARIO
         </h2>
 
-        <!--- Contedor del menú de CRUD --->
+        <!--- Contenedor del menú de CRUD --->
         <div class="menu-container">
             <!--- 1. registrarUsuarios.cfm --->
             <!--- Tarjeta de menú para registrar nuevos usuarios --->
@@ -137,7 +166,7 @@
                 </cfif>
             </div>
 
-            <!--- 3. resetContraseña.cfm --->
+            <!--- 4. resetContraseña.cfm --->
             <!--- Tarjeta de menú para restaurar la contraseña del usuario --->
             <div class="menu-card">
                 <!--- Título y descripción --->
@@ -154,14 +183,14 @@
             </div>
         </div>
 
-        <h2 style="text-align: center; margin-top: 60px; margin-bottom: 30px;">
-            OPCIONES DE AGRAGDO DE DATOS
+        <h2 style="text-align: center;">
+            OPCIONES DE AGREGADO DE DATOS
         </h2>
 
-        <!--- Contedor del menú de CRUD --->
+        <!--- Contenedor del menú de Datos --->
         <div class="menu-container">
             <!--- 1. agregarAreas.cfm --->
-            <!--- Tarjeta de menú para la lista de usuarios --->
+            <!--- Tarjeta de menú para agregar areas --->
             <div class="menu-card">
                 <!--- Título y descripción --->
                 <h2>Agregar Areas</h2>
@@ -177,11 +206,11 @@
             </div>
         </div>
 
-        <h2 style="text-align: center; margin-top: 60px; margin-bottom: 30px;">
+        <h2 style="text-align: center;">
             OPCIONES DE LISTAS
         </h2>
 
-        <!--- Contedor del menú de CRUD --->
+        <!--- Contenedor del menú de Listas --->
         <div class="menu-container">
             <!--- 1. listaUsuarios.cfm --->
             <!--- Tarjeta de menú para la lista de usuarios --->
@@ -232,7 +261,7 @@
             </div>
 
             <!--- 4. listaAreas.cfm --->
-            <!--- Tarjeta de menú para la lista de areassolicitudes --->
+            <!--- Tarjeta de menú para la lista de areas --->
             <div class="menu-card">
                 <!--- Título y descripción --->
                 <h2>Lista Areas</h2>
@@ -248,18 +277,18 @@
             </div>
         </div>
 
-        <h2 style="text-align: center; margin-top: 60px; margin-bottom: 30px;">
+        <h2 style="text-align: center;">
             OPCIONES DE METRICAS
         </h2>
 
-        <!--- Contenedor del menú de graficas --->
+        <!--- Contenedor del menú de metricas --->
         <div class="menu-container">
-            <!--- 1. pagina.cfm --->
-            <!--- Descripcion --->
+            <!--- 1. totalEstadoSolicitudes.cfm.cfm --->
+            <!--- Gráfica de total de solicitudes como el status --->
             <div class="menu-card-graficas">
                 <!--- Título y descripción --->
                 <h2>Total estado solicitudes</h2>
-                <p>Tatal de aprobadas, pendientes y rechazadas</p>
+                <p>Total de aprobadas, pendientes y rechazadas</p>
                 <!--- Verificar si el usuario tiene acceso a esta página --->
                 <cfif tieneAcceso("totalEstadoSolicitudes.cfm")>
                     <!--- Enlace habilitado --->
@@ -270,12 +299,12 @@
                 </cfif>
             </div>
 
-            <!--- 2. pagina.cfm --->
-            <!--- Descripcion --->
+            <!--- 2. estadoSolicitudes.cfm --->
+            <!--- Gráfica del estado de las solicitudes --->
             <div class="menu-card-graficas">
                 <!--- Título y descripción --->
                 <h2>Estado de solicitudes</h2>
-                <p>Grafica del estado de la solicitud</p>
+                <p>Gráfica del estado de la solicitud</p>
                 <!--- Verificar si el usuario tiene acceso a esta página --->
                 <cfif tieneAcceso("estadoSolicitudes.cfm")>
                     <!--- Enlace habilitado --->
@@ -286,12 +315,12 @@
                 </cfif>
             </div>
 
-            <!--- 3. pagina.cfm --->
-            <!--- Descripcion --->
+            <!--- 3. etapasFirmar.cfm --->
+            <!--- Gráfica de las etapas de firma de la solicitudes --->
             <div class="menu-card-graficas">
                 <!--- Título y descripción --->
                 <h2>Etapas de firma</h2>
-                <p>Grafica de las etapas de firma</p>
+                <p>Gráfica de las etapas de firma</p>
                 <!--- Verificar si el usuario tiene acceso a esta página --->
                 <cfif tieneAcceso("etapasFirmar.cfm")>
                     <!--- Enlace habilitado --->
@@ -302,12 +331,12 @@
                 </cfif>
             </div>
 
-            <!--- 4. pagina.cfm --->
-            <!--- Descripcion --->
+            <!--- 4. tendenciaSolicitudes.cfm --->
+            <!--- Gráfica de tendencia de solicitudes --->
             <div class="menu-card-graficas">
                 <!--- Título y descripción --->
                 <h2>Tendencia de solicitudes</h2>
-                <p>Grafica de tendecia de solicitudes</p>
+                <p>Gráfica de tendencia de solicitudes</p>
                 <!--- Verificar si el usuario tiene acceso a esta página --->
                 <cfif tieneAcceso("tendenciaSolicitudes.cfm")>
                     <!--- Enlace habilitado --->
@@ -318,12 +347,12 @@
                 </cfif>
             </div>
 
-            <!--- 5. pagina.cfm --->
-            <!--- Descripcion --->
+            <!--- 5. solicitudesArea.cfm --->
+            <!--- Gráfica de solicitudes por area --->
             <div class="menu-card-graficas">
                 <!--- Título y descripción --->
                 <h2>Solicitudes por Area</h2>
-                <p>Grafica de solicitudes por area</p>
+                <p>Gráfica de solicitudes por area</p>
                 <!--- Verificar si el usuario tiene acceso a esta página --->
                 <cfif tieneAcceso("solicitudesArea.cfm")>
                     <!--- Enlace habilitado --->
@@ -334,12 +363,12 @@
                 </cfif>
             </div>
 
-            <!--- 6. pagina.cfm --->
-            <!--- Descripcion --->
+            <!--- 6. tiposPermiso.cfm --->
+            <!--- Gráfica de tipos de permiso --->
             <div class="menu-card-graficas">
                 <!--- Título y descripción --->
                 <h2>Tipos de Permiso</h2>
-                <p>Grafica de tipos de permiso</p>
+                <p>Gráfica de tipos de permiso</p>
                 <!--- Verificar si el usuario tiene acceso a esta página --->
                 <cfif tieneAcceso("tiposPermiso.cfm")>
                     <!--- Enlace habilitado --->
@@ -350,12 +379,12 @@
                 </cfif>
             </div>
 
-            <!--- 7. pagina.cfm --->
-            <!--- Descripcion --->
+            <!--- 7. personalVSOficial.cfm --->
+            <!--- Gráfica de tipo de solicitudes --->
             <div class="menu-card-graficas">
                 <!--- Título y descripción --->
                 <h2>Personal VS Oficial</h2>
-                <p>Grafica del tipo de solicitud</p>
+                <p>Gráfica del tipo de solicitud</p>
                 <!--- Verificar si el usuario tiene acceso a esta página --->
                 <cfif tieneAcceso("personalVSOficial.cfm")>
                     <!--- Enlace habilitado --->
@@ -366,12 +395,12 @@
                 </cfif>
             </div>
 
-            <!--- 8. pagina.cfm --->
-            <!--- Descripcion --->
+            <!--- 8. prediccion.cfm --->
+            <!--- Gráfica de prediccion --->
             <div class="menu-card-graficas">
                 <!--- Título y descripción --->
-                <h2>Predicion</h2>
-                <p>Grafica de prediccion de solicitudes</p>
+                <h2>Perdición</h2>
+                <p>Gráfica de predicción de solicitudes</p>
                 <!--- Verificar si el usuario tiene acceso a esta página --->
                 <cfif tieneAcceso("prediccion.cfm")>
                     <!--- Enlace habilitado --->
@@ -382,12 +411,12 @@
                 </cfif>
             </div>
 
-            <!--- 8. pagina.cfm --->
-            <!--- Descripcion --->
+            <!--- 8. rankingArea.cfm --->
+            <!--- Tabla de ranking de areas --->
             <div class="menu-card-graficas">
                 <!--- Título y descripción --->
                 <h2>Ranking area</h2>
-                <p>Tabla de rankig</p>
+                <p>Tabla de ranking</p>
                 <!--- Verificar si el usuario tiene acceso a esta página --->
                 <cfif tieneAcceso("rankingArea.cfm")>
                     <!--- Enlace habilitado --->
@@ -398,8 +427,8 @@
                 </cfif>
             </div>
 
-            <!--- 9. pagina.cfm --->
-            <!--- Descripcion --->
+            <!--- 9. topSolicitantes.cfm --->
+            <!--- Tabla del top de solicitantes --->
             <div class="menu-card-graficas">
                 <!--- Título y descripción --->
                 <h2>Top Solicitantes</h2>
@@ -414,8 +443,8 @@
                 </cfif>
             </div>
 
-            <!--- 10. pagina.cfm --->
-            <!--- Descripcion --->
+            <!--- 10. grafoSolicitudes.cfm --->
+            <!--- Grafo de nodos de las solicitudes --->
             <div class="menu-card-graficas">
                 <!--- Título y descripción --->
                 <h2>Red de solicitudes</h2>

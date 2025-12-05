@@ -6,15 +6,23 @@ body {
 }
 
 .menu-container {
-    max-width: 900px;
-    margin: 35px auto;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
+    max-width: 1000px;
+    margin: 15px auto;
     padding: 20px;
+
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    
 }
 
 .menu-card {
+    
+    flex-basis: 250px;
+    flex-grow: 1;
+    max-width: 300px;
+    
     background-color: #fff;
     border-radius: 12px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
@@ -61,6 +69,11 @@ body {
 }
 
 .menu-card-graficas {
+
+    flex-basis: 250px;
+    flex-grow: 1;
+    max-width: 300px;
+
     background-color: #ff0000;
     border-radius: 12px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);

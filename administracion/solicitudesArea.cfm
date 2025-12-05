@@ -1,6 +1,30 @@
 <!---
- * Dashboard Integral para Sistema de Permisos
- * Integra datos reales desde getDashboardData.cfm
+ * Nombre de la pagina: administracion/solicitudesArea.cfm
+ * 
+ * Descripción:
+ * Esta página muestra las métricas relacionadas con las solicitudes
+ * de un área específica en el sistema. Permite a los administradores
+ * filtrar las solicitudes por rango de fechas y área de adscripción,
+ * y visualiza la tendencia de solicitudes mediante gráficos interactivos.
+ * 
+ * Roles:
+ * Admin: Acceso completo para ver métricas de solicitudes por área.
+ * 
+ * Paginas relacionadas:
+ * menu.cfm: Panel principal del sistema.
+ * adminPanel.cfm: Panel de administración.
+ * cerrarSesion.cfm: Cierre de sesión del usuario.
+ * jquery-3.6.0.min.js: Biblioteca jQuery para manipulación del DOM y AJAX.
+ * obtenerSolicitudesAreaSeleccionada.cfm: API para obtener datos de solicitudes por área.
+ * https://cdn.jsdelivr.net/npm/chart.js: Biblioteca Chart.js para gráficos.
+ * metricas.js: Script personalizado para manejar métricas.
+ * graficasKPI.js: Script personalizado para generar gráficos KPI.
+ * 
+ * Autor: Rogelio Perez Guevara
+ * 
+ * Fecha de creación: 01-12-2025
+ * 
+ * Versión: 1.0
 --->
 
 <!--- Verificación de sesión --->
@@ -33,10 +57,14 @@
         <link rel="stylesheet" href="../css/temp.css">
     </head>
     <body>
-        <!-- Verificación de sesión y rol -->
-        <cfif NOT structKeyExists(session, "rol") 
-            OR ListFindNoCase("Admin", session.rol) EQ 0>
-            <cflocation url="menu.cfm" addtoken="no">
+        <!--- Verificación de sesión y rol --->
+        <cfif NOT (structKeyExists(session, "rol") AND len(trim(session.usuario)))>
+            <!--- Redirigir a la página de login si no hay sesión activa --->
+            <cflocation url="../login.cfm" addtoken="no">
+        <!--- Verificar si el rol del usuario es Admin --->
+        <cfelseif ListFindNoCase("Admin", session.rol) EQ 0>
+            <!--- Redirigir a la página de menú si el rol no es Admin --->
+            <cflocation url="../menu.cfm" addtoken="no">
         </cfif>
 
         <div class="container">
@@ -49,7 +77,7 @@
                 </div>
 
                 <!-- Nombre del formulario -->
-                <h1>Metricas</h1>
+                <h1>Solicitudes de Area</h1>
             </div>
 
             <div class="loading-overlay" id="loadingOverlay">
@@ -76,7 +104,7 @@
                         <!--- Select dinámico --->
                         <select class="form-input-general" id="areaSeleccionada">
                             <!--- Opción para todas las áreas --->
-                            <option value="">-- Seleciona un área --</option>
+                            <option value="">-- Selecciona un área --</option>
                                 
                             <!--- Consultar áreas según el rol del usuario --->
                             <cfif ListFindNoCase("Admin", session.rol)>
@@ -124,7 +152,9 @@
                 <div class="section container-fluid">
                     <div class="kpi-header">
                         <div class="chart-title">Solicitudes por Área seleccionada</div>
-                        <canvas id="chartAreas" height="250"></canvas>
+                        <div style="position: relative; height: 250px; width: 100%;">
+                            <canvas id="chartAreas"></canvas>
+                        </div>
                         <!-- Overlay solo para este canvas -->
                         <div class="canvasOverlay">
                             ¡A punto de revelar las estadísticas!
@@ -138,9 +168,9 @@
         <script src="../js/jquery-3.6.0.min.js"></script>
 
         <!---
-            Seccion -> 3
+            Sección -> 3
             Grafica -> 4
-            Grafica -> Solicitudes por Área Selecionada
+            Grafica -> Solicitudes por Área Seleccionada
         --->
         <script>
         // Variable global para la gráfica
@@ -212,6 +242,7 @@
                             },
                             options: {
                                 responsive: true,
+                                maintainAspectRatio: false,
                                 plugins: {
                                     legend: {
                                         position: 'top',
@@ -249,7 +280,7 @@
         </script>
 
         <!---
-            Seccion -> 3, 4
+            Sección -> 3, 4
             Grafica -> 1, 2, 3, 4, 5, 6, 7
             Quita los overlays de las graficas
         --->

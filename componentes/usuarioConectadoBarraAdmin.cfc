@@ -1,3 +1,19 @@
+<!---
+ * Nombre del componente: componentes/usuarioConectadoBarraAdmin.cfc
+ * 
+ * Descripción:
+ * Este componente genera la barra superior que muestra la información del usuario conectado en el panel de administración.
+ * Incluye el nombre de usuario, rol y un enlace para cerrar sesión.
+ * 
+ * Roles:
+ * Ninguno específico, accesible para cualquier usuario autenticado.
+ * 
+ * Autor: Rogelio Perez Guevara
+ * 
+ * Fecha de creación: 28-11-2025
+ * 
+ * Versión: 1.0
+--->
 <cfcomponent displayName="UsuarioConectado">
 
     <!--- Función para generar la barra superior --->
@@ -47,7 +63,7 @@
                 </div>
 
                 <div class="titulo-central">
-                    Panel de Administración
+                    Administración
                 </div>
 
                 <div class="info-logout">

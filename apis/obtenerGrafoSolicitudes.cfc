@@ -1,3 +1,22 @@
+<!---
+ * Archivo: obtenerGrafoSolicitudes.cfc
+ *
+ * Descripción: 
+ * Proporciona una API para obtener datos de un grafo que representa solicitudes y sus relaciones con usuarios.
+ * 
+ * Parámetros de entrada: 
+ * Ninguno
+ * 
+ * Parámetros de salida:
+ * JSON con nodos y aristas del grafo
+ * 
+ * Autor: Rogelio Perez Guevara
+ * 
+ * Fecha de creación: 28-11-2025
+ * 
+ * Versión: 1.0   
+ --->
+
 <cfcomponent>
     <cffunction name="getDatosGrafo" access="remote" returnformat="json">
         

@@ -1,3 +1,20 @@
+<!---
+  * API para obtener el conteo de tipos de solicitud de personal VS oficial
+  * 
+  * Parámetros de entrada:
+  *   - rango (opcional): Número de días para el rango de fechas (por defecto 30 días)
+  *   - area (requerido): ID del área para filtrar las solicitudes
+  * 
+  * Parámetros de salida:
+  * JSON con el conteo de tipos de solicitud
+  * 
+  * Autor: Rogelio Perez Guevara
+  * 
+  * Fecha de creación: 21-10-2025
+  * 
+  * Versión: 1.0   
+ --->
+
 <cfsetting showdebugoutput="No">
 <cfcontent type="application/json" reset="true">
 

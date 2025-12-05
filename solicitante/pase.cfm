@@ -1,14 +1,32 @@
 <!--- 
- * Página `pase.cfm` para el llenado del formulario de solicitud.
- *
- * Funcionalidad:
- * - Permite al solicitante completar los campos necesarios para generar la solicitud.
- * - La solicitud será posteriormente revisada y firmada por las autoridades correspondientes.
- * - Todos los campos requeridos deben ser llenados; de lo contrario, no se podrá enviar la solicitud.
- *
- * Uso:
- * - Esta página centraliza la captura de información antes de iniciar el proceso de aprobación.
+ * Nombre de la pagina: solicitante/pase.cfm
+ * 
+ * Descripción:
+ * Formulario para la solicitud de permisos o pases de salida por parte del solicitante.
+ * 
+ * Roles:
+ * - Solicitante: Acceso completo para llenar y enviar el formulario de solicitud.
+ * - Jefe: Acceso completo para llenar y enviar el formulario de solicitud como Solicitante.
+ * - RecursosHumanos: Acceso completo para llenar y enviar el formulario de solicitud como Solicitante.
+ * - Admin: Acceso completo para llenar y enviar el formulario de solicitud como Solicitante.
+ * 
+ * Paginas relacionadas:
+ * login.cfm: Página de inicio de sesión.
+ * adminPanel.cfm: Panel de administración al que son redirigidos los administradores.
+ * procesarPermiso.cfm: Página que procesa la solicitud enviada desde este formulario.
+ * http://www.w3.org/2000/svg: Espacio de nombres SVG utilizado para las firmas digitales.
+ * menu.cfm: Página principal del menú para navegar por el sistema.
+ * cerrarSesion.cfm: Página para cerrar la sesión del usuario.
+ * validacionForm.js: Script para validar el formulario antes de enviarlo.
+ * svgFirma.js: Script para manejar la captura de firmas digitales en formato SVG.
+ * 
+ * Autor: Rogelio Pérez Guevara
+ * 
+ * Fecha de creación: 24-09-2025
+ * 
+ * Versión: 1.0
 --->
+
 <!DOCTYPE html>
 <html lang="es">
     <head>
@@ -28,16 +46,14 @@
         <link rel="stylesheet" href="../css/botones.css">
     </head>
     <body>
-        <!--- Validar que exista un sesión activa --->
-        <cfif NOT structKeyExists(session, "rol") OR len(trim(session.rol)) EQ 0>
-            <!--- No hay sesión activa, redirigir al login --->
+        <!--- Verificación de sesión y rol --->
+        <cfif NOT (structKeyExists(session, "rol") AND len(trim(session.usuario)))>
+            <!--- Redirigir a la página de login si no hay sesión activa --->
             <cflocation url="../login.cfm" addtoken="no">
-        </cfif>
-
-        <!--- Si el usuario es administrador, redirigir al menú principal --->
-        <cfif session.rol EQ "admin">
-            <!--- Redirigir al menú principal --->
-            <cflocation url="../adminPanel.cfm" addtoken="no">
+        <!--- Verificar si el rol del usuario es Admin --->
+        <cfelseif ListFindNoCase("Solicitante,Jefe,RecursosHumanos,Admin", session.rol) EQ 0>
+            <!--- Redirigir a la página de menú si el rol no es Admin --->
+            <cflocation url="../menu.cfm" addtoken="no">
         </cfif>
 
         <!--- Contenedor principal --->
@@ -132,7 +148,7 @@
 
                         <!--- Grupo de campos para tipo de solicitud, tipo de permiso, fecha y tiempo solicitado --->
                         <div class="form-field">
-                            <!--- Seleccion del tipo de solicitud --->
+                            <!--- Selección del tipo de solicitud --->
                             <label class="form-label">
                                 Tipo de solicitud:
                             </label>
@@ -164,7 +180,7 @@
                         <div class="field-group">
                             <!--- Tipo de permiso --->
                             <div class="form-field">
-                                <!--- Selecion del tipo de permiso --->
+                                <!--- Selección del tipo de permiso --->
                                 <label class="form-label">
                                     Tipo de permiso:
                                 </label>
@@ -372,7 +388,7 @@
                         
                         <!--- Botón para cerrar sesión --->
                         <a href="../cerrarSesion.cfm" class="submit-btn-cerrarSesion submit-btn-cerrarSesion-text">
-                            Cerrar Sesion
+                            Cerrar Sesión
                         </a>
                     </div>
                 </div>
@@ -389,7 +405,7 @@
                 <!--- 1. Localizamos el formulario por su nombre "permisoForm" --->
                 const form = document.forms["permisoForm"];
     
-                if (!form) return; // Seguridad por si el script carga antes
+                if (!form) return; <!--- Seguridad por si el script carga antes --->
 
                 form.addEventListener("submit", async function(event) {
                     <!--- DETENER EL ENVÍO INMEDIATAMENTE --->
@@ -397,7 +413,7 @@
 
                     <!--- 2. Localizamos los elementos SIN usar ID en el botón de envío --->
                     <!--- Buscamos el botón dentro del formulario por su clase CSS --->
-                    const boton = form.querySelector(".submit-btn-enviar"); 
+                    const botón = form.querySelector(".submit-btn-enviar"); 
                     <!---  Buscamos el checkbox por su ID (ese sí lo tiene) --->
                     const checkPersonal = document.getElementById("solicitud_personal");
 
@@ -426,7 +442,7 @@
 
                     try {
                         <!--- Consulta AJAX para verificar solicitudes personales --->
-                        const response = await fetch("verificarSolicitudes.cfm", {
+                        const response = await fetch("../apis/verificarSolicitudes.cfm", {
                             method: "GET",
                             headers: { "Cache-Control": "no-cache" }
                         });

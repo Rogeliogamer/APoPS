@@ -1,7 +1,29 @@
+<!---
+ * API: obtenerMetricasRanking.cfm
+ * 
+ * Descripción: 
+ * Proporciona un ranking de las áreas con más solicitudes realizadas en un rango de fechas determinado.
+ * 
+ * Parámetros de entrada:
+ *   - rangoFechas (opcional): Número de días para el rango de fechas (por defecto 30 días)
+ *   - areaSeleccionada (requerido): ID del área para resaltar en el ranking
+ * 
+ * Parámetros de salida:
+ * HTML con filas de tabla representando el ranking
+ * 
+ * Autor: Rogelio Perez Guevara
+ * 
+ * Fecha de creación: 22-10-2025
+ * 
+ * Versión: 1.0   
+ --->
+
 <cfcontent type="text/html; charset=utf-8">
 
 <cfparam name="form.rangoFechas" default="30">
 <cfparam name="form.areaSeleccionada" default="">
+
+<cfset fechaLimite = DateAdd("d", -val(form.rangoFechas), Now())>
 
 <!--- Consulta ranking --->
 <cfquery name="rankingAreas" datasource="Autorizacion">
@@ -19,10 +41,9 @@
     FROM area_adscripcion a
     LEFT JOIN solicitudes s 
         ON s.id_area = a.id_area
-        AND s.fecha_creacion >= DATE_SUB(CURDATE(), INTERVAL <cfqueryparam value="#val(form.rangoFechas)#" cfsqltype="cf_sql_integer"> DAY)
+        AND s.fecha_creacion >= <cfqueryparam value="#fechaLimite#" cfsqltype="cf_sql_timestamp"> 
     GROUP BY a.id_area
     ORDER BY total_solicitudes DESC
-    LIMIT 10
 </cfquery>
 
 <!--- Generar filas de tabla --->

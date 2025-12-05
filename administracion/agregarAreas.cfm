@@ -1,13 +1,25 @@
 <!--- 
- * Página `pase.cfm` para el llenado del formulario de solicitud.
- *
- * Funcionalidad:
- * - Permite al solicitante completar los campos necesarios para generar la solicitud.
- * - La solicitud será posteriormente revisada y firmada por las autoridades correspondientes.
- * - Todos los campos requeridos deben ser llenados; de lo contrario, no se podrá enviar la solicitud.
- *
- * Uso:
- * - Esta página centraliza la captura de información antes de iniciar el proceso de aprobación.
+ * Nombre de la pagina: administracion/agregarAreas.cfm
+ * 
+ * Descripción:
+ * Esta página permite a los administradores agregar nuevas áreas de adscripción al sistema.
+ * Incluye validaciones para asegurar que el nombre del área solo contenga letras y espacios,
+ * y verifica que el área no exista previamente en la base de datos antes de insertarla.
+ * Muestra mensajes de éxito o error según el resultado de la operación.
+ * 
+ * Roles:
+ * Admin: Acceso completo para agregar áreas.
+ * 
+ * Paginas relacionadas:
+ * login.cfm - Página de inicio de sesión.
+ * adminPanel.cfm - Panel de administración.
+ * cerrarSesion.cfm - Cierre de sesión del usuario.
+ * 
+ * Autor: Rogelio Perez Guevara
+ * 
+ * Fecha de creación: 03-12-2025
+ * 
+ * Versión: 1.0
 --->
 <!DOCTYPE html>
 <html lang="es">
@@ -19,7 +31,7 @@
         <!--- Icono de la pagina --->
         <link rel="icon" href="../elements/icono.ico" type="image/x-icon">
         <!--- Título de la página --->
-        <title>Permiso o Pase de Salida</title>
+        <title>Nueva Area de Adscripción</title>
         <!--- Enlace a fuentes y hojas de estilo --->
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="../css/globalForm.css">
@@ -29,9 +41,12 @@
     </head>
     <body>
         <!--- Validar que exista un sesión activa --->
-        <cfif NOT structKeyExists(session, "rol") OR len(trim(session.rol)) EQ 0>
+        <cfif NOT (structKeyExists(session, "rol") AND len(trim(session.rol)))>
             <!--- No hay sesión activa, redirigir al login --->
             <cflocation url="../login.cfm" addtoken="no">
+        <cfelseif listFindNoCase("Admin", session.rol) EQ 0>
+            <!--- El usuario no tiene rol de Admin, redirigir al menu --->
+            <cflocation url="../menu.cfm" addtoken="no">
         </cfif>
 
         <cfset mensaje = "">
@@ -63,7 +78,7 @@
                             VALUES (<cfqueryparam value="#nombreArea#" cfsqltype="cf_sql_varchar">)
                         </cfquery>
                         <cfset mensaje = "Área '#nombreArea#' agregada correctamente.">
-                        <cfset tipoMensaje = "exito">
+                        <cfset tipoMensaje = "éxito">
                         <!--- Limpiar el campo para la próxima captura --->
                         <cfset form.area = "">
                     <cfcatch type="any">
@@ -91,10 +106,7 @@
             <!--- Mensajes de Alerta --->
             <cfif len(mensaje) GT 0>
                 <cfoutput>
-                    <div style="padding: 15px; margin: 20px; border-radius: 8px; text-align: center; font-weight: bold;
-                        background-color: #(tipoMensaje EQ 'error' ? '##ffebee' : '##e8f5e9')#;
-                        color: #(tipoMensaje EQ 'error' ? '##c62828' : '##2e7d32')#;
-                        border: 1px solid #(tipoMensaje EQ 'error' ? '##ef9a9a' : '##a5d6a7')#;">
+                    <div style="padding: 15px; margin: 20px; border-radius: 8px; text-align: center; font-weight: bold;                         background-color: #(tipoMensaje EQ 'error' ? '##ffebee' : '##e8f5e9')#;                        color: #(tipoMensaje EQ 'error' ? '##c62828' : '##2e7d32')#;                         border: 1px solid #(tipoMensaje EQ 'error' ? '##ef9a9a' : '##a5d6a7')#;">
                         #mensaje#
                     </div>
                 </cfoutput>
@@ -113,7 +125,7 @@
 
                         <!--- Grupo de campos para tipo de solicitud, tipo de permiso, fecha y tiempo solicitado --->
                         <div class="form-field">
-                            <!--- Seleccion del tipo de solicitud --->
+                            <!--- Selección del tipo de solicitud --->
                             <label class="form-label">
                                 Nombre del Area
                             </label>

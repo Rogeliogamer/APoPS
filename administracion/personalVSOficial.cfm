@@ -1,12 +1,31 @@
 <!---
- * Dashboard Integral para Sistema de Permisos
- * Integra datos reales desde getDashboardData.cfm
+ * Nombre de la pagina: administracion/personalVSOficial.cfm
+ * 
+ * Descripción:
+ * Esta página muestra una gráfica comparativa entre el personal
+ * autorizado y el personal oficial en función del área seleccionada
+ * y el rango de fechas.
+ * 
+ * Roles:
+ * Admin: Acceso completo para ver métricas de personal.
+ * 
+ * Paginas relacionadas:
+ * menu.cfm: Panel principal del sistema.
+ * adminPanel.cfm: Panel de administración.
+ * cerrarSesion.cfm: Cierre de sesión del usuario.
+ * jquery-3.6.0.min.js: Biblioteca jQuery para manipulación del DOM y AJAX.
+ * obtenerPersonalVSOficial.cfm: API para obtener datos de personal vs oficial.
+ * https://cdn.jsdelivr.net/npm/chart.js: Biblioteca Chart.js para crear gráficos.
+ * metricas.js: Script personalizado para manejar métricas.
+ * graficasKPI.js: Script personalizado para manejar gráficas KPI.
+ * 
+ * Autor: Rogelio Perez Guevara
+ * 
+ * Fecha de creación: 01-12-2025
+ * 
+ * Versión: 1.0
 --->
 
-<!--- Verificación de sesión --->
-<cfif NOT structKeyExists(session, "rol")>
-    <cflocation url="index.cfm" addtoken="no">
-</cfif>
 
 <!DOCTYPE html>
 <html lang="es">
@@ -33,10 +52,14 @@
         <link rel="stylesheet" href="../css/temp.css">
     </head>
     <body>
-        <!-- Verificación de sesión y rol -->
-        <cfif NOT structKeyExists(session, "rol") 
-            OR ListFindNoCase("Admin", session.rol) EQ 0>
-            <cflocation url="menu.cfm" addtoken="no">
+        <!--- Verificación de sesión y rol --->
+        <cfif NOT (structKeyExists(session, "rol") AND len(trim(session.usuario)))>
+            <!--- Redirigir a la página de login si no hay sesión activa --->
+            <cflocation url="../login.cfm" addtoken="no">
+        <!--- Verificar si el rol del usuario es Admin --->
+        <cfelseif ListFindNoCase("Admin", session.rol) EQ 0>
+            <!--- Redirigir a la página de menú si el rol no es Admin --->
+            <cflocation url="../menu.cfm" addtoken="no">
         </cfif>
 
         <div class="container">
@@ -49,7 +72,7 @@
                 </div>
 
                 <!-- Nombre del formulario -->
-                <h1>Metricas</h1>
+                <h1>Personal VS Oficial</h1>
             </div>
 
             <div class="loading-overlay" id="loadingOverlay">
@@ -76,7 +99,7 @@
                         <!--- Select dinámico --->
                         <select class="form-input-general" id="areaSeleccionada">
                             <!--- Opción para todas las áreas --->
-                            <option value="">-- Seleciona un área --</option>
+                            <option value="">-- Selecciona un área --</option>
                                 
                             <!--- Consultar áreas según el rol del usuario --->
                             <cfif ListFindNoCase("Admin", session.rol)>
@@ -122,9 +145,13 @@
 
                 <!-- KPI Cards -->
                 <div class="section container-fluid">
-                    <div class="kpi-header">
-                        <div class="chart-title">Personal vs Oficial por Area Seleccionada</div>
-                        <canvas id="chartTipoSolicitud" height="250"></canvas>
+                    <div class="kpi-header container-fluid px-2 px-md-3">
+                        <div class="chart-title text-center text-md-start">
+                            Personal vs Oficial por Area Seleccionada
+                        </div>
+                        <div style="position: relative; height: 250px; width: 100%;">
+                            <canvas id="chartTipoSolicitud"></canvas>
+                        </div>
                         <!-- Overlay solo para este canvas -->
                         <div class="canvasOverlay">
                             ¡A punto de revelar las estadísticas!
@@ -138,7 +165,7 @@
         <script src="../js/jquery-3.6.0.min.js"></script>
 
         <!---
-            Seccion -> 3
+            Sección -> 3
             Grafica -> 6
             Grafica -> Personal VS Oficial por Área Seleccionada
         --->
@@ -148,6 +175,11 @@
 
                 const rango = $('#rangoFechas').val();
                 const area = $('#areaSeleccionada').val();
+
+                if(!area) {
+                    alert("Por favor, selecciona un área.");
+                    return;
+                }
 
                 $.ajax({
                     url: '../apis/obtenerPersonalVSOficial.cfm',
@@ -188,6 +220,7 @@
                             },
                             options: {
                                 responsive: true,
+                                maintainAspectRatio: false,
                                 plugins: {
                                     legend: { 
                                         position: 'bottom' 
@@ -205,7 +238,7 @@
         </script>
 
         <!---
-            Seccion -> 3, 4
+            Sección -> 3, 4
             Grafica -> 1, 2, 3, 4, 5, 6, 7
             Quita los overlays de las graficas
         --->

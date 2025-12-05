@@ -1,14 +1,25 @@
 <!---
- * Página `pendientesFirmar.cfm` para la gestión de solicitudes en espera de firma.
- *
- * Funcionalidad:
- * - Muestra la lista de solicitudes enviadas a cuentas con rol de firma.
- * - Cada solicitud puede ser aceptada o rechazada por el firmante.
- * - Una vez firmada (aceptada o rechazada), la solicitud se procesa y se almacena en la base de datos.
- * - Las solicitudes ya firmadas dejan de mostrarse en esta lista.
- *
- * Uso:
- * - Página destinada al flujo de revisión y firma de solicitudes por parte de las autoridades correspondientes.
+ * Nombre de la pagina: solicitante/pendientesFirmar.cfm
+ * 
+ * Descripción:
+ * Lista de solicitudes pendientes de firma para el usuario con rol correspondiente.
+ * 
+ * Roles:
+ * - Jefe: Puede ver y firmar solicitudes de su área de adscripción.
+ * - RecursosHumanos: Puede ver y firmar solicitudes que ya han sido aprobadas por el Jefe.
+ * - Admin: Tiene acceso completo a todas las solicitudes pendientes de firma.
+ * 
+ * Páginas Relacionadas:
+ * pendientesFirmar.cfm: Página actual para ver solicitudes pendientes de firma.
+ * firmarSolicitud.cfm: Página para firmar o rechazar una solicitud específica.
+ * menu.cfm: Página principal del menú de navegación.
+ * cerrarSesion.cfm: Página para cerrar la sesión del usuario.
+ * 
+ * Autor: Rogelio Pérez Guevara
+ * 
+ * Fecha de creación: 29-09-2025
+ * 
+ * Versión: 1.0
 --->
 
 <!--- Lógica de manejo de parámetros y búsqueda --->
@@ -37,23 +48,23 @@
 <cfset filtroRol = "">
 
 <!--- Definir filtros específicos para cada rol --->
-<cfif session.rol EQ "Jefe">
+<cfif session.rol EQ "Jefe" OR session.rol EQ "admin">
     <!--- El rol "Jefe" solo puede ver solicitudes de su área de adscripción --->
     <cfset filtroRol = "AND du.id_area = " & session.id_area>
 
-<!--- Si el rol es "RecursosHumanos", "Autorizacion" o "Expediente", no se aplica filtro adicional --->
-<cfelseif session.rol EQ "RecursosHumanos">
-    <!--- El rol "RecursosHumanos" solo puede ver solicitudes que ya hayan sido aprobadas por el "Jefe" --->
+<!--- Si el rol es "RecursosHumanos" o "Admin", no se aplica filtro adicional --->
+<cfelseif session.rol EQ "RecursosHumanos" OR session.rol EQ "Admin">
+    <!--- El rol "RecursosHumanos" solo puede ver solicitudes que ya hayan sido aprobadas por el "Jefe" o "Admin"--->
     <cfset filtroRol = "
         AND EXISTS (
             SELECT 1 FROM firmas f2
             WHERE f2.id_solicitud = s.id_solicitud
-            AND f2.rol = 'Jefe'
+            AND f2.rol = 'Jefe' OR f2.rol = 'Admin'
             AND f2.aprobado = 'Aprobado'
         )">
 
 <!--- El rol "Solicitante" no debe ver ninguna solicitud en esta página --->
-<cfelseif NOT ListFindNoCase("Jefe,RecursosHumanos", session.rol)>
+<cfelseif NOT ListFindNoCase("Jefe,RecursosHumanos,Admin", session.rol)>
     <!--- No mostrar ninguna solicitud para el rol "Solicitante" --->
     <cfset filtroRol = "AND 1=0">
 </cfif>
@@ -82,15 +93,17 @@
         AND (f.id_firma IS NULL OR f.aprobado = 'Pendiente')
     #PreserveSingleQuotes(filtroRol)#
     
-    <cfif len(trim(form.search))>
+    <cfif len(trim(searchTerm))>
         AND (
-            du.nombre LIKE <cfqueryparam value="%#form.search#%" cfsqltype="cf_sql_varchar">
-            OR du.apellido_paterno LIKE <cfqueryparam value="%#form.search#%" cfsqltype="cf_sql_varchar">
-            OR du.apellido_materno LIKE <cfqueryparam value="%#form.search#%" cfsqltype="cf_sql_varchar">
+            s.id_solicitud LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
+            OR s.tipo_solicitud LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
+            OR s.tipo_permiso LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
+            OR s.fecha LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
+            OR du.nombre LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
+            OR du.apellido_paterno LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
+            OR du.apellido_materno LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
             OR CONCAT(du.nombre, ' ', du.apellido_paterno, ' ', du.apellido_materno) LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
-            OR aa.nombre LIKE <cfqueryparam value="%#form.search#%" cfsqltype="cf_sql_varchar">
-            OR s.tipo_solicitud LIKE <cfqueryparam value="%#form.search#%" cfsqltype="cf_sql_varchar">
-            OR s.tipo_permiso LIKE <cfqueryparam value="%#form.search#%" cfsqltype="cf_sql_varchar">
+            OR aa.nombre LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
         )
     </cfif>
     GROUP BY s.id_solicitud
@@ -117,12 +130,12 @@
     </head>
     <body>
         <!--- Verificación de sesión y rol autorizado --->
-        <cfif NOT structKeyExists(session, "rol") OR len(trim(session.rol)) EQ 0>
+        <cfif NOT (structKeyExists(session, "rol") AND len(trim(session.rol)))>
             <!--- No hay sesión activa o el rol no está definido --->
-            <cflocation url="login.cfm" addtoken="no">
-        <cfelseif ListFindNoCase("RecursosHumanos,Jefe", trim(session.rol)) EQ 0>
+            <cflocation url="../login.cfm" addtoken="no">
+        <cfelseif ListFindNoCase("Jefe,RecursosHumanos,Admin", session.rol) EQ 0>
                 <!--- El rol no está autorizado para acceder a esta sección --->
-            <cflocation url="menu.cfm" addtoken="no">
+            <cflocation url="../menu.cfm" addtoken="no">
         </cfif>
 
         <!--- Configuración de paginación --->
@@ -312,7 +325,7 @@
                         
                         <!--- Enlace para cerrar sesión --->
                         <a href="../cerrarSesion.cfm" class="submit-btn-cerrarSesion submit-btn-cerrarSesion-text">
-                                Cerrar Sesion
+                                Cerrar Sesión
                         </a>
                     </div>
                 </div>

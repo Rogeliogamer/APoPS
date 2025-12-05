@@ -1,3 +1,24 @@
+<!---
+ * API: obtenerPrediccion.cfc
+ * 
+ * Descripción:
+ * Proporciona una predicción del número de solicitudes aprobadas, pendientes y rechazadas
+ * para los próximos 7 días, basada en el historial de solicitudes de un área específica.
+ * 
+ * Parámetros de entrada:
+ * - rangoDias (requerido): Número de días hacia atrás para analizar el historial
+ * - areaId (requerido): ID del área para filtrar las solicitudes
+ * 
+ * Parámetros de salida:
+ * JSON con la predicción diaria para los próximos 7 días
+ * 
+ * Autor: Rogelio Perez Guevara
+ * 
+ * Fecha de creación: 21-10-2025
+ * 
+ * Versión: 1.0   
+--->
+
 <cfcomponent>
     <cffunction name="getPrediccion" access="remote" returnformat="json">
         <cfargument name="rangoDias" type="numeric" required="yes">

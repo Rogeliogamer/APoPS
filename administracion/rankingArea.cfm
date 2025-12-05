@@ -1,12 +1,33 @@
 <!---
- * Dashboard Integral para Sistema de Permisos
- * Integra datos reales desde getDashboardData.cfm
+ * Nombre de la pagina: administracion/rankingArea.cfm
+ * 
+ * Descripción:
+ * Esta página muestra métricas y gráficos relacionados con las áreas de adscripción.
+ * Permite filtrar datos por rango de fechas y área específica.
+ * Utiliza Chart.js para representar visualmente las predicciones de solicitudes.
+ * Incluye validaciones de sesión y rol para asegurar que solo administradores accedan.
+ * Contiene scripts para manejar la interacción del usuario y la actualización de gráficos.
+ * Presenta un diseño responsivo y moderno con CSS personalizado.
+ * 
+ * Roles:
+ * Admin: Acceso completo para ver métricas y gráficos de áreas.
+ * 
+ * Paginas relacionadas:
+ * menu.cfm: Panel principal del sistema.
+ * adminPanel.cfm: Panel de administración.
+ * cerrarSesion.cfm: Cierre de sesión del usuario.
+ * jquery-3.6.0.min.js: Biblioteca jQuery para manipulación del DOM y AJAX.
+ * obtenerMetricasRanking.cfm: API para obtener datos de métricas de ranking por área.
+ * https://cdn.jsdelivr.net/npm/chart.js: Biblioteca Chart.js para gráficos.
+ * metricas.js: Script personalizado para manejar métricas.
+ * graficasKPI.js: Script personalizado para gráficos KPI.
+ * 
+ * Autor: Rogelio Perez Guevara
+ * 
+ * Fecha de creación: 01-12-2025
+ * 
+ * Versión: 1.0
 --->
-
-<!--- Verificación de sesión --->
-<cfif NOT structKeyExists(session, "rol")>
-    <cflocation url="index.cfm" addtoken="no">
-</cfif>
 
 <!DOCTYPE html>
 <html lang="es">
@@ -33,10 +54,14 @@
         <link rel="stylesheet" href="../css/temp.css">
     </head>
     <body>
-        <!-- Verificación de sesión y rol -->
-        <cfif NOT structKeyExists(session, "rol") 
-            OR ListFindNoCase("Admin", session.rol) EQ 0>
-            <cflocation url="menu.cfm" addtoken="no">
+        <!--- Verificación de sesión y rol --->
+        <cfif NOT (structKeyExists(session, "rol") AND len(trim(session.usuario)))>
+            <!--- Redirigir a la página de login si no hay sesión activa --->
+            <cflocation url="../login.cfm" addtoken="no">
+        <!--- Verificar si el rol del usuario es Admin --->
+        <cfelseif ListFindNoCase("Admin", session.rol) EQ 0>
+            <!--- Redirigir a la página de menú si el rol no es Admin --->
+            <cflocation url="../menu.cfm" addtoken="no">
         </cfif>
 
         <div class="container">
@@ -49,7 +74,7 @@
                 </div>
 
                 <!-- Nombre del formulario -->
-                <h1>Metricas</h1>
+                <h1>Ranking Areas</h1>
             </div>
 
             <div class="loading-overlay" id="loadingOverlay">
@@ -76,10 +101,10 @@
                         <!--- Select dinámico --->
                         <select class="form-input-general" id="areaSeleccionada">
                             <!--- Opción para todas las áreas --->
-                            <option value="">-- Seleciona un área --</option>
+                            <option value="">-- Selecciona un área --</option>
                                 
                             <!--- Consultar áreas según el rol del usuario --->
-                            <cfif ListFindNoCase("Admin,RecursosHumanos,Autorizacion,Expediente", session.rol)>
+                            <cfif ListFindNoCase("Admin,RecursosHumanos", session.rol)>
                                 <!--- Estos roles pueden ver todas las áreas --->
                                 <cfquery name="getAreas" datasource="Autorizacion">
                                     SELECT id_area, 
@@ -154,7 +179,7 @@
         <script src="js/jquery-3.6.0.min.js"></script>
 
         <!---
-            Seccion -> 5
+            Sección -> 5
             Tabla -> 1
             Tabla -> Ranking por Área
         --->

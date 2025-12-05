@@ -1,13 +1,30 @@
 <!--- 
- * Página de menú principal del sistema.
- *
- * Funcionalidad:
- * - Muestra las opciones disponibles para el usuario autenticado.
- * - Las opciones se habilitan o deshabilitan dinámicamente según el rol del usuario.
- * - Algunas opciones pueden no estar disponibles dependiendo de los permisos asignados.
- *
- * Uso:
- * - Incluir esta página como interfaz de navegación principal para usuarios logueados.
+ * Nombre de la página: menu.cfm
+ * Descripción: 
+ * Esta pagina permite seleccionar las funcionalidades de acuerdo al rol del usuario,
+ * aquellas opciones que no coinciden con el rol estarán inhabilitadas.
+ * 
+ * Roles:
+ * - Solicitante: Acceso a funciones básicas como solicitar permisos y ver sus propias solicitudes.
+ * - Jefe: Acceso a funciones de supervisión y aprobación de solicitudes.
+ * - RecursosHumanos: Acceso a funciones administrativas y de gestión de usuarios.
+ * - Admin: Acceso completo a todas las funciones del sistema.
+ * 
+ * Paginas relacionadas:
+ * - login.cfm: Página de inicio de sesión.
+ * - solicitante/pase.cfm: Página para solicitar permisos o pases de salida.
+ * - solicitante/listaUsuarios.cfm: Página para ver la lista de usuarios.
+ * - solicitante/pendientesFirmar.cfm: Página para ver solicitudes pendientes de firma.
+ * - solicitante/firmados.cfm: Página para ver solicitudes ya firmadas.
+ * - solicitante/listaSolicitudes.cfm: Página para ver el pase completo.
+ * - solicitante/metricas.cfm: Página para ver métricas y gráficos.
+ * - solicitante/listaTodasSolicitudes.cfm: Página para ver todas las solicitudes.
+ * 
+ * Autor: Rogelio Perez Guevara
+ * 
+ * Fecha de creación: 25-09-2025
+ * 
+ * Versión: 1.0
 --->
 
 <!--- Función para verificar acceso basado en rol --->
@@ -21,9 +38,7 @@
             "Solicitante": ["pase.cfm", "firmados.cfm", "listaSolicitudes.cfm", "metricas.cfm"],
             "Jefe": ["pase.cfm", "listaUsuarios.cfm", "pendientesFirmar.cfm", "firmados.cfm", "listaSolicitudes.cfm", "metricas.cfm"],
             "RecursosHumanos": ["pase.cfm", "listaUsuarios.cfm", "pendientesFirmar.cfm", "firmados.cfm", "listaSolicitudes.cfm", "metricas.cfm", "listaTodasSolicitudes.cfm"],
-            "Autorizacion": ["pase.cfm", "firmados.cfm", "listaSolicitudes.cfm", "metricas.cfm"],
-            "Expediente": ["pase.cfm", "listaUsuarios.cfm", "firmados.cfm", "listaSolicitudes.cfm", "metricas.cfm"],
-            "Admin": ["registrarUsuarios.cfm", "listaUsuarios.cfm", "metricas.cfm"]
+            "Admin": ["pase.cfm", "listaUsuarios.cfm", "pendientesFirmar.cfm", "firmados.cfm", "listaSolicitudes.cfm", "metricas.cfm", "listaTodasSolicitudes.cfm"]
         };
 
         <!--- Validar si el rol existe en el struct --->
@@ -56,12 +71,14 @@
         <link rel="stylesheet" href="css/botones.css">
     </head>
     <body>
-        <!--- Verificar si existe un usuario logeado --->
-        <cfif structKeyExists(session, "rol") AND len(trim(session.usuario))>
-            <!--- El usuario está logeado, puede continuar --->
-        <cfelse>
+        <!--- Verificar si existe un usuario logueado --->
+        <cfif NOT (structKeyExists(session, "rol") AND len(trim(session.usuario)))>
             <!--- No hay sesión, redirigir al login --->
             <cflocation url="login.cfm" addtoken="no">
+        <!--- Verificar si el rol es válido --->
+        <cfelseif listFindNoCase("Solicitante,Jefe,RecursosHumanos,Admin", session.rol) EQ 0>
+            <!--- Rol no válido, redirigir al login --->
+            <cflocation url="menu.cfm" addtoken="no">
         </cfif>
 
         <!--- Incluye la barra de usuario conectado --->
@@ -75,7 +92,7 @@
             <!--- Tarjeta de menú para solicitar permiso o pase de salida --->
             <div class="menu-card">
                 <!--- Título y descripción --->
-                <h2>Permiso o Pase de salida</h2>
+                <h2>Permiso o Pase de Salida</h2>
                 <p>Solicitar un permiso o pase de salida</p>
                 <!--- Verificar si el usuario tiene acceso a esta página --->
                 <cfif tieneAcceso("pase.cfm")>
@@ -123,15 +140,15 @@
             <!--- Tarjeta de menú para ver solicitudes ya firmadas --->
             <div class="menu-card">
                 <!--- Título y descripción --->
-                <h2>Solicitudes ya firmados</h2>
-                <p>Ver solicitudes que ya han sido firmados</p>
+                <h2>Solicitudes ya firmadas</h2>
+                <p>Ver solicitudes que ya han sido firmadas</p>
                 <!--- Verificar si el usuario tiene acceso a esta página --->
                 <cfif tieneAcceso("firmados.cfm")>
                     <!--- Enlace habilitado --->
-                    <a href="solicitante/firmados.cfm" class="submit-btn-menu-original">Firmados</a>
+                    <a href="solicitante/firmados.cfm" class="submit-btn-menu-original">Firmadas</a>
                 <!--- Enlace deshabilitado --->
                 <cfelse>
-                    <a href="##" class="disabled">Firmados</a>
+                    <a href="##" class="disabled">Firmadas</a>
                 </cfif>
             </div>
 
@@ -156,7 +173,7 @@
             <div class="menu-card">
                 <!--- Título y descripción --->
                 <h2>Metricas</h2>
-                <p>Ver graficas</p>
+                <p>Ver gráficas</p>
                 <!--- Verificar si el usuario tiene acceso a esta página --->
                 <cfif tieneAcceso("metricas.cfm")>
                     <!--- Enlace habilitado --->
@@ -166,7 +183,9 @@
                     <a href="##" class="disabled">Detalles</a>
                 </cfif>
             </div>
+        </div>
 
+        <div class="menu-container">
             <!--- 7. listaTodasSolicitudes.cfm --->
             <!--- Tarjeta de menú para ver todas las solicitudes --->
             <div class="menu-card">

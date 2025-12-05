@@ -1,18 +1,25 @@
 <!---
- * Componente `listaUsuarios.cfc` para la visualización y gestión de usuarios.
- *
- * Acceso:
- * - Permitido únicamente a usuarios con rol: `admin`, `expediente`, `RecursosHumanos` y `jefe`.
- * - Rol `usuario` no tiene acceso a esta página.
- *
- * Funcionalidad:
- * - Muestra la lista de usuarios filtrada según los privilegios del rol autenticado.
- * - La búsqueda de usuarios también respeta las restricciones de acceso por rol.
- * - Garantiza un nivel de seguridad al limitar la visibilidad de la información sensible.
- *
- * Permisos especiales:
- * - Solo los usuarios con rol `admin` tienen habilitados los botones de **Editar** y **Eliminar**.
- * - Cada acción redirige a la página correspondiente con la información del usuario seleccionado.
+ * Nombre de la pagina: listaSolicitudes.cfm
+ * 
+ * Descripción: Página para listar y buscar solicitudes de permisos o pases de salida.
+ * Permite a los administradores ver todas las solicitudes con opciones de búsqueda y paginación
+ * para facilitar la gestión.
+ * 
+ * Roles:
+ * Admin: Acceso completo para ver y gestionar solicitudes.
+ * 
+ * Paginas relacionadas:
+ * login.cfm: Página de inicio de sesión.
+ * menu.cfm: Menú principal del sistema.
+ * listaSolicitudes.cfm: Esta página.
+ * adminPanel.cfm - Panel de administración.
+ * cerrarSesion.cfm - Cierre de sesión del usuario.
+ * 
+ * Autor: Rogelio Perez Guevara
+ * 
+ * Fecha de creación: 03-12-2025
+ * 
+ * Versión: 1.0
 --->
 
 <!--- Lógica de manejo de parámetros y búsqueda --->
@@ -57,13 +64,12 @@
     </head>
     <body>
         <!--- Verificación de sesión y rol --->
-        <cfif NOT structKeyExists(session, "usuario") 
-            OR NOT structKeyExists(session, "rol")
-            OR len(trim(session.rol)) EQ 0>
-            <!--- No hay sesión activa --->
+        <cfif NOT (structKeyExists(session, "rol") AND len(trim(session.usuario)))>
+            <!--- Redirigir a la página de login si no hay sesión activa --->
             <cflocation url="../login.cfm" addtoken="no">
-        <cfelseif listFindNoCase("admin", trim(session.rol)) EQ 0>
-            <!--- Rol no autorizado --->
+        <!--- Verificar si el rol del usuario es Admin --->
+        <cfelseif ListFindNoCase("Admin", session.rol) EQ 0>
+            <!--- Redirigir a la página de menú si el rol no es Admin --->
             <cflocation url="../menu.cfm" addtoken="no">
         </cfif>
 
@@ -89,7 +95,8 @@
                 s.hora_llegada,
                 s.status_final,
                 s.fecha_creacion,
-                s.alert
+                s.alert,
+                a.nombre AS nombre_area
             FROM solicitudes s
             INNER JOIN usuarios u ON s.id_solicitante = u.id_usuario
             INNER JOIN area_adscripcion a ON s.id_area = a.id_area
@@ -181,18 +188,18 @@
                             <!--- Encabezados de la tabla --->
                             <tr class="titulos-tabla">
                                 <!--- Encabezados de las columnas --->
-                                <td class="titulo-general">ID SOLICITUD</td>
-                                <td class="titulo-general">ID SOLICITANTE</td>
-                                <td class="titulo-general">ID AREA</td>
-                                <td class="titulo-general">TIPO SOLICITUD</td>
-                                <td class="titulo-general">TIPO PERMISO</td>
-                                <td class="titulo-general">FECHA</td>
-                                <td class="titulo-general">TIEMPO SOLICITADO</td>
-                                <td class="titulo-general">HORA SALIDA</td>
-                                <td class="titulo-general">HORA LLEGADA</td>
-                                <td class="titulo-general">STATUS FINAL</td>
-                                <td class="titulo-general">FECHA CREACION</td>
-                                <td class="titulo-general">ALERT</td>
+                                <td class="titulo-general-centrado">ID SOLICITUD</td>
+                                <td class="titulo-general-centrado">ID SOLICITANTE</td>
+                                <td class="titulo-general-centrado">ID AREA</td>
+                                <td class="titulo-general-centrado">TIPO SOLICITUD</td>
+                                <td class="titulo-general-centrado">TIPO PERMISO</td>
+                                <td class="titulo-general-centrado">FECHA</td>
+                                <td class="titulo-general-centrado">TIEMPO SOLICITADO</td>
+                                <td class="titulo-general-centrado">HORA SALIDA</td>
+                                <td class="titulo-general-centrado">HORA LLEGADA</td>
+                                <td class="titulo-general-centrado">STATUS FINAL</td>
+                                <td class="titulo-general-centrado">FECHA CREACION</td>
+                                <td class="titulo-general-centrado" style="min-width: 300px;">ALERT</td>
                             </tr>
 
                             <!--- Filas de la tabla --->
@@ -200,17 +207,17 @@
                                 <!--- Fila de datos --->
                                 <tr>
                                     <!--- Datos del usuario --->
-                                    <td>#id_solicitud#</td>
-                                    <td>#id_solicitante#</td>
-                                    <td>#id_area#</td>
-                                    <td>#tipo_solicitud#</td>
-                                    <td>#tipo_permiso#</td>
-                                    <td>#fecha#</td>
-                                    <td>#tiempo_solicitado#</td>
-                                    <td>#hora_salida#</td>
-                                    <td>#hora_llegada#</td>
-                                    <td>#status_final#</td>
-                                    <td>#fecha_creacion#</td>
+                                    <td class="titulo-general-centrado">#id_solicitud#</td>
+                                    <td class="titulo-general-centrado">#id_solicitante#</td>
+                                    <td class="titulo-general-centrado">#nombre_area#</td>
+                                    <td class="titulo-general-centrado">#tipo_solicitud#</td>
+                                    <td class="titulo-general-centrado">#tipo_permiso#</td>
+                                    <td class="titulo-general-centrado">#DateFormat(fecha, 'dd/mm/yyyy')#</td>
+                                    <td class="titulo-general-centrado">#tiempo_solicitado#</td>
+                                    <td class="titulo-general-centrado">#TimeFormat(hora_salida, 'HH:mm')#</td>
+                                    <td class="titulo-general-centrado">#TimeFormat(hora_llegada, 'HH:mm')#</td>
+                                    <td class="titulo-general-centrado">#status_final#</td>
+                                    <td class="titulo-general-centrado">#DateFormat(fecha_creacion, 'dd/mm/yyyy')# #timeFormat(fecha_creacion, 'HH:mm')#</td>
                                     <td>#alert#</td>
                                 </tr>
                             </cfoutput>

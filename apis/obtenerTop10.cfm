@@ -1,3 +1,21 @@
+<!---
+ * Archivo: obtenerTop10.cfm
+ * Descripción: API para obtener el Top 10 de solicitantes con más solicitudes en un área específica dentro de un rango de fechas.
+ * 
+ * Parámetros de entrada:
+ *   - areaSeleccionada: ID del área para filtrar las solicitudes
+ *   - rangoFechas (opcional): Número de días para el rango de fechas (por defecto 30 días)
+ * 
+ * Parámetros de salida:
+ * HTML con una tabla que muestra el Top 10 de solicitantes
+ * 
+ * Autor: Rogelio Perez Guevara
+ * 
+ * Fecha de creación: 22-10-2025
+ * 
+ * Versión: 1.0   
+ --->
+
 <cfcontent type="text/html; charset=utf-8">
 
 <cfparam name="form.areaSeleccionada" default="">

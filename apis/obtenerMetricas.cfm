@@ -1,8 +1,26 @@
+<!--- 
+ * Archivo: obtenerMetricas.cfm
+ * Descripción: API para obtener métricas de solicitudes de autorización en un rango de fechas.
+ * 
+ * Parámetros de entrada:
+ *   - rango (opcional): Número de días para el rango de fechas (por defecto 30 días)
+ *   - area (requerido): ID del área para filtrar las solicitudes
+ * 
+ * Parámetros de salida:
+ * JSON con las métricas solicitadas
+ * 
+ * Autor: Rogelio Perez Guevara
+ * 
+ * Fecha de creación: 20-10-2025
+ * 
+ * Versión: 1.0   
+ --->
+
 <cfsetting enablecfoutputonly="yes">
 <cfcontent type="application/json; charset=utf-8">
 
-<cfparam name="FORM.rango" default="30">
-<cfparam name="FORM.area" default="">
+<cfparam name="FORM.rango" default="30" required="yes">
+<cfparam name="FORM.area" default="" required="yes">
 
 <!--- Calcular fechas --->
 <cfset fechaFin = now()>

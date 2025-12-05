@@ -1,12 +1,40 @@
 <!---
- * Dashboard Integral para Sistema de Permisos
- * Integra datos reales desde getDashboardData.cfm
+ * Nombre de la pagina: solicitante/metricas.cfm
+ * 
+ * Descripción:
+ * Página para visualizar métricas y estadísticas relacionadas con los permisos y pases de salida.
+ * Permite a los usuarios con roles específicos acceder a gráficos y datos analíticos.
+ * 
+ * Roles:
+ * - Solicitante: Acceso a métricas básicas relacionadas con su propia area.
+ * - Jefe: Acceso a métricas relacionadas con las áreas bajo su supervisión.
+ * - RecursosHumanos: Acceso a métricas completas del sistema.
+ * - Admin: Acceso completo a todas las métricas y datos del sistema.
+ * 
+ * Páginas Relacionadas:
+ * - menu.cfm: Página principal del menú.
+ * - cerrarSesion.cfm: Página para cerrar la sesión del usuario.
+ * - js/jquery-3.6.0.min.js: Biblioteca jQuery para manipulación del DOM y AJAX.
+ * - apis/obtenerMetricas.cfm: API para obtener datos de métricas.
+ * - apis/obtenerEstadoSolicitudes.cfm: API para obtener el estado de las solicitudes.
+ * - apis/obtenerFirmasPorRol.cfm: API para obtener datos de firmas por rol.
+ * - https://cdn.jsdelivr.net/npm/chart.js: Biblioteca Chart.js para gráficos.
+ * - apis/obtenerTendencia.cfm: API para obtener tendencias de solicitudes.
+ * - apis/obtenerSolicitudesAreaSeleccionada.cfm: API para obtener solicitudes por área seleccionada.
+ * - apis/obtenerTiposPermiso: API para obtener tipos de permiso.
+ * - apis/obtenerPersonalVSOficial.cfm: API para obtener datos de personal vs oficial.
+ * - apis/obtenerPrediccion.cfc: API para obtener predicciones futuras.
+ * - apis/obtenerMetricasRanking.cfm: API para obtener ranking por área.
+ * - apis/obtenerTop10.cfm: API para obtener el top 10 de solicitantes.
+ * - js/metricas.js: Script personalizado para la página de métricas.
+ * - js/graficasKPI.js: Script para manejar las gráficas de KPI.
+ * 
+ * Autor: Rogelio Pérez Guevara
+ * 
+ * Fecha de creación: 15-10-2025
+ * 
+ * Versión: 1.0
 --->
-
-<!--- Verificación de sesión --->
-<cfif NOT structKeyExists(session, "rol")>
-    <cflocation url="index.cfm" addtoken="no">
-</cfif>
 
 <!DOCTYPE html>
 <html lang="es">
@@ -34,8 +62,12 @@
     </head>
     <body>
         <!-- Verificación de sesión y rol -->
-        <cfif NOT structKeyExists(session, "rol") 
-            OR ListFindNoCase("Admin,Expediente,RecursosHumanos,Autorizacion,Jefe,Solicitante", session.rol) EQ 0>
+        <cfif NOT (structKeyExists(session, "rol") AND len(trim(session.usuario)))>
+            <!--- Redirigir al login si no hay sesión activa --->
+            <cflocation url="../login.cfm" addtoken="no"> 
+        <!--- Verificar que el rol del usuario sea uno de los permitidos --->
+        <cfelseif ListFindNoCase("Solicitante,Jefe,RecursosHumanos,Admin", session.rol) EQ 0>
+            <!--- Redirigir al menú si el rol no es permitido --->
             <cflocation url="../menu.cfm" addtoken="no">
         </cfif>
 
@@ -76,10 +108,10 @@
                         <!--- Select dinámico --->
                         <select class="form-input-general" id="areaSeleccionada">
                             <!--- Opción para todas las áreas --->
-                            <option value="">-- Seleciona un área --</option>
+                            <option value="">-- Selecciona un área --</option>
                                 
                             <!--- Consultar áreas según el rol del usuario --->
-                            <cfif ListFindNoCase("Admin,RecursosHumanos,Autorizacion,Expediente", session.rol)>
+                            <cfif ListFindNoCase("RecursosHumanos,Admin", session.rol)>
                                 <!--- Estos roles pueden ver todas las áreas --->
                                 <cfquery name="getAreas" datasource="Autorizacion">
                                     SELECT id_area, 
@@ -114,7 +146,7 @@
                             </button>
 
                             <a href="../cerrarSesion.cfm" class="submit-btn-cerrarSesion submit-btn-cerrarSesion-text">
-                                Cerrar Sesion
+                                Cerrar Sesión
                             </a>
                         </div>
                     </div>
@@ -134,7 +166,7 @@
                             </div>
                         </div>
 
-                        <div class="kpi-header-aprovadas kpi-card">
+                        <div class="kpi-header-aprobadas kpi-card">
                             <div class="kpi-info">
                                 <div class="kpi-title">Aprobadas</div>
                                 <div class="kpi-value" id="solicitudesAprobadas">0</div>
@@ -187,7 +219,9 @@
                             <div class="chart-title text-center text-md-start">
                                 Estado de solicitudes
                             </div>
-                            <canvas id="chartEstados" height="250"></canvas>
+                            <div style="position: relative; height: 250px; width: 100%;">
+                                <canvas id="chartEstados"></canvas>
+                            </div>
                             <!-- Overlay solo para este canvas -->
                             <div class="canvasOverlay">
                                 ¡A punto de revelar las estadísticas!
@@ -196,7 +230,9 @@
 
                         <div class="kpi-header">
                             <div class="chart-title">Etapa de Firma</div>
-                            <canvas id="chartEtapas" height="250"></canvas>
+                            <div style="position: relative; height: 250px; width: 100%;">
+                                <canvas id="chartEtapas" height="250"></canvas>
+                            </div>
                             <!-- Overlay solo para este canvas -->
                             <div class="canvasOverlay">
                                 ¡A punto de revelar las estadísticas!
@@ -205,7 +241,9 @@
 
                         <div class="kpi-header">
                             <div class="chart-title">Tendencia de Solicitudes (Por periodo)</div>
-                            <canvas id="chartTendencia" height="250"></canvas>
+                            <div style="position: relative; height: 250px; width: 100%;">
+                                <canvas id="chartTendencia"></canvas>
+                            </div>
                             <!-- Overlay solo para este canvas -->
                             <div class="canvasOverlay">
                                 ¡A punto de revelar las estadísticas!
@@ -214,7 +252,9 @@
 
                         <div class="kpi-header">
                             <div class="chart-title">Solicitudes por Área seleccionada</div>
-                            <canvas id="chartAreas" height="250"></canvas>
+                            <div style="position: relative; height: 250px; width: 100%;">
+                                <canvas id="chartAreas"></canvas>
+                            </div>
                             <!-- Overlay solo para este canvas -->
                             <div class="canvasOverlay">
                                 ¡A punto de revelar las estadísticas!
@@ -223,7 +263,9 @@
 
                         <div class="kpi-header">
                             <div class="chart-title">Tipos de Permiso por Área seleccionada</div>
-                            <canvas id="chartTipoPermiso" height="250"></canvas>
+                            <div style="position: relative; height: 250px; width: 100%;">
+                                <canvas id="chartTipoPermiso" height="250"></canvas>
+                            </div>
                             <!-- Overlay solo para este canvas -->
                             <div class="canvasOverlay">
                                 ¡A punto de revelar las estadísticas!
@@ -232,7 +274,9 @@
 
                         <div class="kpi-header">
                             <div class="chart-title">Personal vs Oficial por Area Seleccionada</div>
-                            <canvas id="chartTipoSolicitud" height="250"></canvas>
+                            <div style="position: relative; height: 250px; width: 100%;">
+                                <canvas id="chartTipoSolicitud" height="250"></canvas>
+                            </div>
                             <!-- Overlay solo para este canvas -->
                             <div class="canvasOverlay">
                                 ¡A punto de revelar las estadísticas!
@@ -241,14 +285,14 @@
                     </div>
                 </div>
 
-                <!-- prediccion a futuro -->
+                <!-- predicción a futuro -->
                 <div class="section container-fluid">
                     <div class="kpi-header">
                         <div class="chart-title text-center mb-2">
-                            Predicion a 7 dias por area seleccionada
+                            Predicción a 7 dias por area seleccionada
                         </div>
-                        <div class="chart-wrapper-fixed">
-                            <canvas id="chartPredicion" class="w-100"></canvas>
+                        <div style="position: relative; height: 300px; width: 100%;">
+                            <canvas id="chartPredicion"></canvas>
                         </div>
                         <!-- Overlay solo para este canvas -->
                         <div class="canvasOverlay">
@@ -296,7 +340,7 @@
                                                 <th>Firmante</th>
                                                 <th>Rol</th>
                                                 <th>Total</th>
-                                                <th>Aprovadas</th>
+                                                <th>Aprobadas</th>
                                                 <th>Rechazadas</th>
                                                 <th>Pendientes</th>
                                             </tr>
@@ -317,8 +361,8 @@
         <script src="../js/jquery-3.6.0.min.js"></script>
 
         <!--- 
-            Seccion 2
-            Actuliza el contador del estado de las solicitudes y el tiempo promedio de aprobacion 
+            Sección 2
+            Actualiza el contador del estado de las solicitudes y el tiempo promedio de aprobación 
         --->
         <script>
             $(document).ready(function() {
@@ -460,9 +504,9 @@
         </script>
 
         <!---
-            Seccion -> 3
-            Grafica -> 1
-            Grafica -> Estado de solicitudes
+            Sección -> 3
+            Gráfica -> 1
+            Gráfica -> Estado de solicitudes
         --->
         <script>
             $(document).ready(function() {
@@ -503,6 +547,7 @@
                                 data: data,
                                 options: {
                                     responsive: true,
+                                    maintainAspectRatio: false,
                                     plugins: {
                                         legend: {
                                             position: 'bottom',
@@ -549,9 +594,9 @@
         </script>
 
         <!---
-            Seccion -> 3
-            Grafica -> 2
-            Grafica -> Etapa de Firma
+            Sección -> 3
+            Gráfica -> 2
+            Gráfica -> Etapa de Firma
         --->
         <script>
             $('#btnActualizar').on('click', function(e) {
@@ -559,6 +604,10 @@
 
                 const rango = $('#rangoFechas').val();
                 const area = $('#areaSeleccionada').val();
+                if(area === "") {
+                    alert("Por favor, selecciona un área para continuar.");
+                    return;
+                }
 
                 // --- Graficar Etapas de Firma ---
                 $.ajax({
@@ -600,6 +649,7 @@
                             },
                             options: {
                                 responsive: true,
+                                maintainAspectRatio: false,
                                 scales: {
                                     y: {
                                         beginAtZero: true,
@@ -621,9 +671,9 @@
         </script>
 
         <!---
-            Seccion -> 3
-            Grafica -> 3
-            Grafica -> Tendencia de Solicitudes
+            Sección -> 3
+            Gráfica -> 3
+            Gráfica -> Tendencia de Solicitudes
         --->
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -702,6 +752,7 @@
                             },
                             options: {
                                 responsive: true,
+                                maintainAspectRatio: false,
                                 plugins: {
                                     legend: {
                                         position: 'top',
@@ -748,9 +799,9 @@
         </script>
 
         <!---
-            Seccion -> 3
-            Grafica -> 4
-            Grafica -> Solicitudes por Área Selecionada
+            Sección -> 3
+            Gráfica -> 4
+            Gráfica -> Solicitudes por Área Seleccionada
         --->
         <script>
         // Variable global para la gráfica
@@ -822,6 +873,7 @@
                             },
                             options: {
                                 responsive: true,
+                                maintainAspectRatio: false,
                                 plugins: {
                                     legend: {
                                         position: 'top',
@@ -859,9 +911,9 @@
         </script>
 
         <!---
-            Seccion -> 3
-            Grafica -> 5
-            Grafica -> Tipos de Permiso por Área Seleccionada
+            Sección -> 3
+            Gráfica -> 5
+            Gráfica -> Tipos de Permiso por Área Seleccionada
         --->
         <script>
             document.getElementById("btnActualizar").addEventListener("click", function () {
@@ -910,6 +962,7 @@
                         },
                         options: {
                             responsive: true,
+                            maintainAspectRatio: false,
                             plugins: {
                                 legend: { 
                                     display: true 
@@ -932,9 +985,9 @@
         </script>
 
         <!---
-            Seccion -> 3
-            Grafica -> 6
-            Grafica -> Personal VS Oficial por Área Seleccionada
+            Sección -> 3
+            Gráfica -> 6
+            Gráfica -> Personal VS Oficial por Área Seleccionada
         --->
         <script>
             $('#btnActualizar').on('click', function(e) {
@@ -942,6 +995,11 @@
 
                 const rango = $('#rangoFechas').val();
                 const area = $('#areaSeleccionada').val();
+
+                if(!area) {
+                    alert("Por favor, selecciona un área.");
+                    return;
+                }
 
                 $.ajax({
                     url: '../apis/obtenerPersonalVSOficial.cfm',
@@ -982,6 +1040,7 @@
                             },
                             options: {
                                 responsive: true,
+                                maintainAspectRatio: false,
                                 plugins: {
                                     legend: { 
                                         position: 'bottom' 
@@ -999,9 +1058,9 @@
         </script>
 
         <!---
-            Seccion -> 3, 4
-            Grafica -> 1, 2, 3, 4, 5, 6, 7
-            Quita los overlays de las graficas
+            Sección -> 3, 4
+            Gráfica -> 1, 2, 3, 4, 5, 6, 7
+            Quita los overlays de las gráficas
         --->
         <script>
             $('#btnActualizar').click(function() {
@@ -1011,9 +1070,9 @@
         </script>
 
         <!---
-            Seccion -> 4
-            Grafica -> 7
-            Grafica -> Predicion a 7 dias por area selecionada
+            Sección -> 4
+            Gráfica -> 7
+            Gráfica -> Predicción a 7 días por area seleccionada
         --->
         <script>
             $(document).ready(function() {
@@ -1030,7 +1089,7 @@
                         },
                         dataType: 'json',
                         success: function(response) {
-                            // Asegurarse de parsear JSON si viene como string
+                            // Asegurarse de parchear JSON si viene como string
                             let data = (typeof response === 'string') ? JSON.parse(response) : response;
                             console.log('Datos AJAX:', data);
                             renderAdvancedChart(data);
@@ -1043,7 +1102,7 @@
             });
 
             function renderAdvancedChart(data) {
-                // Usamo fecha y nombre del dia para el eje X
+                // Usamos fecha y nombre del dia para el eje X
                 const labels = data.map(d => `${d.nombre_dia} ${d.fecha}`);
                 const ctx = document.getElementById('chartPredicion').getContext('2d');
 
@@ -1059,10 +1118,6 @@
                 const gradientRechazados = ctx.createLinearGradient(0,0,0,400);
                 gradientRechazados.addColorStop(0,'rgba(255,0,0,0.5)');
                 gradientRechazados.addColorStop(1,'rgba(128,0,0,0.1)');
-
-                <!---const gradientCredibilidad = ctx.createLinearGradient(0,0,0,400);
-                gradientCredibilidad.addColorStop(0,'rgba(0,128,255,0.5)');
-                gradientCredibilidad.addColorStop(1,'rgba(0,64,128,0.1)');--->
 
                 // Destruir instancia previa
                 if (window.chartInstance) {
@@ -1117,7 +1172,7 @@
                             borderColor: '#3399ff',
                             backgroundColor: 'rgba(51,153,255,0.1)',
                             fill: false,
-                            tension: 0, // Linea recta para datos tecnicos
+                            tension: 0, // Linea recta para datos técnicos
                             pointRadius: 0, // Ocultar puntos para limpiar ruido visual
                             borderWidth: 1,
                             yAxisID: 'yCredibilidad',
@@ -1186,7 +1241,7 @@
         </script>
 
         <!---
-            Seccion -> 5
+            Sección -> 5
             Tabla -> 1
             Tabla -> Ranking por Área
         --->
@@ -1223,7 +1278,7 @@
         </script>
 
         <!---
-            Seccion -> 5
+            Sección -> 5
             Tabla -> 2
             Tabla -> Top 10 Solicitantes
         --->

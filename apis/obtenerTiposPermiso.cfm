@@ -1,3 +1,24 @@
+<!---
+ * API: obtenerTiposPermiso.cfm
+ * 
+ * Descripción: 
+ * Proporciona el conteo de tipos de permiso solicitados en un área específica
+ * dentro de un rango de fechas determinado.
+ * 
+ * Parámetros de entrada:
+ * - rangoDias (opcional): Número de días para el rango de fechas (por defecto 30 días)
+ * - id_area (requerido): ID del área para filtrar los permisos
+ * 
+ * Parámetros de salida:
+ * JSON con el conteo de tipos de permiso
+ * 
+ * Autor: Rogelio Perez Guevara
+ * 
+ * Fecha de creación: 21-10-2025
+ * 
+ * Versión: 1.0   
+--->
+
 <cfsetting enablecfoutputonly="true">
 <cfcontent type="application/json; charset=utf-8">
 

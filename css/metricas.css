@@ -64,7 +64,7 @@
     font-weight: 700;
 }
 
-.kpi-header-aprovadas {
+.kpi-header-aprobadas {
     background: #ffffff;
     padding: 25px;
     border-radius: 15px;
@@ -72,15 +72,15 @@
     transition: transform 0.3s;
 }
 
-.kpi-header-aprovadas:hover {
+.kpi-header-aprobadas:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 30px #2F855A;
 }
 
 /* Cambia el color de los textos internos al hacer hover en el header */
-.kpi-header-aprovadas:hover .kpi-title,
-.kpi-header-aprovadas:hover .kpi-value,
-.kpi-header-aprovadas:hover .kpi-subtitle {
+.kpi-header-aprobadas:hover .kpi-title,
+.kpi-header-aprobadas:hover .kpi-value,
+.kpi-header-aprobadas:hover .kpi-subtitle {
     color: #2F855A; /* Azul principal */
     transition: color 0.3s ease;
     font-weight: 700;

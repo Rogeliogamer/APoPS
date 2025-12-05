@@ -1,18 +1,27 @@
 <!---
- * Componente `listaUsuarios.cfc` para la visualización y gestión de usuarios.
- *
- * Acceso:
- * - Permitido únicamente a usuarios con rol: `admin`, `expediente`, `RecursosHumanos` y `jefe`.
- * - Rol `usuario` no tiene acceso a esta página.
- *
- * Funcionalidad:
- * - Muestra la lista de usuarios filtrada según los privilegios del rol autenticado.
- * - La búsqueda de usuarios también respeta las restricciones de acceso por rol.
- * - Garantiza un nivel de seguridad al limitar la visibilidad de la información sensible.
- *
- * Permisos especiales:
- * - Solo los usuarios con rol `admin` tienen habilitados los botones de **Editar** y **Eliminar**.
- * - Cada acción redirige a la página correspondiente con la información del usuario seleccionado.
+ * Nombre de la pagina: administracion/listaFirmaSolicitudes.cfm
+ * 
+ * Descripción:
+ * Esta página muestra una lista paginada de las firmas asociadas a las solicitudes en el sistema.
+ * Incluye un formulario de búsqueda que permite filtrar las firmas por varios campos,
+ * y muestra los resultados en una tabla con paginación en bloques de 10 páginas.
+ * Verifica que el usuario tenga el rol adecuado para acceder a esta página.
+ * 
+ * Roles:
+ * Admin: Acceso completo para ver la lista de firmas.
+ * 
+ * Paginas relacionadas:
+ * login.cfm: Página de inicio de sesión.
+ * menu.cfm: Menú principal del sistema.
+ * listaFirmasSolicitudes.cfm: Esta misma página.
+ * adminPanel.cfm: Panel de administración.
+ * cerrarSesion.cfm: Cierre de sesión del usuario.
+ * 
+ * Autor: Rogelio Perez Guevara
+ * 
+ * Fecha de creación: 03-12-2025
+ * 
+ * Versión: 1.0
 --->
 
 <!--- Lógica de manejo de parámetros y búsqueda --->
@@ -47,7 +56,7 @@
         <!--- Icono de la pagina --->
         <link rel="icon" href="../elements/icono.ico" type="image/x-icon">
         <!--- Título de la página --->
-        <title>Lista de Solicitudes</title>
+        <title>Lista de Firmas</title>
         <!--- Enlace a fuentes y hojas de estilo --->
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="../css/globalForm.css">
@@ -57,31 +66,30 @@
 
         <style>
             /* Definimos el tamaño de la columna */
-.columna-firma {
-    width: 150px;       /* Ancho fijo que quieres que ocupe */
-    text-align: center;
-    padding: 5px;
-}
+            .columna-firma {
+                width: 150px;       /* Ancho fijo que quieres que ocupe */
+                text-align: center;
+                padding: 5px;
+            }
 
-/* IMPORTANTE: Obligamos al SVG a respetar el ancho de la columna */
-.columna-firma svg {
-    width: 100% !important;  /* Llena el ancho disponible (150px) */
-    height: auto !important; /* Calcula la altura automáticamente para no deformarse */
-    max-height: 60px;        /* Opcional: Límite de altura para que no se haga muy alta */
-    display: block;          /* Elimina espacios extra debajo del SVG */
-    margin: 0 auto;          /* Centra el SVG */
-}
+            /* IMPORTANTE: Obligamos al SVG a respetar el ancho de la columna */
+            .columna-firma svg {
+                width: 100% !important;  /* Llena el ancho disponible (150px) */
+                height: auto !important; /* Calcula la altura automáticamente para no deformarse */
+                max-height: 60px;        /* Opcional: Límite de altura para que no se haga muy alta */
+                display: block;          /* Elimina espacios extra debajo del SVG */
+                margin: 0 auto;          /* Centra el SVG */
+            }
         </style>
     </head>
     <body>
         <!--- Verificación de sesión y rol --->
-        <cfif NOT structKeyExists(session, "usuario") 
-            OR NOT structKeyExists(session, "rol")
-            OR len(trim(session.rol)) EQ 0>
-            <!--- No hay sesión activa --->
+        <cfif NOT (structKeyExists(session, "rol") AND len(trim(session.usuario)))>
+            <!--- Redirigir a la página de login si no hay sesión activa --->
             <cflocation url="../login.cfm" addtoken="no">
-        <cfelseif listFindNoCase("admin", trim(session.rol)) EQ 0>
-            <!--- Rol no autorizado --->
+        <!--- Verificar si el rol del usuario es Admin --->
+        <cfelseif ListFindNoCase("Admin", session.rol) EQ 0>
+            <!--- Redirigir a la página de menú si el rol no es Admin --->
             <cflocation url="../menu.cfm" addtoken="no">
         </cfif>
 
@@ -113,7 +121,6 @@
                     OR f.id_solicitud LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
                     OR f.id_usuario LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
                     OR f.rol LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
-                    OR f.svg LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
                     OR f.aprobado LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
                     OR f.fecha_firma LIKE <cfqueryparam value="%#searchTerm#%" cfsqltype="cf_sql_varchar">
                 )
@@ -166,7 +173,7 @@
                                 name="search" 
                                 value="#encodeForHTMLAttribute(searchTerm)#" 
                                 class="form-input-general" 
-                                placeholder="tipo de solicitud, tipo de permiso, fecha, hora, etc.">
+                                placeholder="id firma, id solicitud, id usuarios, rol, etc.">
                         </cfoutput>
                     </div>
 
@@ -190,13 +197,13 @@
                             <!--- Encabezados de la tabla --->
                             <tr class="titulos-tabla">
                                 <!--- Encabezados de las columnas --->
-                                <td class="titulo-general">ID FIRMA</td>
-                                <td class="titulo-general">ID SOLICITUD</td>
-                                <td class="titulo-general">ID USUARIO</td>
-                                <td class="titulo-general">ROL</td>
-                                <td class="titulo-general">SVG</td>
-                                <td class="titulo-general">APROBADO</td>
-                                <td class="titulo-general">FECHA FIRMA</td>
+                                <td class="titulo-general-centrado">ID FIRMA</td>
+                                <td class="titulo-general-centrado">ID SOLICITUD</td>
+                                <td class="titulo-general-centrado">ID USUARIO</td>
+                                <td class="titulo-general-centrado">ROL</td>
+                                <td class="titulo-general-centrado">SVG</td>
+                                <td class="titulo-general-centrado">APROBADO</td>
+                                <td class="titulo-general-centrado">FECHA FIRMA</td>
                             </tr>
 
                             <!--- Filas de la tabla --->
@@ -204,13 +211,13 @@
                                 <!--- Fila de datos --->
                                 <tr>
                                     <!--- Datos del usuario --->
-                                    <td>#id_firma#</td>
-                                    <td>#id_solicitud#</td>
-                                    <td>#id_usuario#</td>
-                                    <td>#rol#</td>
+                                    <td class="titulo-general-centrado">#id_firma#</td>
+                                    <td class="titulo-general-centrado">#id_solicitud#</td>
+                                    <td class="titulo-general-centrado">#id_usuario#</td>
+                                    <td class="titulo-general-centrado">#rol#</td>
                                     <td class="columna-firma">#svg#</td>
-                                    <td>#aprobado#</td>
-                                    <td>#fecha_firma#</td>
+                                    <td class="titulo-general-centrado">#aprobado#</td>
+                                    <td class="titulo-general-centrado">#DateFormat(fecha_firma, 'dd/mm/yyyy')# #timeFormat(fecha_firma, 'HH:mm')#</td>
                                 </tr>
                             </cfoutput>
                         </table>

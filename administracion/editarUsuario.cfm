@@ -1,15 +1,30 @@
 <!---
- * Página `editarUsuario.cfm` para la modificación de la información básica de un usuario.
- *
- * Funcionalidad:
- * - Permite al administrador editar los campos necesarios de la información del usuario seleccionado.
- * - Si los datos son válidos, se actualizan en la base de datos reemplazando la información anterior.
- * - Todos los campos requeridos deben ser completados; de lo contrario, no se podrá guardar la información.
- * - Al confirmar los cambios, se redirige automáticamente a la lista de usuarios.
- * - Si el usuario no existe, se muestra un mensaje de error.
- *
- * Uso:
- * - Página destinada a la edición y mantenimiento de la información de los usuarios registrados.
+ * Nombre de la pagina: administracion/editarUsuario.cfm
+ * 
+ * Descripción:
+ * Esta página permite a los administradores editar la información de un usuario existente.
+ * Verifica la sesión y el rol del usuario, obtiene los datos del usuario a editar,
+ * muestra un formulario con los datos actuales y permite actualizar la información en la base de datos.
+ * Incluye validaciones en el frontend para asegurar que los datos ingresados sean correctos.
+ * Redirige a la lista de usuarios después de guardar los cambios.
+ * 
+ * Roles:
+ * Admin: Solo accesible para usuarios con rol de administrador.
+ * 
+ * Paginas relacionadas:
+ * login.cfm - Página de inicio de sesión.
+ * menu.cfm - Menú principal.
+ * listaUsuarios.cfm - Lista de usuarios.
+ * listaUsuariosEditar.cfm - Lista de usuarios con opción de edición.
+ * adminpanel.cfm - Panel de administración.
+ * cerrarSesion.cfm - Cierre de sesión.
+ * validarEdicionUsuario.js - Script de validación para el formulario de edición de usuario.
+ * 
+ * Autor: Rogelio Perez Guevara
+ * 
+ * Fecha de creación: 25-09-2025
+ * 
+ * Versión: 1.0
 --->
 
 <!DOCTYPE html>
@@ -30,13 +45,12 @@
     </head>
     <body>
         <!--- Verificación de sesión y rol --->
-        <cfif NOT structKeyExists(session, "usuario") 
-            OR NOT structKeyExists(session, "rol")
-            OR len(trim(session.rol)) EQ 0>
-            <!--- No hay sesión activa --->
+        <cfif NOT (structKeyExists(session, "rol") AND len(trim(session.usuario)))>
+            <!--- Redirigir a la página de login si no hay sesión activa --->
             <cflocation url="../login.cfm" addtoken="no">
-        <cfelseif listFindNoCase("admin", trim(session.rol)) EQ 0>
-            <!--- Rol no autorizado --->
+        <!--- Verificar si el rol del usuario es Admin --->
+        <cfelseif ListFindNoCase("Admin", session.rol) EQ 0>
+            <!--- Redirigir a la página de menú si el rol no es Admin --->
             <cflocation url="../menu.cfm" addtoken="no">
         </cfif>
 
@@ -158,7 +172,15 @@
                                     </label>
 
                                     <!--- Campo de texto para el nombre de usuario --->
-                                    <input type="text" name="usuario" value="#qUsuario.usuario#" required class="form-input-general"><br>
+                                    <input type="text" 
+                                            id="usuario"
+                                            name="usuario"
+                                            class="form-input-general"
+                                            value="#qUsuario.usuario#" 
+                                            pattern="[A-Za-z0-9ÁÉÍÓÚáéíóúÑñ\s]+"
+                                            title="Solo se permiten letras y números"
+                                            oninput="soloLetrasNumeros(this)"
+                                            required>
                                 </div>
 
                                 <!--- Campo de rol --->
@@ -214,7 +236,14 @@
                                     </label>
 
                                     <!--- Campo de texto para el nombre --->
-                                    <input type="text" name="nombre" value="#qUsuario.nombre#" required class="form-input-general"><br>
+                                    <input type="text" 
+                                            name="nombre" 
+                                            class="form-input-general"
+                                            value="#qUsuario.nombre#" 
+                                            pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+"
+                                            title="Solo se permiten letras"
+                                            oninput="sanitizarUsuario(this)"
+                                            required>
                                 </div>
 
                                 <!--- Campo de apellido paterno --->
@@ -225,7 +254,14 @@
                                     </label>
 
                                     <!--- Campo de texto para el apellido paterno --->
-                                    <input type="text" name="apellido_paterno" value="#qUsuario.apellido_paterno#" required class="form-input-general"><br>
+                                    <input type="text" 
+                                            name="apellido_paterno" 
+                                            class="form-input-general"
+                                            value="#qUsuario.apellido_paterno#" 
+                                            pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+"
+                                            title="Solo se permiten letras"
+                                            oninput="sanitizarUsuario(this)"
+                                            required>
                                 </div>
 
                                 <!--- Campo de apellido materno --->
@@ -236,7 +272,14 @@
                                     </label>
 
                                     <!--- Campo de texto para el apellido materno --->
-                                    <input type="text" name="apellido_materno" value="#qUsuario.apellido_materno#" required class="form-input-general"><br>
+                                    <input type="text" 
+                                            name="apellido_materno" 
+                                            class="form-input-general"
+                                            value="#qUsuario.apellido_materno#" 
+                                            pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+"
+                                            title="Solo se permiten letras"
+                                            oninput="sanitizarUsuario(this)"
+                                            required>
                                 </div>
                             </div>
                         </div>
@@ -291,5 +334,7 @@
                 }
             });
         </script>
+
+        <script src="../js/validarEdicionUsuario.js"></script>
     </body>
 </html>

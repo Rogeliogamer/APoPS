@@ -1,10 +1,34 @@
+<!---
+ * Nombre de la página: generarPDF.cfm
+ * 
+ * Descripción: 
+ * Genera un PDF con los detalles de la solicitud y las firmas asociadas.
+ * 
+ * Roles:
+ * Solicitante: Puede generar el PDF de su propia solicitud.
+ * Jefe: Puede generar el PDF de las solicitudes que supervisa.
+ * RecursosHumanos: Puede generar el PDF de cualquier solicitud para revisión.
+ * Admin: Puede generar el PDF de cualquier solicitud.
+ * 
+ * Paginas relacionadas:
+ * login.cfm - Página de inicio de sesión.
+ * menu.cfm - Página principal del sistema.
+ * 
+ * Autor: Rogelio Pérez Guevara
+ * 
+ * Fecha de creación: 03-11-2025
+ * 
+ * Versión: 1.0
+--->
+
+
 <!--- Verificar autenticación y autorización --->
-<cfif NOT structKeyExists(session, "rol") OR len(trim(session.rol)) EQ 0>
+<cfif NOT (structKeyExists(session, "rol") AND len(trim(session.rol)))>
     <!--- Usuario no autenticado --->
-    <cflocation url="login.cfm" addtoken="no">
-<cfelseif ListFindNoCase("Solicitante,Jefe,RecursosHumanos,Autorizacion,Expediente", trim(session.rol)) EQ 0>
+    <cflocation url="../login.cfm" addtoken="no">
+<cfelseif ListFindNoCase("Solicitante,Jefe,RecursosHumanos,Admin", session.rol) EQ 0>
     <!--- Rol no autorizado --->
-    <cflocation url="menu.cfm" addtoken="no">
+    <cflocation url="../menu.cfm" addtoken="no">
 </cfif>
 
 <!--- Obtener el ID de la solicitud desde la URL --->
@@ -48,7 +72,7 @@
         svg
     FROM firmas
     WHERE id_solicitud = <cfqueryparam value="#id_solicitud#" cfsqltype="cf_sql_integer">
-    ORDER BY FIELD(rol, 'Solicitante','Jefe','RecursosHumanos','Autorizacion','Expediente')
+    ORDER BY FIELD(rol, 'Solicitante','Jefe','RecursosHumanos')
 </cfquery>
 
 <!--- Generar el PDF --->

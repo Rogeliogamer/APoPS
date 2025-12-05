@@ -1,3 +1,26 @@
+<!---
+ * Nombre de la página: guardarFirma.cfm
+ * 
+ * Descripción:
+ * Esta página recibe la firma SVG enviada desde el formulario,
+ * verifica si ya existe una firma para la solicitud y el rol dados,
+ * y actualiza o inserta la firma en la base de datos según corresponda.
+ * Luego redirige al usuario a la página de solicitudes pendientes de firma.
+ * 
+ * Roles:
+ * No aplica (se recibe el rol desde el formulario).
+ * 
+ * Paginas relacionadas:
+ * firmarSolicitud.cfm - Página donde se captura la firma.
+ * pendientesFirmar.cfm - Página a la que se redirige después de guardar la firma.
+ * 
+ * Autor: Rogelio Pérez Guevara
+ * 
+ * Fecha de creación: 29-09-2025
+ * 
+ * Versión: 1.0
+--->
+
 <cftry>
     <!--- Obtener variables del formulario --->
     <cfset id_solicitud = form.id_solicitud>

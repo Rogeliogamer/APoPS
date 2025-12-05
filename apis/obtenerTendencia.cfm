@@ -1,3 +1,24 @@
+<!---
+ * API: obtenerTendencia.cfm
+ * 
+ * Descripción: 
+ * Proporciona una tendencia diaria de solicitudes aprobadas, pendientes y rechazadas
+ * en un rango de fechas determinado.
+ * 
+ * Parámetros de entrada:
+ *   - rango (opcional): Número de días para el rango de fechas (por defecto 30 días)
+ *  - area (opcional): ID del área para filtrar las solicitudes
+ * 
+ * Parámetros de salida:
+ * JSON con la tendencia diaria de solicitudes
+ * 
+ * Autor: Rogelio Perez Guevara
+ * 
+ * Fecha de creación: 20-10-2025
+ * 
+ * Versión: 1.0   
+--->
+
 <cfsetting enablecfoutputonly="yes">
 <cfcontent type="application/json; charset=utf-8">
 
